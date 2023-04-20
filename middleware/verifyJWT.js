@@ -6,6 +6,10 @@ const verifyJWT = (req, res, next) => {
     // console.log("authheader", authHeader);
     // if (!authHeader) return res.sendStatus(401);
     // const token = authHeader.split(' ')[1];
+    if (!req.cookies?.jwt_accessToken) {
+        res.redirect('/accounts/signIn');
+        return;
+    }
     const token = req.cookies.jwt_accessToken
     jwt.verify(
         token,
@@ -16,12 +20,16 @@ const verifyJWT = (req, res, next) => {
             req.userName = decoded.userName;
             req.userRole = decoded.userRole;
             if (!req.userRole) {
-                req.redirect('/users/profileCompletion');
+                res.redirect('/users/profileCompletion');
                 return;
             }
             next();
         }
     );
+    // req.userId = "6438ef10f98841e106fd056f";
+    // req.userName = "Vedant";
+    // req.userRole = "HOD";
+    // next();
 }
 
 module.exports = verifyJWT

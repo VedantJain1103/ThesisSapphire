@@ -97,7 +97,7 @@ router.get('/signIn',async (req, res) => {
 router.post('/signIn', async (req, res) => {
     const { email, password } = req.body;
     try {
-        const result = await accountsServices.signIn(email, password, function (result) {
+        await accountsServices.signIn(email, password, function (result) {
             if (result.status == "Fail") {
                 res.status(200).send("Error: "+result.error);
                 return;

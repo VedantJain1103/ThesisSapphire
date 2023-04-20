@@ -2,9 +2,9 @@ const bcrypt = require("bcrypt");
 const Sib = require("sib-api-v3-sdk");
 require("dotenv").config();
 
-const jwtServices = require("../services/jwtServices");
-const mailServices = require("../services/mailServices");
-const mailDataServices = require("../services/mailDataServices");
+let jwtServices = require('../services/jwtServices');
+let mailServices = require("../services/mailServices");
+let mailDataServices = require("../services/mailDataServices");
 
 const fs = require("fs");
 const util = require("util");
@@ -379,29 +379,34 @@ async function signIn(email, password, callback) {
     console.log(findUser);
     if (findUser.status == "Fail") {
         errResult.error = findUser.error;
-        return errResult;
+        return callback(errResult);
     }
 
     // console.log("User Found: ", findUser);
     const user = findUser.result;
     if (!user.isEmailVerified) {
-        return { user, _, _ };
+        return callback({ user, _, _ });
     }
 
+    // const accessToken = await jwtServices.createAccessToken(user);
     //matching password
     let passMatch;
     bcrypt.compare(password, user.password,async function (error, isMatch) {
         if (error) {
             errResult.error = error;
-            return errResult;
+            return callback(errResult);
         } else if (!isMatch) {
             errResult.error = "Wrong Password";
-            return errResult;
+            return callback(errResult);
         } else {
             passMatch = true;
             //creating tokens
-            const accessToken = jwtServices.createAccessToken(user);
-            const refreshToken = jwtServices.createRefreshToken(user);
+            // console.log(user);
+            const userProfile = await getUserProfileById(user._id);
+            const accessToken = await jwtServices.createAccessToken(user,userProfile);
+            const refreshToken = await jwtServices.createRefreshToken(user, userProfile);
+
+            // const { status, accessToken, refreshToken } = await jwtServices.createTokens(user);
 
             //Adding refresh Token in database
             const refreshTokenBody = {
@@ -427,11 +432,11 @@ async function signIn(email, password, callback) {
                 .catch(function (error) {
                     console.log("Request failed", error);
                     errResult.error = error;
-                    return errResult;
+                    return callback(errResult);
                 });
             if (!updation) {
                 errResult.error = "Unable to add tokens";
-                return errResult;
+                return callback(errResult);
             }
             const result = {
                 status: "Success",
