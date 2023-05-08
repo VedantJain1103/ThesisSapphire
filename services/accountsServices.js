@@ -152,7 +152,7 @@ function sendEmailVerification(email) {
         code: code,
     };
     let content = mailDataServices.verificationMailContent(code);
-    mailServices.sendMail(email, content);
+    mailServices.sendMail(email, content, "Verification Code");
     console.log(email, code);
     fetch(
         "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/createVerification?secret=vedant",
@@ -170,7 +170,7 @@ function sendEmailVerification(email) {
         })
         .then(function (data) {
             console.log("Verification created: ", data);
-            return { status: "Success", result: data };
+            return  data;
         })
         .catch(function (error) {
             console.log("Request failed", error);
@@ -183,25 +183,6 @@ async function checkVerification(email, code) {
         //Checking user
         let findUser = await getUserByEmail(email);
         console.log("User found: ", findUser);
-        // const findUser = await fetch(
-        //     "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getUserByEmail?secret=vedant&userEmail=" +
-        //     email,
-        //     {
-        //         method: "GET",
-        //     }
-        // )
-        //     .then(function (response) {
-        //         return response.json();
-        //     })
-        //     .then(function (data) {
-        //         console.log("User founded: ", data);
-        //         return data;
-        //     })
-        //     .catch(function (error) {
-        //         console.log("Request failed", error);
-        //         return callback(error);
-        //     });
-        // console.log(findUser)
         if (findUser.status == "Fail") {
             return {
                 status: "Fail",
@@ -284,7 +265,7 @@ async function checkVerification(email, code) {
                     verificationId: verification._id,
                     status: "Successs",
                 };
-                fetch(
+                const result = fetch(
                     "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/updateVerificationsStatusById?secret=vedant",
                     {
                         method: "POST",
@@ -309,6 +290,7 @@ async function checkVerification(email, code) {
                         console.log("Request failed", error);
                         throw new Error(error);
                     });
+                return result;
             } else {
                 //updating verification's status to FAILED
                 const verificationReqBody = {
@@ -450,6 +432,31 @@ async function signIn(email, password, callback) {
     });
 }
 
+async function updateUserProfileStatus(userId, status) {
+    let profileStatusReqBody = {
+        userId: userId,
+        status: status
+    };
+    let updation = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/updateUserProfileStatusByUserId?secret=vedant", {
+        method: "POST",
+        headers: {
+            "Content-Type":"application/json",
+        },
+        body: JSON.stringify(profileStatusReqBody)
+    }).then(function (response) {
+        return response.json();
+    })
+        .then(function (data) {
+            return data;
+        })
+        .catch(function (error) {
+            console.log("Request failed", error);
+            result.error = error;
+            return result;
+        });
+    return updation;
+}
+
 async function completeUserProfile(userId, name, email, institute, department, role, rollNo, dateOfJoining, pfId) {
     const userResult = await getUserByEmail(email);
     let result = {
@@ -500,6 +507,11 @@ async function completeUserProfile(userId, name, email, institute, department, r
         }
         else {
             result.status = "Success";
+            let statusUpdation = await updateUserProfileStatus(userId, true);
+            if (statusUpdation.status == "Fail") {
+                result.status = "Fail";
+                result.error = statusUpdation.error;
+            }
             return result;
         }
     }
@@ -537,6 +549,11 @@ async function completeUserProfile(userId, name, email, institute, department, r
         }
         else {
             result.status = "Success";
+            let statusUpdation = await updateUserProfileStatus(userId, true);
+            if (statusUpdation.status == "Fail") {
+                result.status = "Fail";
+                result.error = statusUpdation.error;
+            }
             return result;
         }
     }
@@ -575,6 +592,11 @@ async function completeUserProfile(userId, name, email, institute, department, r
         }
         else {
             result.status = "Success";
+            let statusUpdation = await updateUserProfileStatus(userId, true);
+            if (statusUpdation.status == "Fail") {
+                result.status = "Fail";
+                result.error = statusUpdation.error;
+            }
             return result;
         }
     }
@@ -590,6 +612,7 @@ module.exports = {
     signIn,
     sendEmailVerification,
     checkVerification,
-    completeUserProfile
+    completeUserProfile,
+    updateUserProfileStatus
     // profileCompletion,
 };

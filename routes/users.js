@@ -121,7 +121,7 @@ router.post('/approveThesis/:thesisId', verifyJWT, async function (req, res, nex
 })
 
 
-router.get('/profileCompletion', verifyJWT, async function (req, res, next) {
+router.get('/profileCompletion',verifyJWT, async function (req, res, next) {
   let { userId, userName } = req;
   let user = await accountsServices.getUserById(userId);
   let departments = await adminServices.getDepartments();
@@ -142,7 +142,7 @@ router.post('/profileCompletion', verifyJWT, async function (req, res, next) {
   }
   // const today = new Date();
   console.log(dateOfJoining);
-  if (role !== "Scholar" && role !== "Mentor" && role !== "Reviewer" && role !== "Dean" && role !== "HOD") {
+  if (role !== "Scholar" && role !== "Faculty" && role !== "Reviewer" && role !== "Dean" && role !== "HOD") {
     error = "Error: Incorrect data";
     res.render('error', { layout: 'userLayout', error: error });
     return;
@@ -152,7 +152,7 @@ router.post('/profileCompletion', verifyJWT, async function (req, res, next) {
     res.render('error', { layout: 'userLayout', error: error });
     return;
   }
-  else if ((role == "Mentor" || role == "Reviewer" || role == "Dean" || role == "HOD") && (!pfId)) {
+  else if ((role == "Faculty" || role == "Reviewer" || role == "Dean" || role == "HOD") && (!pfId)) {
     res.send("Error: Insuficient data.");
     return;
   }
@@ -162,7 +162,7 @@ router.post('/profileCompletion', verifyJWT, async function (req, res, next) {
     return;
   }
   else {
-    let refreshToken = cookies.jwt_refreshToken;
+    let refreshToken = req.cookies.jwt_refreshToken;
     let newAccessToken = await jwtServices.refreshAccessTokenByRefreshToken(refreshToken);
     if (newAccessToken) {
       res.cookie('jwt_accessToken', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
@@ -171,7 +171,6 @@ router.post('/profileCompletion', verifyJWT, async function (req, res, next) {
     else {
       res.render('accounts/signIn', { title: 'Express', email: '' });
     }
-    res.redirect("/users/")
   }
 })
 

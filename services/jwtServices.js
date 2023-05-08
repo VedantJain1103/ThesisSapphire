@@ -41,18 +41,35 @@ async function getUserByRefreshToken(refreshToken) {
         return null;
     }
 }
+async function getUserProfileById(userId) {
+    let userProfile = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getUserProfileById?secret=vedant&userId=" + userId, {
+        method: "GET",
+    }).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        // console.log("UserProfile: ", data);
+        if (data) return data;
+        else return null;
+    }).catch(function (error) {
+        console.log('Request Failed', error);
+        return null;
+    });
+    return userProfile;
+}
 
 async function createAccessToken(user, userProfile) {
     let role = null;
     if (user.isProfileComplete) {
-        role = userProfile.result.role;
+        role = userProfile.role;
     }
+    let userBody = {
+        "userId": user._id,
+        "userName": user.name,
+        "userRole": role
+    };
+    console.log(userBody);
     const accessToken = jwt.sign(
-        {
-            "userId": user._id,
-            "userName": user.name,
-            "userRole": role
-        },
+        userBody,
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: '15m' }
     );
@@ -62,14 +79,15 @@ async function createAccessToken(user, userProfile) {
 async function createRefreshToken(user, userProfile) {
     let role = "HOD";
     if (user.isProfileComplete) {
-        role = userProfile.result.role;
+        role = userProfile.role;
     }
+    let userBody = {
+        "userId": user._id,
+        "userName": user.name,
+        "userRole": role
+    };
     const refreshToken = jwt.sign(
-        {
-            "userId": user._id,
-            "userName": user.name,
-            "userRole": role
-        },
+        userBody,
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: '1d' }
     );
@@ -81,7 +99,18 @@ async function refreshAccessTokenByRefreshToken(refreshToken) {
         const findUser = await getUserByRefreshToken(refreshToken);
         if (findUser.status == "Fail") throw new Error(findUser.error);
         const user = findUser.result;
-        const newAccesToken = createAccessToken(user);
+        const userProfileResult = await getUserProfileById(user._id);
+        let userProfile;
+        if (!userProfileResult) {
+            userProfile = null;
+        }
+        else if (userProfileResult.status == "Fail") {
+            userProfile = null;
+        }
+        else if (userProfileResult.status == "Success") {
+            userProfile = userProfileResult.result;
+        }
+        const newAccesToken = createAccessToken(user,userProfile);
         if (!newAccesToken) throw new Error("Unable to create Access Token");
 
         return newAccesToken;
@@ -134,6 +163,7 @@ async function createTokens(user) {
 }
 module.exports = {
     getUserByRefreshToken,
+    getUserProfileById,
     createAccessToken,
     createRefreshToken,
     refreshAccessTokenByRefreshToken,

@@ -19,7 +19,12 @@ const verifyJWT = (req, res, next) => {
             req.userId = decoded.userId;
             req.userName = decoded.userName;
             req.userRole = decoded.userRole;
-            if (!req.userRole) {
+            let routeUrl = req.route.path;
+            // console.log(routeUrl != "/profileCompletion")
+            // // if (routeUrl == "/profileCompletion") {
+            // //     next();
+            // // }
+            if (!req.userRole && routeUrl != "/profileCompletion") {
                 res.redirect('/users/profileCompletion');
                 return;
             }

@@ -19,6 +19,10 @@ const hbs = require('hbs');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var accountsRouter = require('./routes/accounts');
+var facultyRouter = require('./routes/faculty');
+var hodRouter = require('./routes/hod');
+var deanRouter = require('./routes/dean');
+var directorRouter = require('./routes/director');
 
 var app = express();
 
@@ -47,39 +51,29 @@ app.use(function(req, res, next) {
 app.use('/', indexRouter);
 app.use('/accounts', accountsRouter);
 app.use('/users', usersRouter);
+app.use('/faculty', facultyRouter);
+app.use('/hod', hodRouter);
+app.use('/dean', deanRouter);
+app.use('/director', directorRouter);
 
 //Database connection
 
-const uri = process.env.MONGODB_URI;
-async function main() {
-  const client = new MongoClient(uri,{ useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+// const uri = process.env.MONGODB_URI;
+// async function main() {
+//   const client = new MongoClient(uri,{ useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-  try {
-    await client.connect();
+//   try {
+//     await client.connect();
 
-    console.log("MongoDB connected..........");
-  } catch (e) {
-    console.error(e);
-  } finally {
-    await client.close();
-  }
-}
-main().catch(console.error);
-
-// mongoose.connect(
-//   uri,
-//   {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true
+//     console.log("MongoDB connected..........");
+//   } catch (e) {
+//     console.error(e);
+//   } finally {
+//     await client.close();
 //   }
-// );
-// const db = mongoose.connection;
-// db.on("error", console.error.bind(console, "connection error: "));
-// db.once("open", function () {
-//   console.log("Mongoose Connected successfully");
-// });
-
-
+// }
+// main().catch(console.error);
+console.log("Server Started ....");
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
