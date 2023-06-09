@@ -59,7 +59,7 @@ async function getUserProfileById(userId) {
 
 async function createAccessToken(user, userProfile) {
     let role = null;
-    if (user.isProfileComplete) {
+    if (user.isProfileComplete == true) {
         role = userProfile.role;
     }
     let userBody = {
@@ -67,7 +67,7 @@ async function createAccessToken(user, userProfile) {
         "userName": user.name,
         "userRole": role
     };
-    console.log(userBody);
+    console.log("Cookie data - ", userBody);
     const accessToken = jwt.sign(
         userBody,
         process.env.ACCESS_TOKEN_SECRET,

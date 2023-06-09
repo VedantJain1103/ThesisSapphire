@@ -128,5 +128,13 @@ router.post('/signIn', async (req, res) => {
     }
 });
 
+// --------------------------SIGN-OUT--------------------------------------------
+router.get('/signOut', (req, res) => {
+    res.clearCookie("jwt_accessToken");
+    res.clearCookie("jwt_refreshToken");
+    res.redirect('/');
+})
+
+
 
 module.exports = router;

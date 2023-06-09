@@ -8,6 +8,7 @@ let mailDataServices = require("../services/mailDataServices");
 
 const fs = require("fs");
 const util = require("util");
+const { CloudWatchLogs } = require("aws-sdk");
 
 /*-------------------Functions----------------------*/
 async function getUserByEmail(email) {
@@ -358,7 +359,7 @@ async function signIn(email, password, callback) {
         error: null
     }
     const findUser = await getUserByEmail(email);
-    console.log(findUser);
+    console.log("User found - ", findUser);
     if (findUser.status == "Fail") {
         errResult.error = findUser.error;
         return callback(errResult);
@@ -385,8 +386,9 @@ async function signIn(email, password, callback) {
             //creating tokens
             // console.log(user);
             const userProfile = await getUserProfileById(user._id);
-            const accessToken = await jwtServices.createAccessToken(user,userProfile);
-            const refreshToken = await jwtServices.createRefreshToken(user, userProfile);
+            console.log("UserProfile-", userProfile.result);
+            const accessToken = await jwtServices.createAccessToken(user,userProfile.result);
+            const refreshToken = await jwtServices.createRefreshToken(user, userProfile.result);
 
             // const { status, accessToken, refreshToken } = await jwtServices.createTokens(user);
 
