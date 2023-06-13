@@ -42,9 +42,9 @@ router.get('/sendVerification', (req, res) => {
     res.render('accounts/sendVerificationCode');
 })
 
-router.post('/sendVerification', (req, res) => {
+router.post('/sendVerification', async (req, res) => {
     let { email } = req.body;
-    let sendVerificationResult = accountsServices.sendEmailVerification(email);
+    let sendVerificationResult = await accountsServices.sendEmailVerification(email);
     if (sendVerificationResult.status == "Fail") res.render('accounts/sendVerificationCode', { error: sendVerificationResult.error });
     else res.redirect('/accounts/verification')
 })
@@ -58,7 +58,7 @@ router.post('/verification', async (req, res) => {
     try {
         let verificationResult = await accountsServices.checkVerification(email, code);
         if (verificationResult.status == "Fail") {
-            res.render('accounts/verification', { error:verificationResult.error, email:email });
+            res.render('accounts/verification', { error: verificationResult.error, email: email });
         }
         else {
             res.redirect('/accounts/signIn');
@@ -71,7 +71,7 @@ router.post('/verification', async (req, res) => {
 
 
 //------------------------------SIGN IN------------------------------------------
-router.get('/signIn',async (req, res) => {
+router.get('/signIn', async (req, res) => {
     const cookies = req.cookies;
     if (!cookies?.jwt_accessToken) {
         if (!cookies?.jwt_refreshToken) {
@@ -99,7 +99,7 @@ router.post('/signIn', async (req, res) => {
     try {
         await accountsServices.signIn(email, password, function (result) {
             if (result.status == "Fail") {
-                res.status(200).send("Error: "+result.error);
+                res.status(200).send("Error: " + result.error);
                 return;
             }
             if (result.status !== "Success") throw new Error("Unknown error occurred");
@@ -122,9 +122,9 @@ router.post('/signIn', async (req, res) => {
                 else res.redirect('/accounts/signIn');
             }
         });
-        
+
     } catch (err) {
-        res.render('error:'+err);
+        res.render('error:' + err);
     }
 });
 

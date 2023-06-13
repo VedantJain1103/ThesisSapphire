@@ -1,0 +1,54 @@
+<div class="modal" id="scholarProfileModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content w-600">
+            <a href="#" class="btn close" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="modal-title">Profile</h5>
+            <form action="/users/profileCompletion" method="post">
+                <div class="form-group">
+                    <label for="name" class="required">Name</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Name" value="{{name}}"
+                        readonly="readonly" required="required">
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="required">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Email"
+                        value="{{email}}" readonly="readonly" required="required">
+                </div>
+
+                <div class="form-group">
+                    <label for="institute" class="required">Institute</label>
+                    <input type="text" id="institute" name="institute" value="IIITDM JABALPUR" class="form-control"
+                        placeholder="Institute Name" readonly="readonly" required="required">
+                </div>
+
+                <div class="form-group">
+                    <label for="department" class="required">Department</label>
+                    <select class="form-control" id="department" name="department">
+                        <option value="" selected="selected" disabled="disabled">Select Department</option>
+                        {{#each departments}}
+                        <option value="{{this.name}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+
+                <!-- STUDENT -->
+                <div class="form-group">
+                    <label for="rollNo" class="required">Roll Number</label>
+                    <input type="text" id="rollNo" name="rollNO" class="form-control" placeholder="Roll Number"
+                        required="required">
+                </div>
+
+                <div class="form-group">
+                    <label for="dateOfJoining" class="required">Date Of Joining</label>
+                    <input type="date" id="dateOfJoining" name="dateOfJoining" class="form-control"
+                        placeholder="Date Of Joining" required="required">
+                </div>
+
+                <input class="btn btn-primary btn-block" type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+</div>

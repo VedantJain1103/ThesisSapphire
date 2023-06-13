@@ -1,29 +1,66 @@
-<div class="container" style="max-width: 95%;">
-  <div class="error">
-    {{error}}
+{{!-- <embed src="{{thesis.link}}" width=100% height=750px /> --}}
+<div class="container-fluid">
+  <div class="row  d-flex justify-content-between align-items-center">
+    <div class="col">
+      <div class="card p-0">
+        <div class="content card-title">
+          <h2>Publish</h2>
+        </div>
+        <div class="content">
+          <form action="/mentor/publish" method="post" enctype="multipart/form-data">
+            <div class="form-row row-eq-spacing-sm">
+              <div class="col">
+                <label for="thesisName" class="required">Title</label>
+                <input type="text" class="form-control" id="thesisName" name="thesisName" value=""
+                  placeholder="Thesis Title" required="required">
+              </div>
+            </div>
+            <div class="form-row row-eq-spacing-sm">
+              <div class="col">
+                <label for="description" class="required">Description</label>
+                <textarea class="form-control" id="description" placeholder="Description" name="description"
+                  required="required"></textarea>
+              </div>
+            </div>
+            <div class="content-title">
+              <h4>Scholar Details</h4>
+            </div>
+            <div class="form-row row-eq-spacing-sm">
+              <div class="col-sm">
+                <label for="scholarName" class="required">Name</label>
+                <input type="text" class="form-control" id="scholarName" name="scholarName" value=""
+                  placeholder="Scholar Name" required="required">
+              </div>
+              <div class="col-sm">
+                <label for="scholarEmail" class="required">Email</label>
+                <input type="text" class="form-control" id="scholarEmail" name="scholarEmail" value=""
+                  placeholder="Scholar Email" required="required">
+              </div>
+              <div class="col-sm">
+                <label for="scholarRollNo" class="required">Roll Number</label>
+                <input type="text" class="form-control" id="scholarRollNo" name="scholarRollNo" value=""
+                  placeholder="Scholar Roll Number" required="required">
+              </div>
+            </div>
+            <div class="form-row row-eq-spacing-sm">
+              <div class="col-sm">
+                <div class="custom-file">
+                  <input type="file" id="file-input-1" name="thesis" accept=".pdf, .doc, .docx" required="required">
+                  <label for="file-input-1" class="required">Choose a file</label>
+                </div>
+              </div>
+            </div>
+            <div class="content d-flex justify-content-between">
+              <div>
+                <a href="/users/" class="btn btn-link">Cancel</a>
+              </div>
+              <div class="text-right"> <!-- text-right = text-align: right -->
+                <input class="btn btn-lg btn-primary" type="submit" value="Publish">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
-  <form
-    action="/users/publish"
-    method="post"
-    enctype="multipart/form-data"
-  >
-    <div class="title">Thesis Review</div>
-    <div class="input-box">
-      <input type="email" name="sEmail" placeholder="Scholar email" required />
-      <div class="underline"></div>
-    </div>
-    <div class="input-box">
-      <input type="text" name="thesisName" placeholder="Scholar email" required />
-      <div class="underline"></div>
-    </div>
-    <div class="input-box">
-      Thesis
-      <input type="file" name="thesis" accept=".pdf, .doc, .docx" placeholder="Upload Thesis" required />
-      <div class="underline"></div>
-    </div>
-    <button class="primary">Create </button>
-  </form>
-  {{! <button onclick="window.location.href= '/resumes">Cancel</button> }}
-  <a href="/users/" class="button">Cancel</a>
-  {{! </button> }}
 </div>

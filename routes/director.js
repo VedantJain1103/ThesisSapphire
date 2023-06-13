@@ -7,7 +7,7 @@ const verifyJWT = require('../middleware/verifyJWT');
 
 router.get('/', verifyJWT, function (req, res, next) {
     res.send("Hello director");
-  
+
 });
 
 module.exports = router;

@@ -1,0 +1,41 @@
+<div class="modal" id="rejectThesisModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content w-600">
+            <a href="#" class="btn close" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="modal-title">Reject</h5>
+            <form action="/hod/rejectThesis/{{thesis._id}}" method="post">
+                <div class="form-row row-eq-spacing-sm">
+                    <div class="col">
+                        <label for="thesisName">Title</label>
+                        <input type="text" class="form-control" id="thesisName" name="thesisName"
+                            value="{{thesis.name}}" placeholder="Thesis Title" readonly="readonly">
+                    </div>
+                </div>
+                <div class="form-row row-eq-spacing-sm">
+                    <div class="col-sm">
+                        <label for="mentorEmail">Mentor Email</label>
+                        <input type="text" class="form-control" id="mentorEmail" name="mentorEmail"
+                            value="{{thesis.mentorEmail}}" placeholder="Mentor Email" readonly="readonly">
+                    </div>
+                </div>
+                <div class="form-row row-eq-spacing-sm">
+                    <div class="col-sm">
+                        <label for="scholarEmail">Scholar Email</label>
+                        <input type="text" class="form-control" id="scholarEmail" name="scholarEmail"
+                            value="{{thesis.scholarEmail}}" placeholder="Scholar Email" readonly="readonly">
+                    </div>
+                </div>
+                <div class="form-row row-eq-spacing-sm">
+                    <div class="col">
+                        <label for="rejectionReason">Reason</label>
+                        <textarea class="form-control" id="rejectionReason" placeholder="Reason for rejecting"
+                            name="rejectionReason"></textarea>
+                    </div>
+                </div>
+                <input class="btn btn-primary btn-block" type="submit" value="Reject">
+            </form>
+        </div>
+    </div>
+</div>

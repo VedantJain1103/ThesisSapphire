@@ -1,31 +1,45 @@
-<div class="accounts_bg">
-  <div class="container">
-    <div class="error">
-      {{error}}
-    </div>
-    <form action="/accounts/verification" method="post">
-      <div class="title">Email Verification</div>
-      <div class="input-box">
-        <input
-          type="text"
-          required="true"
-          name="email"
-          placeholder="Enter Your Email"
-          value = {{email}}
-        />
-        <div class="underline"></div>
-      </div>
+<div class="container-fluid">
+  <div class="row  d-flex justify-content-center">
+    <div class="col-8">
+      <div id="top">
+        <div class="content">
+          <h1 class="content-title font-size-24">Email Verification</h1>
+        </div>
+        <div class="card  p-0">
+          <div class="content">
+            <div class="invalid-feedback">
+              {{error}}
+            </div>
+            <form action="/accounts/verification" method="post">
+              <!-- First row -->
+              <div class="form-row row-eq-spacing-sm">
+                <div class="col">
+                  <label for="email" class="required">Full Name</label>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="Email"
+                    required="required">
+                </div>
+              </div>
 
-      <div class="input-box">
-        <input type="text" name="code" placeholder="Enter Code" required />
-        <div class="underline"></div>
+              <div class="form-row row-eq-spacing-sm">
+                <div class="col">
+                  <label for="code" class="required">Code</label>
+                  <input type="text" class="form-control" id="code" name="code" placeholder="Code" required="required">
+                </div>
+              </div>
+
+              <div class="text-left mt-10"> <!-- text-right = text-align: right, margin-top: 1rem (10px) -->
+                Did not receive code?
+                <a href="/accounts/sendVerification" class="hyperlink">Resend Code</a>
+                <!-- hyperlink = used on regular links to remove anti-aliasing in dark mode -->
+              </div>
+              <!-- Submit button container -->
+              <div class="text-right"> <!-- text-right = text-align: right -->
+                <input class="btn btn-primary" type="submit" value="Verify">
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-      <div style="left:0; margin-top:2rem;"><span>Did not receive code?
-        </span><a
-          href="/accounts/sendVerificationCode"
-          style="text-decoration:none;"
-        >Resend Code</a></div>
-      <button>Verify</button>
-    </form>
+    </div>
   </div>
 </div>

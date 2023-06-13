@@ -1,47 +1,49 @@
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{title}}</title>
-    <link rel="stylesheet" href="/stylesheets/users_style.css" />
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-  </head>
-  <body>
-    <div class="navbar">
-      <div class="dropdown" style="min-width:150px">
-        <button class="dropbtn" style="float:inline-end;">{{name}}
-          <i class="fa fa-caret-down"></i>
-        </button>
-        <div class="dropdown-content">
-          <a href="/accounts/signOut">Sign-out</a>
-        </div>
-      </div>
-      <span class="webName" style="float:left;">Thesis Approval</span>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon-variables.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon-variables.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  {{>scholarProfileModal}}
+  {{>facultyProfileModal}}
+  {{>reviewerProfileModal}}
+
+
+
+  <div class="page-wrapper with-navbar with-sidebar with-navbar-fixed-bottom" data-sidebar-type="overlayed-sm-and-down"
+    data-sidebar-hidden="hidden">
+    <!-- Sticky alerts (toasts), empty container -->
+    <div class="sticky-alerts"></div>
+
+    <!-- Navbar -->
+    {{>navbarSignedIn}}
+
+    <!-- Sidebar overlay -->
+    <div class="sidebar-overlay" onclick="halfmoon.toggleSidebar()"></div>
+    <!-- Sidebar -->
+
+    {{>scholarSideBar}}
+
+    <!-- Content wrapper -->
+    <div class="content-wrapper">
+      {{{body}}}
     </div>
 
-    <div class="content">
-      <!-- Side navigation -->
-      <div class="sidenav">
-        <a href="/users/">Home</a>
-        <a href="/users/publish/">Publish Thesis</a>
-        <a href="/users/viewThesisList/">View Thesis List</a>
-        <a href="/users/viewApproveThesisList/">Approve Thesis</a>
-        <a href="/users/viewThesis/">View Example Thesis</a>
-        <a href="/users/profileCompletion/">Profile Completion</a>
-        {{!-- <a href="/users/profile">Settings</a> --}}
-      </div>
-
-      <div class="main-content">
-
-        {{{body}}}
-      </div>
-    </div>
-
-    {{! Footer }}
-    <footer>
-      <p class="f">Inventory Mangement Inc. © 2022</p>
-    </footer>
-  </body>
+    <!-- Navbar fixed bottom -->
+    {{>footer}}
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.js"></script>
+</body>
 
 </html>

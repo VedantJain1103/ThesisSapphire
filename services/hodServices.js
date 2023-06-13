@@ -14,6 +14,31 @@ const unlinkFile = util.promisify(fs.unlink);
 
 const { encrypt, decrypt } = require("../services/encryptionServices");
 
+async function getThesisListByDepartment(department) {
+    let result = {
+        status: "Fail",
+        result: null,
+        error: null
+    }
+    if (!department) {
+        result.error = "Department name not provided";
+        return result;
+    }
+    let thesisListResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getHODApprovedThesisListByDepartment?secret=vedant&department=" + department, {
+        method: "GET",
+    }
+    ).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        // console.log('Request succeeded with JSON response', data);
+        return data;
+    }).catch(function (error) {
+        console.log('Request failed', error);
+        result.error = error;
+    });
+    return thesisListResult;
+}
+
 async function getThesisToBeApprovedListById(hodId) {
     let result = {
         status: "Fail",
@@ -24,7 +49,7 @@ async function getThesisToBeApprovedListById(hodId) {
         result.error = "Mentor Id not provided";
         return result;
     }
-    let thesisListResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getThesisToBeApprovedByHODListByHODId?secret=vedant&userId="+hodId, {
+    let thesisListResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getThesisToBeApprovedByHODListByHODId?secret=vedant&userId=" + hodId, {
         method: "GET",
     }
     ).then(function (response) {
@@ -43,6 +68,39 @@ async function getThesisToBeApprovedListById(hodId) {
     }
     result.status = "Success";
     result.result = thesisListResult.result;
+    return result;
+}
+
+async function getThesisById(thesisId) {
+    let result = {
+        status: "Fail",
+        result: null,
+        error: null
+    }
+    if (!thesisId) {
+        result.error = "Thesis Id not provided";
+        return result;
+    }
+    let thesisResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getThesisById?secret=vedant&thesisId=" + thesisId, {
+        method: "GET",
+    }
+    ).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        // console.log('Request succeeded with JSON response', data);
+        return data;
+    }).catch(function (error) {
+        console.log('Request failed', error);
+        result.error = error;
+    });
+    if (result.error) return result;
+    if (thesisResult.status == "Fail") {
+        result.error = thesisResult.error;
+        return result;
+    }
+    result.status = "Success";
+    console.log("Thesis: ", thesisResult);
+    result.result = thesisResult.result[0];
     return result;
 }
 
@@ -88,6 +146,8 @@ async function approveThesis(hodName, thesisId, thesisName, scholarEmail, mentor
 }
 
 module.exports = {
+    getThesisById,
+    getThesisListByDepartment,
     getThesisToBeApprovedListById,
     approveThesis
 }

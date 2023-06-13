@@ -4,6 +4,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
 const accountsServices = require("../services/accountsServices");
+const thesisServices = require("../services/thesisServices");
 const s3Services = require('../services/s3');
 const mailServices = require("../services/mailServices");
 const mailDataServices = require("../services/mailDataServices");
@@ -24,7 +25,7 @@ async function getThesisListById(mentorId) {
         result.error = "Mentor Id not provided";
         return result;
     }
-    let thesisListResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getThesisListByMentorId?secret=vedant&userId="+mentorId, {
+    let thesisListResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getThesisListByMentorId?secret=vedant&userId=" + mentorId, {
         method: "GET",
     }
     ).then(function (response) {
@@ -56,7 +57,7 @@ async function getThesisById(thesisId) {
         result.error = "Mentor Id not provided";
         return result;
     }
-    let thesisResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getThesisById?secret=vedant&thesisId="+thesisId, {
+    let thesisResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getThesisById?secret=vedant&thesisId=" + thesisId, {
         method: "GET",
     }
     ).then(function (response) {
@@ -97,7 +98,7 @@ async function uploadThesis(mentorId, scholarEmail, thesisName, thesis) {
     }
 
     let scholarResult = await accountsServices.getUserByEmail(scholarEmail);
-    if (!scholarResult||scholarResult.status=="Fail") {
+    if (!scholarResult || scholarResult.status == "Fail") {
         errResult.error = "Scholar not found";
         return errResult;
     }
@@ -133,7 +134,7 @@ async function uploadThesis(mentorId, scholarEmail, thesisName, thesis) {
         console.log('Request failed', error);
         return callback(error);
     });
-    
+
     // Sending Mail
     let content = mailDataServices.thesisSubmissionContent(mentor.name, description);
     mailServices.sendMail(scholar.email, content, "Thesis submitted");

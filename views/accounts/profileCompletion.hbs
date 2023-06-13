@@ -1,59 +1,47 @@
-<div class="container" style="max-width: 95%;">
-    <div class="error">
-        {{error}}
+<div class="container-fluid">
+    <div class="row  d-flex justify-content-center">
+        <div class="col-8">
+            <div id="top">
+                <div class="content">
+                    <h1 class="content-title font-size-24">Complete Your Profile</h1>
+                </div>
+                <div class="card  p-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="content">
+                            <p class="text-justify font-italic">
+                                Are you currently enrolled at IIITDM Jabalpur as a scholar?
+                            </p>
+                        </div>
+                        <div class="content">
+                            <a href="#scholarProfileModal" class="btn btn-primary" role="button">Scholar?</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card  p-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="content">
+                            <p class="text-justify font-italic">
+                                Are you currently a faculty at IIITDM Jabalpur as a scholar?
+                            </p>
+                        </div>
+                        <div class="content ">
+                            <a href="#facultyProfileModal" class="btn btn-primary" role="button">Faculty?</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card  p-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="content">
+                            <p class="text-justify font-italic">
+                                Invited to review a thesis?
+                            </p>
+                        </div>
+                        <div class="content ">
+                            <a href="#reviewerProfileModal" class="btn btn-primary" role="button">Reviewer?</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <form action="/users/profileCompletion" method="post">
-        <div class="title">Profile</div>
-        <div class="input-box">
-            <input type="text" name="name" placeholder="{{name}}" value="{{name}}"  readonly="true" required />
-            <div class="underline"></div>
-        </div>
-        <div class="input-box">
-            <input type="text" name="email" placeholder="{{email}}" value="{{email}}"  readonly="true" required />
-            <div class="underline"></div>
-        </div>
-        <h2>Professional</h2>
-        <div class="input-box">
-            <input type="text" name="institute" placeholder="IIITDM Jabalpur" value="IIITDM Jabalpur" required />
-            <div class="underline"></div>
-        </div>
-        <div class="input-box">
-            <select name="department" id="department">
-            {{#each departments}}
-                <option value="{{this.name}}">{{this.name}}</option>
-            {{/each}}
-            </select>
-            <div class="underline"></div>
-        </div>
-        <div class="input-box">
-            <select name="role" id="role">
-            {{#each roles}}
-                <option value="{{this.name}}">{{this.name}}</option>
-            {{/each}}
-            </select>
-            <div class="underline"></div>
-        </div>
-        <hr>
-        <h2>Scholar</h2>
-        (*If a student)
-        <div class="input-box">
-            <input type="text" name="rollNo" placeholder="Roll No." value=""/>
-            <div class="underline"></div>
-        </div>
-        <div class="input-box">
-            <input type="date" name="dateOfJoining" placeholder="Date Of Joining" value=""/>
-            <div class="underline"></div>
-        </div>
-        <hr>
-        <h2>Mentor</h2>
-        (*If a faculty)
-        <div class="input-box">
-            <input type="text" name="pfId" placeholder="PFID"/>
-            <div class="underline"></div>
-        </div>
-        <button class="primary">Continue </button>
-    </form>
-    {{! <button onclick="window.location.href= '/resumes">Cancel</button> }}
-    <a href="/users/" class="button">Cancel</a>
-    {{! </button> }}
 </div>

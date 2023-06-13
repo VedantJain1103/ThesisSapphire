@@ -32,96 +32,114 @@ router.get('/thesis/:key', (req, res) => {
 
 router.get('/', verifyJWT, async function (req, res, next) {
   const { userId, userName, userRole } = req;
-  let user = await accountsServices.getUserById(userId);
-  res.render('index', { layout: 'userLayout', name: user.name });
-});
-
-
-router.get('/publish', verifyJWT, function (req, res, next) {
-  const { userId, userName, userRole } = req;
-  res.render('mentor/uploadThesis', { layout: 'userLayout', name: userName });
-});
-
-router.post('/publish', verifyJWT, upload.single('thesis'), async function (req, res, next) {
-  try {
-    // console.log(req);
-    const { userId, userName, userRole } = req;
-    const { sEmail, description } = req.body;
-    const thesis = req.file;
-    let result = await mentorServices.uploadThesis(userId, sEmail, thesisName, thesis);
-    if (result.status == "Fail") throw new Error(result.error);
-    else res.redirect('/users/');
-  } catch (error) {
-    res.send(error);
+  if (userRole == "Dean") {
+    res.redirect('/dean/');
   }
-})
-
-
-router.get('/viewThesis/:thesisId', verifyJWT, async function (req, res, next) {
-  const { userId, userName, userRole } = req;
-  const { thesisId } = req.params;
-  const thesisResult = await mentorServices.getThesisById(thesisId);
-  if (thesisResult.status == "Fail") {
-    error = thesisResult.error;
-    res.render('error', { layout: 'userLayout', name: userName, error: error });
-  } else {
-    let thesis = thesisResult.result;
-    res.render('mentor/viewThesis', { layout: 'userLayout', name: userName, thesis: thesis });
+  if (userRole == "Director") {
+    res.redirect('/dean/');
   }
-})
-
-router.get('/viewThesisList/', verifyJWT, async function (req, res, next) {
-  const { userId, userName, userRole } = req;
-  if (userRole == "Scholar") {
-    // submitted thesis
+  if (userRole == "HOD") {
+    res.redirect('/hod/');
+  }
+  if (userRole == "Faculty") {
+    res.redirect('/mentor/');
   }
   if (userRole == "Reviewer") {
-    // reviewed thesis    
+    res.redirect('/reviewer/');
   }
-  let thesisListResult = await mentorServices.getThesisListById(userId);
-  if (thesisListResult.status == "Fail") {
-    let error = thesisListResult.error;
-    res.render('error', { layout: 'userLayout', name: userName, error: error });
+  if (userRole == "Scholar") {
+    res.redirect('/scholar/');
   }
-  let thesisList = (thesisListResult).result;
-  res.render('mentor/viewThesisList', { layout: 'userLayout', name: userName, thesisList: thesisList });
-})
-
-router.get('/viewApproveThesisList/', verifyJWT, async function (req, res, next) {
-  const { userId, userName, userRole } = req;
-  if (userRole == "HOD") {
-    let thesisListResult = await hodServices.getThesisToBeApprovedListById(userId);
-    if (thesisListResult.status == "Fail") {
-      let error = thesisListResult.error;
-      res.render('error', { layout: 'userLayout', name: userName, error: error });
-    }
-    let thesisList = (thesisListResult).result;
-    res.render('hod/viewApproveThesisList', { layout: 'userLayout', name: userName, thesisList: thesisList });
-  }
-  else if (userRole == "Dean") {
-    // reviewed thesis    
-  }
-
-})
-
-router.post('/approveThesis/:thesisId', verifyJWT, async function (req, res, next) {
-  const { userId, userName, userRole } = req;
-  const { thesisId } = req.params;
-  const { thesisName, scholarEmail, mentorEmail } = req.body;
-  if (userRole == "HOD") {
-    let status = "Forwarded to Dean";
-    const updationResult = await hodServices.approveThesis(userName, thesisId, thesisName,scholarEmail, mentorEmail);
-    if (updationResult.status == "Fail") {
-      let error = updationResult.error;
-      res.render('error', { layout: 'userLayout', error: error });
-    } else {
-      res.redirect('/users/viewApproveThesisList/');
-    }
-  }
-})
+  // let user = await accountsServices.getUserById(userId);
+  // res.render('index', { layout: 'userLayout', name: user.name });
+});
 
 
-router.get('/profileCompletion',verifyJWT, async function (req, res, next) {
+// router.get('/publish', verifyJWT, function (req, res, next) {
+//   const { userId, userName, userRole } = req;
+//   res.render('mentor/uploadThesis', { layout: 'userLayout', name: userName });
+// });
+
+// router.post('/publish', verifyJWT, upload.single('thesis'), async function (req, res, next) {
+//   try {
+//     // console.log(req);
+//     const { userId, userName, userRole } = req;
+//     const { sEmail, description } = req.body;
+//     const thesis = req.file;
+//     let result = await mentorServices.uploadThesis(userId, sEmail, thesisName, thesis);
+//     if (result.status == "Fail") throw new Error(result.error);
+//     else res.redirect('/users/');
+//   } catch (error) {
+//     res.send(error);
+//   }
+// })
+
+
+// router.get('/viewThesis/:thesisId', verifyJWT, async function (req, res, next) {
+//   const { userId, userName, userRole } = req;
+//   const { thesisId } = req.params;
+//   const thesisResult = await mentorServices.getThesisById(thesisId);
+//   if (thesisResult.status == "Fail") {
+//     error = thesisResult.error;
+//     res.render('error', { layout: 'userLayout', name: userName, error: error });
+//   } else {
+//     let thesis = thesisResult.result;
+//     res.render('mentor/viewThesis', { layout: 'userLayout', name: userName, thesis: thesis });
+//   }
+// })
+
+// router.get('/viewThesisList/', verifyJWT, async function (req, res, next) {
+//   const { userId, userName, userRole } = req;
+//   if (userRole == "Scholar") {
+//     // submitted thesis
+//   }
+//   if (userRole == "Reviewer") {
+//     // reviewed thesis    
+//   }
+//   let thesisListResult = await mentorServices.getThesisListById(userId);
+//   if (thesisListResult.status == "Fail") {
+//     let error = thesisListResult.error;
+//     res.render('error', { layout: 'userLayout', name: userName, error: error });
+//   }
+//   let thesisList = (thesisListResult).result;
+//   res.render('mentor/viewThesisList', { layout: 'userLayout', name: userName, thesisList: thesisList });
+// })
+
+// router.get('/viewApproveThesisList/', verifyJWT, async function (req, res, next) {
+//   const { userId, userName, userRole } = req;
+//   if (userRole == "HOD") {
+//     let thesisListResult = await hodServices.getThesisToBeApprovedListById(userId);
+//     if (thesisListResult.status == "Fail") {
+//       let error = thesisListResult.error;
+//       res.render('error', { layout: 'userLayout', name: userName, error: error });
+//     }
+//     let thesisList = (thesisListResult).result;
+//     res.render('hod/viewApproveThesisList', { layout: 'userLayout', name: userName, thesisList: thesisList });
+//   }
+//   else if (userRole == "Dean") {
+//     // reviewed thesis    
+//   }
+
+// })
+
+// router.post('/approveThesis/:thesisId', verifyJWT, async function (req, res, next) {
+//   const { userId, userName, userRole } = req;
+//   const { thesisId } = req.params;
+//   const { thesisName, scholarEmail, mentorEmail } = req.body;
+//   if (userRole == "HOD") {
+//     let status = "Forwarded to Dean";
+//     const updationResult = await hodServices.approveThesis(userName, thesisId, thesisName,scholarEmail, mentorEmail);
+//     if (updationResult.status == "Fail") {
+//       let error = updationResult.error;
+//       res.render('error', { layout: 'userLayout', error: error });
+//     } else {
+//       res.redirect('/users/viewApproveThesisList/');
+//     }
+//   }
+// })
+
+
+router.get('/profileCompletion', verifyJWT, async function (req, res, next) {
   let { userId, userName } = req;
   let user = await accountsServices.getUserById(userId);
   let departments = await adminServices.getDepartments();
@@ -142,34 +160,32 @@ router.post('/profileCompletion', verifyJWT, async function (req, res, next) {
   }
   // const today = new Date();
   console.log(dateOfJoining);
-  if (role !== "Scholar" && role !== "Faculty" && role !== "Reviewer" && role !== "Dean" && role !== "HOD") {
+  if (role != "Scholar" && role != "Faculty" && role != "Reviewer" && role != "Dean" && role != "HOD") {
     error = "Error: Incorrect data";
     res.render('error', { layout: 'userLayout', error: error });
-    return;
   }
-  if (role == "Scholar" && !rollNo && !dateOfJoining) {
+  else if (role == "Scholar" && !rollNo && !dateOfJoining) {
     error = "Error: Insuficient data.";
     res.render('error', { layout: 'userLayout', error: error });
-    return;
   }
   else if ((role == "Faculty" || role == "Reviewer" || role == "Dean" || role == "HOD") && (!pfId)) {
     res.send("Error: Insuficient data.");
-    return;
-  }
-  let profileCompletionStatus = await accountsServices.completeUserProfile(userId, name, email, institute, department, role, rollNo, dateOfJoining, pfId);
-  if (profileCompletionStatus.status == "Fail") {
-    res.render('error', { layout: 'userLayout', error: profileCompletionStatus.error });
-    return;
   }
   else {
-    let refreshToken = req.cookies.jwt_refreshToken;
-    let newAccessToken = await jwtServices.refreshAccessTokenByRefreshToken(refreshToken);
-    if (newAccessToken) {
-      res.cookie('jwt_accessToken', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
-      res.redirect('/users/');
+    let profileCompletionStatus = await accountsServices.completeUserProfile(userId, name, email, institute, department, role, rollNo, dateOfJoining, pfId);
+    if (profileCompletionStatus.status == "Fail") {
+      res.render('error', { layout: 'userLayout', error: profileCompletionStatus.error });
     }
     else {
-      res.render('accounts/signIn', { title: 'Express', email: '' });
+      let refreshToken = req.cookies.jwt_refreshToken;
+      let newAccessToken = await jwtServices.refreshAccessTokenByRefreshToken(refreshToken);
+      if (newAccessToken) {
+        res.cookie('jwt_accessToken', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
+        res.redirect('/users/');
+      }
+      else {
+        res.render('accounts/signIn', { title: 'Express', email: '' });
+      }
     }
   }
 })

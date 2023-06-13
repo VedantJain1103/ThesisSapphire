@@ -1,0 +1,60 @@
+<div class="container-fluid">
+    <div class="row  d-flex justify-content-between align-items-center">
+        <div class="col">
+            <div class="content d-flex justify-content-between align-items-center">
+                <div>
+                    {{name}}
+                </div>
+                <div>
+                    <a href="/users/publish/" class="btn btn-primary">Publish</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row  d-flex justify-content-around align-items-center">
+        <div class="col">
+            <div class="content">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Thesis Name</th>
+                            <th class="text-center">Mentor</th>
+                            <th class="text-center">Scholar</th>
+                            <th class="text-center">Submitted On</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Last Updated</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each thesisList}}
+                        <tr>
+                            <td class="font-italic font-size-20">{{this.name}}</td>
+                            <td class="text-center">
+                                <div>{{this.mentorName}}</div>
+                                <div>{{this.mentorEmail}}</div>
+                            </td>
+                            <td class="text-center">
+                                <div>{{this.scholarName}}</div>
+                                <div>{{this.scholarEmail}}</div>
+                            </td>
+                            <td class="text-center">
+                                {{this.submittedOn}}
+                            </td>
+                            <td class="text-center">
+                                {{this.status}}
+                            </td>
+                            <td class="text-center">
+                                {{this.statusUpdatedOn}}
+                            </td>
+                            <td class="text-right">
+                                <a href="/hod/viewThesis/{{this.thesisId}}" class="btn">View</a>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

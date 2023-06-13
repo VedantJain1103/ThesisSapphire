@@ -13,13 +13,17 @@ var fs = require('fs');
 require('dotenv/config');
 require('dotenv').config()
 
+// require("halfmoon/css/halfmoon-variables.min.css");
+// Import JS library
+// const halfmoon = require("halfmoon");
 
 const hbs = require('hbs');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var accountsRouter = require('./routes/accounts');
-var facultyRouter = require('./routes/faculty');
+var scholarRouter = require('./routes/scholar');
+var mentorRouter = require('./routes/mentor');
 var hodRouter = require('./routes/hod');
 var deanRouter = require('./routes/dean');
 var directorRouter = require('./routes/director');
@@ -30,6 +34,8 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 hbs.registerPartials(__dirname + '/views/partials');
+hbs.registerPartials(__dirname + '/views/modals');
+hbs.registerPartials(__dirname + '/views/sideBars');
 
 app.use(cors());
 app.use(logger('dev'));
@@ -39,7 +45,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.append('Access-Control-Allow-Origin', '*');
   res.append('Access-Control-Allow-Methods', 'GET, POST');
   res.append('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
@@ -51,13 +57,13 @@ app.use(function(req, res, next) {
 app.use('/', indexRouter);
 app.use('/accounts', accountsRouter);
 app.use('/users', usersRouter);
-app.use('/faculty', facultyRouter);
+app.use('/mentor', mentorRouter);
 app.use('/hod', hodRouter);
 app.use('/dean', deanRouter);
 app.use('/director', directorRouter);
+app.use('/scholar', scholarRouter);
 
 //Database connection
-
 // const uri = process.env.MONGODB_URI;
 // async function main() {
 //   const client = new MongoClient(uri,{ useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -73,6 +79,7 @@ app.use('/director', directorRouter);
 //   }
 // }
 // main().catch(console.error);
+
 console.log("Server Started ....");
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

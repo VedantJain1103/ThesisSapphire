@@ -104,7 +104,7 @@ button,
   background-color: #cccccc;
 }
 
-.primary-button:link,
+/* .primary-button:link,
 .primary-button:visited,
 .primary-button:hover,
 .primary-button:active {
@@ -124,13 +124,13 @@ button,
   color: aliceblue;
   text-decoration: none;
   padding: 1rem;
-}
+} */
 
-.primary-button:hover,
+/* .primary-button:hover,
 .primary-button:active {
   background-color: #03cafc6c;
   color: aliceblue;
-}
+} */
 
 .primary {
   background-color: #03cafc;
@@ -141,6 +141,18 @@ button,
   background-color: #03cafc6c;
   color: aliceblue
 }
+
+.primary-against {
+  background-color: #03cafc;
+  color: aliceblue
+}
+
+.primary-against:hover {
+  background-color: #ff0000;
+  color: aliceblue
+}
+
+.small-button
 
 /* ------input-box------ */
 .input-box {

@@ -11,6 +11,27 @@ const util = require("util");
 const { CloudWatchLogs } = require("aws-sdk");
 
 /*-------------------Functions----------------------*/
+async function getDepartmentByUserId(userId) {
+    let department = await fetch(
+        "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getDepartmentByUserId?secret=vedant&userId=" +
+        userId,
+        {
+            method: "GET",
+        }
+    )
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            // console.log('Request succeeded with JSON response', data);
+            return data;
+        })
+        .catch(function (error) {
+            console.log("Request failed", error);
+            return { status: "Fail", error: error };
+        });
+    return department;
+}
 async function getUserByEmail(email) {
     let user = await fetch(
         "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getUserByEmail?secret=vedant&userEmail=" +
@@ -146,7 +167,7 @@ function generateVerificationCode() {
     return code;
 }
 
-function sendEmailVerification(email) {
+async function sendEmailVerification(email) {
     let code = generateVerificationCode();
     const reqBody = {
         userEmail: email,
@@ -155,7 +176,7 @@ function sendEmailVerification(email) {
     let content = mailDataServices.verificationMailContent(code);
     mailServices.sendMail(email, content, "Verification Code");
     console.log(email, code);
-    fetch(
+    await fetch(
         "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/createVerification?secret=vedant",
         {
             method: "POST",
@@ -171,7 +192,7 @@ function sendEmailVerification(email) {
         })
         .then(function (data) {
             console.log("Verification created: ", data);
-            return  data;
+            return data;
         })
         .catch(function (error) {
             console.log("Request failed", error);
@@ -374,7 +395,7 @@ async function signIn(email, password, callback) {
     // const accessToken = await jwtServices.createAccessToken(user);
     //matching password
     let passMatch;
-    bcrypt.compare(password, user.password,async function (error, isMatch) {
+    bcrypt.compare(password, user.password, async function (error, isMatch) {
         if (error) {
             errResult.error = error;
             return callback(errResult);
@@ -387,7 +408,7 @@ async function signIn(email, password, callback) {
             // console.log(user);
             const userProfile = await getUserProfileById(user._id);
             console.log("UserProfile-", userProfile.result);
-            const accessToken = await jwtServices.createAccessToken(user,userProfile.result);
+            const accessToken = await jwtServices.createAccessToken(user, userProfile.result);
             const refreshToken = await jwtServices.createRefreshToken(user, userProfile.result);
 
             // const { status, accessToken, refreshToken } = await jwtServices.createTokens(user);
@@ -442,7 +463,7 @@ async function updateUserProfileStatus(userId, status) {
     let updation = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/updateUserProfileStatusByUserId?secret=vedant", {
         method: "POST",
         headers: {
-            "Content-Type":"application/json",
+            "Content-Type": "application/json",
         },
         body: JSON.stringify(profileStatusReqBody)
     }).then(function (response) {
@@ -465,12 +486,12 @@ async function completeUserProfile(userId, name, email, institute, department, r
         status: "Fail",
         error: null
     }
-    if (userResult.status=="Fail") {
+    if (userResult.status == "Fail") {
         result.error = userResult.error;
         return result;
     }
     const user = userResult.result;
-    if (userId != user._id||name!==user.name||email!==user.email) {
+    if (userId != user._id || name !== user.name || email !== user.email) {
         result.error = "Incorrect data";
         return result;
     }
@@ -559,7 +580,7 @@ async function completeUserProfile(userId, name, email, institute, department, r
             return result;
         }
     }
-    else{
+    else {
         let reqBody = {
             userId: userId,
             role: role,
@@ -606,6 +627,7 @@ async function completeUserProfile(userId, name, email, institute, department, r
 module.exports = {
     // isAuthentic,
     // isApproved,
+    getDepartmentByUserId,
     getUserByEmail,
     getUserById,
     getUserProfileById,
