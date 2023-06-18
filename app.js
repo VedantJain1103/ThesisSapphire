@@ -27,6 +27,7 @@ var mentorRouter = require('./routes/mentor');
 var hodRouter = require('./routes/hod');
 var deanRouter = require('./routes/dean');
 var directorRouter = require('./routes/director');
+var reviewerRouter = require('./routes/reviewer');
 
 var app = express();
 
@@ -62,6 +63,7 @@ app.use('/hod', hodRouter);
 app.use('/dean', deanRouter);
 app.use('/director', directorRouter);
 app.use('/scholar', scholarRouter);
+app.use('/reviewer', reviewerRouter);
 
 //Database connection
 // const uri = process.env.MONGODB_URI;

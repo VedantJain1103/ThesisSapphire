@@ -5,31 +5,32 @@
                 <span aria-hidden="true">&times;</span>
             </a>
             <h5 class="modal-title">Reject</h5>
-            <form action="/hod/rejectThesis/{{thesis._id}}" method="post">
+            <form action="/users/rejectThesis/{{thesis._id}}" method="post">
                 <div class="form-row row-eq-spacing-sm">
                     <div class="col">
-                        <label for="thesisName">Title</label>
+                        <label for="thesisName" class="required">Title</label>
                         <input type="text" class="form-control" id="thesisName" name="thesisName"
                             value="{{thesis.name}}" placeholder="Thesis Title" readonly="readonly">
                     </div>
                 </div>
                 <div class="form-row row-eq-spacing-sm">
                     <div class="col-sm">
-                        <label for="mentorEmail">Mentor Email</label>
+                        <label for="mentorEmail" class="required">Mentor Email</label>
                         <input type="text" class="form-control" id="mentorEmail" name="mentorEmail"
                             value="{{thesis.mentorEmail}}" placeholder="Mentor Email" readonly="readonly">
                     </div>
                 </div>
                 <div class="form-row row-eq-spacing-sm">
                     <div class="col-sm">
-                        <label for="scholarEmail">Scholar Email</label>
+                        <label for="scholarEmail" class="required">Scholar Email</label>
                         <input type="text" class="form-control" id="scholarEmail" name="scholarEmail"
                             value="{{thesis.scholarEmail}}" placeholder="Scholar Email" readonly="readonly">
                     </div>
                 </div>
+                <input type="text" name="userId" value="{{userId}}" hidden="true" />
                 <div class="form-row row-eq-spacing-sm">
                     <div class="col">
-                        <label for="rejectionReason">Reason</label>
+                        <label for="rejectionReason" class="required">Reason</label>
                         <textarea class="form-control" id="rejectionReason" placeholder="Reason for rejecting"
                             name="rejectionReason"></textarea>
                     </div>

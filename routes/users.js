@@ -6,6 +6,7 @@ require('dotenv').config()
 var jwtServices = require('../services/jwtServices');
 var adminServices = require('../services/adminServices');
 var accountsServices = require('../services/accountsServices');
+var thesisServices = require('../services/thesisServices');
 var mentorServices = require('../services/mentorServices');
 var hodServices = require('../services/hodServices');
 var s3Services = require('../services/s3');
@@ -36,7 +37,7 @@ router.get('/', verifyJWT, async function (req, res, next) {
     res.redirect('/dean/');
   }
   if (userRole == "Director") {
-    res.redirect('/dean/');
+    res.redirect('/director/');
   }
   if (userRole == "HOD") {
     res.redirect('/hod/');
@@ -138,16 +139,133 @@ router.get('/', verifyJWT, async function (req, res, next) {
 //   }
 // })
 
+router.post('/rejectThesis/:thesisId', verifyJWT, async function (req, res, next) {
+  const { userId, userName, userRole } = req;
+  const { thesisId } = req.params;
+  const { thesisName, scholarEmail, mentorEmail, rejectionReason } = req.body;
+  if (userRole == "HOD" || userRole == "Dean" || userRole == "Director") {
+    const updationResult = await thesisServices.rejectThesis(userId, thesisId, thesisName, scholarEmail, mentorEmail, rejectionReason);
+    if (updationResult.status == "Fail") {
+      let error = updationResult.error;
+      res.render('error', { layout: 'layout/hodLayout', error: error });
+    } else {
+      res.redirect('/users/');
+    }
+  }
+  else {
+    res.redirect('/users/');
+  }
+});
+
 
 router.get('/profileCompletion', verifyJWT, async function (req, res, next) {
   let { userId, userName } = req;
   let user = await accountsServices.getUserById(userId);
   let departments = await adminServices.getDepartments();
   let roles = await adminServices.getRoles();
+  for (let i = 0; i < roles.length; i++) {
+    if (roles[i].name == "Reviewer") {
+      let spliced = roles.splice(i, 1);
+    }
+  }
+  for (let i = 0; i < roles.length; i++) {
+    if (roles[i].name == "Scholar") {
+      let spliced = roles.splice(i, 1);
+    }
+  }
   // console.log(roles, departments);
   // let departments = [], roles = [];
   res.render('accounts/profileCompletion', { layout: 'userLayout', name: user.name, email: user.email, departments: departments, roles: roles });
 });
+
+router.post('/profileCompletion/reviewer', verifyJWT, async function (req, res, next) {
+  const { userId, userName, userRole } = req;
+  const { name, email, institute, pfId } = req.body;
+  console.log(req.body);
+  if (!name || !email || !institute || !pfId) {
+    error = "Error: Insuficient data.";
+    res.render('error', { layout: 'userLayout', error: error });
+    return;
+  }
+  else {
+    let profileCompletionStatus = await accountsServices.completeUserProfileReviewer(userId, name, email, institute, pfId);
+    if (profileCompletionStatus.status == "Fail") {
+      res.render('error', { layout: 'userLayout', error: profileCompletionStatus.error });
+    }
+    else {
+      let refreshToken = req.cookies.jwt_refreshToken;
+      let newAccessToken = await jwtServices.refreshAccessTokenByRefreshToken(refreshToken);
+      if (newAccessToken) {
+        res.cookie('jwt_accessToken', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
+        res.redirect('/users/');
+      }
+      else {
+        res.render('accounts/signIn', { title: 'Express', email: '' });
+      }
+    }
+  }
+})
+
+router.post('/profileCompletion/faculty', verifyJWT, async function (req, res, next) {
+  const { userId, userName, userRole } = req;
+  const { name, email, institute, department, pfId, role } = req.body;
+  console.log(req.body);
+  if (!name || !email || !institute || !department || !pfId || !role) {
+    error = "Error: Insuficient data.";
+    res.render('error', { layout: 'userLayout', error: error });
+    return;
+  }
+  else {
+    let profileCompletionStatus = await accountsServices.completeUserProfileFaculty(userId, name, email, institute, department, pfId, role);
+    console.log(profileCompletionStatus);
+    if (profileCompletionStatus.status == "Fail") {
+      res.render('error', { layout: 'userLayout', error: profileCompletionStatus.error });
+    }
+    else {
+      let refreshToken = req.cookies.jwt_refreshToken;
+      let newAccessToken = await jwtServices.refreshAccessTokenByRefreshToken(refreshToken);
+      if (newAccessToken) {
+        res.cookie('jwt_accessToken', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
+        res.redirect('/users/');
+      }
+      else {
+        res.render('accounts/signIn', { title: 'Express', email: '' });
+      }
+    }
+  }
+})
+
+router.post('/profileCompletion/scholar', verifyJWT, async function (req, res, next) {
+  const { userId, userName, userRole } = req;
+  const { name, email, institute, department, role, rollNo, dateOfJoining } = req.body;
+  console.log(req.body);
+  if (!name || !email || !institute || !department) {
+    error = "Error: Insuficient data.";
+    res.render('error', { layout: 'userLayout', error: error });
+    return;
+  }
+  if (role == "Scholar" && !rollNo && !dateOfJoining) {
+    error = "Error: Insuficient data.";
+    res.render('error', { layout: 'userLayout', error: error });
+  }
+  else {
+    let profileCompletionStatus = await accountsServices.completeUserProfileScholar(userId, name, email, institute, department, role, rollNo, dateOfJoining);
+    if (profileCompletionStatus.status == "Fail") {
+      res.render('error', { layout: 'userLayout', error: profileCompletionStatus.error });
+    }
+    else {
+      let refreshToken = req.cookies.jwt_refreshToken;
+      let newAccessToken = await jwtServices.refreshAccessTokenByRefreshToken(refreshToken);
+      if (newAccessToken) {
+        res.cookie('jwt_accessToken', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
+        res.redirect('/users/');
+      }
+      else {
+        res.render('accounts/signIn', { title: 'Express', email: '' });
+      }
+    }
+  }
+})
 
 router.post('/profileCompletion', verifyJWT, async function (req, res, next) {
   const { userId, userName, userRole } = req;

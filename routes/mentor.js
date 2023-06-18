@@ -24,8 +24,8 @@ router.get('/', verifyJWT, async function (req, res, next) {
 //Publishing thesis
 router.get('/publish', verifyJWT, function (req, res, next) {
     const { userId, userName, userRole } = req;
-    if (userRole == "Scholar" || userRole == "Reviewer") {
-        res.render('error.hbs', { layout: 'layout/facultyLayout', name: userName });
+    if (userRole != "Faculty") {
+        res.redirect('/users/');
     }
     else res.render('mentor/uploadThesis', { layout: 'layout/facultyLayout', name: userName });
 });
@@ -53,13 +53,19 @@ router.post('/publish', verifyJWT, upload.single('thesis'), async function (req,
 router.get('/viewThesis/:thesisId', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
     const { thesisId } = req.params;
-    const thesisResult = await thesisServices.getThesisById(thesisId);
-    if (thesisResult.status == "Fail") {
-        error = thesisResult.error;
-        res.render('error', { layout: 'layout/facultyLayout', name: userName, error: error });
-    } else {
-        let thesis = thesisResult.result;
-        res.render('mentor/viewThesis', { layout: 'layout/facultyLayout', name: userName, thesis: thesis });
+    if (userRole != "Faculty") {
+        res.redirect('/users/');
+    }
+    else {
+        const thesisResult = await thesisServices.getThesisById(thesisId, userId);
+        if (thesisResult.status == "Fail") {
+            error = thesisResult.error;
+            res.render('error', { layout: 'layout/facultyLayout', name: userName, error: error });
+        } else {
+            let thesis = thesisResult.result;
+            let isOwner = thesisResult.isOwner;
+            res.render('viewThesis', { layout: 'layout/facultyLayout', name: userName, thesis: thesis, isOwner: isOwner });
+        }
     }
 });
 
@@ -75,7 +81,7 @@ router.get('/viewThesisList/', verifyJWT, async function (req, res, next) {
         res.render('mentor/viewThesisList', { layout: 'layout/facultyLayout', name: userName, thesisList: thesisList });
     }
     else {
-        res.render('error.hbs', { layout: 'layout/facultyLayout', name: userName });
+        res.redirect('/users/');
     }
 
 });

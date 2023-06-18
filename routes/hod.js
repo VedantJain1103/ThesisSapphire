@@ -4,6 +4,7 @@ var router = express.Router();
 require('dotenv').config()
 
 var hodServices = require('../services/hodServices');
+var thesisServices = require('../services/thesisServices');
 var accountsServices = require('../services/accountsServices');
 
 const verifyJWT = require('../middleware/verifyJWT');
@@ -49,13 +50,14 @@ router.get('/viewThesis/:thesisId', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
     const { thesisId } = req.params;
     if (userRole == "HOD") {
-        const thesisResult = await hodServices.getThesisById(thesisId);
+        const thesisResult = await thesisServices.getThesisById(thesisId, userId);
         if (thesisResult.status == "Fail") {
             error = thesisResult.error;
             res.render('error', { layout: 'layout/hodLayout', name: userName, error: error });
         } else {
             let thesis = thesisResult.result;
-            res.render('approveThesis', { layout: 'layout/hodLayout', name: userName, thesis: thesis });
+            let isOwner = thesisResult.isOwner;
+            res.render('viewThesis', { layout: 'layout/hodLayout', name: userName, thesis: thesis, isOwner: isOwner });
         }
     }
     else {
@@ -81,7 +83,26 @@ router.get('/viewApproveThesisList/', verifyJWT, async function (req, res, next)
 
 });
 
-router.post('/approveThesis/:thesisId', verifyJWT, async function (req, res, next) {
+router.get('/approveThesis/:thesisId', verifyJWT, async function (req, res, next) {
+    const { userId, userName, userRole } = req;
+    const { thesisId } = req.params;
+    if (userRole == "HOD") {
+        const thesisResult = await thesisServices.getThesisById(thesisId, userId);
+        if (thesisResult.status == "Fail") {
+            error = thesisResult.error;
+            res.render('error', { layout: 'layout/hodLayout', name: userName, error: error });
+        } else {
+            let thesis = thesisResult.result;
+            let isOwner = thesisResult.isOwner;
+            res.render('hod/approveThesis', { layout: 'layout/hodLayout', name: userName, thesis: thesis, isOwner: isOwner });
+        }
+    }
+    else {
+        res.redirect('/users/');
+    }
+})
+
+router.post('/approveThesis/forwardToDean/:thesisId', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
     const { thesisId } = req.params;
     const { thesisName, scholarEmail, mentorEmail } = req.body;
@@ -99,25 +120,5 @@ router.post('/approveThesis/:thesisId', verifyJWT, async function (req, res, nex
         res.redirect('/users/');
     }
 });
-
-router.post('/rejectThesis/:thesisId', verifyJWT, async function (req, res, next) {
-    const { userId, userName, userRole } = req;
-    const { thesisId } = req.params;
-    const { thesisName, scholarEmail, mentorEmail, rejectionReason } = req.body;
-    if (userRole == "HOD") {
-        let status = "Rejected";
-        const updationResult = await hodServices.approveThesis(userName, thesisId, thesisName, scholarEmail, mentorEmail);
-        if (updationResult.status == "Fail") {
-            let error = updationResult.error;
-            res.render('error', { layout: 'layout/hodLayout', error: error });
-        } else {
-            res.redirect('/hod/viewApproveThesisList/');
-        }
-    }
-    else {
-        res.redirect('/users/');
-    }
-});
-
 
 module.exports = router;

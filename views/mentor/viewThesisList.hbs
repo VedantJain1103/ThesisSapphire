@@ -1,55 +1,66 @@
-<div
-    style="width: 100%;display: grid;grid-template-columns: repeat(2, 1fr);grid-template-rows: 1fr;grid-column-gap: 0px;grid-row-gap: 0px;">
-    <div style="display:flex;flex-direction:row; align-items:center;margin:1rem 2rem; font-size:1.6rem">
-        {{name}}</div>
-    <div style="display:flex;flex-direction:row-reverse;align-items:center">
-        <a href="/users/publish/" class="primary-button" style="width:auto;margin: 1rem 2rem">publish</a>
+<div class="container-fluid">
+    <div class="row  d-flex justify-content-between align-items-center">
+        <div class="col">
+            <div class="content d-flex justify-content-between align-items-center">
+                <div>
+                    {{name}}
+                </div>
+                <div>
+                    <a href="/users/publish/" class="btn btn-primary">Publish</a>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<div class="showGrid"
-    style="width: 100%;display: grid;grid-template-columns: repeat(6, 1fr);grid-template-rows: 1fr;grid-column-gap: 0px;grid-row-gap: 0px;">
-    {{! <div class="container showGrid" style="padding:0rem 0px; max-width:100%;margin:1rem 0px"> }}
-        <div class="center"
-            style="margin: 20px 0rem 20px 2rem; padding-bottom:1rem; justify-content:left; border-bottom:2px solid black">
-            Name</div>
-        <div class="center"
-            style="margin: 20px 0px 20px 0px ;padding-bottom:1rem; justify-content:center;border-bottom:2px solid black">
-            Scholar Name</div>
-        <div class="center"
-            style="margin: 20px 0rem 20px 0px;padding-bottom:1rem; justify-content:center;border-bottom:2px solid black">
-            Scholar Email</div>
-            <div class="center"
-            style="margin: 20px 0px 20px 0px ;padding-bottom:1rem; justify-content:center;border-bottom:2px solid black">
-            Submitted On</div>
-        <div class="center"
-            style="margin: 20px 0px 20px 0px ;padding-bottom:1rem; justify-content:center;border-bottom:2px solid black">
-            Status</div>
-        <div class="center"
-            style="margin: 20px 0px 20px 0px ;padding-bottom:1rem; justify-content:center;border-bottom:2px solid black">
-            Last Status Update</div>
-        {{!
-    </div> }}
-    {{#each thesisList}}
-        <div class="center"
-            style="margin: 20px 0rem 20px 2rem; padding-bottom:1rem; justify-content:left;border-bottom:2px solid rgb(204, 204, 204)">
-            {{this.name}}</div>
-        <div class="center"
-            style="margin: 20px 0px 20px 0px ;padding-bottom:1rem; justify-content:center;border-bottom:2px solid rgb(204, 204, 204)">
-            {{this.scholarName}}</div>
-        <div class="center"
-            style="margin: 20px 0px 20px 0px ;padding-bottom:1rem; justify-content:center;border-bottom:2px solid rgb(204, 204, 204)">
-            {{this.scholarEmail}}</div>
-        <div class="center"
-            style="margin: 20px 0px 20px 0px ;padding-bottom:1rem; justify-content:center;border-bottom:2px solid rgb(204, 204, 204)">
-            {{this.submittedOn}}
+    <div class="row  d-flex justify-content-around align-items-center">
+        <div class="col">
+            <div class="content">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Thesis Name</th>
+                            <th class="text-center">Mentor</th>
+                            <th class="text-center">Scholar</th>
+                            <th class="text-center">Submitted On</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Last Updated</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each thesisList}}
+                        <tr>
+                            <td class="font-italic font-size-20">{{this.name}}</td>
+                            <td class="text-center">
+                                <div>{{this.mentorName}}</div>
+                                <div>{{this.mentorEmail}}</div>
+                            </td>
+                            <td class="text-center">
+                                <div>{{this.scholarName}}</div>
+                                <div>{{this.scholarEmail}}</div>
+                            </td>
+                            <td class="text-center">
+                                {{this.submittedOn}}
+                            </td>
+                            {{#if this.rejectionReason}}
+                            <td class="text-center text-danger">
+                                {{this.status}}
+                            </td>
+                            {{else}}
+                            <td class="text-center text-success">
+                                {{this.status}}
+                            </td>
+                            {{/if}}
+                            <td class="text-center">
+                                {{this.statusUpdatedOn}}
+                            </td>
+                            <td class="text-right">
+                                <a href="/mentor/viewThesis/{{this.thesisId}}" class="btn">View</a>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="center"
-            style="margin: 20px 0px 20px 0px ;padding-bottom:1rem; justify-content:center;border-bottom:2px solid rgb(204, 204, 204)">
-            {{this.status}}
-        </div>
-        <div class="center"
-            style="margin: 20px 0px 20px 0px ;padding-bottom:1rem; justify-content:center;border-bottom:2px solid rgb(204, 204, 204)">
-            {{this.statusUpdatedOn}}
-        </div>
-    {{/each}}
+    </div>
 </div>

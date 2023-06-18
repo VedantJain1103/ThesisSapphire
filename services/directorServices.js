@@ -4,7 +4,6 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
 const accountsServices = require("../services/accountsServices");
-const thesisServices = require("../services/thesisServices");
 const s3Services = require('../services/s3');
 const mailServices = require("../services/mailServices");
 const mailDataServices = require("../services/mailDataServices");
@@ -13,19 +12,34 @@ const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 
-const { encrypt, decrypt } = require("../services/encryptionServices");
-
-async function getThesisListById(mentorId) {
+async function getThesisList() {
     let result = {
         status: "Fail",
         result: null,
         error: null
     }
-    if (!mentorId) {
-        result.error = "Mentor Id not provided";
-        return result;
+    let thesisListResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getApprovedThesisList?secret=vedant", {
+        method: "GET",
     }
-    let thesisListResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getThesisListByMentorId?secret=vedant&userId=" + mentorId, {
+    ).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        // console.log('Request succeeded with JSON response', data);
+        return data;
+    }).catch(function (error) {
+        console.log('Request failed', error);
+        result.error = error;
+    });
+    return thesisListResult;
+}
+
+async function getThesisToBeApprovedList() {
+    let result = {
+        status: "Fail",
+        result: null,
+        error: null
+    }
+    let thesisListResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getThesisToBeApprovedByDirector?secret=vedant", {
         method: "GET",
     }
     ).then(function (response) {
@@ -54,7 +68,7 @@ async function getThesisById(thesisId) {
         error: null
     }
     if (!thesisId) {
-        result.error = "Mentor Id not provided";
+        result.error = "Thesis Id not provided";
         return result;
     }
     let thesisResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getThesisById?secret=vedant&thesisId=" + thesisId, {
@@ -75,48 +89,26 @@ async function getThesisById(thesisId) {
         return result;
     }
     result.status = "Success";
+    console.log("Thesis: ", thesisResult);
     result.result = thesisResult.result[0];
-    console.log(result);
     return result;
 }
 
-
-async function uploadThesis(mentorId, scholarEmail, thesisName, thesis) {
+async function approveThesis(directorName, thesisId, thesisName, scholarEmail, mentorEmail, mentorName, remails) {
     let result = {
-        status: "Success",
-        result: null
-    }
-    let errResult = {
         status: "Fail",
+        result: null,
         error: null
     }
-    let mentor = await accountsServices.getUserById(mentorId);
-    console.log("mentor", mentor);
-    if (!mentor) {
-        errResult.error = "Mentor not found";
-        return errResult;
+    if (!thesisId) {
+        result.error = "Thesis Id not provided";
+        return result;
     }
-
-    let scholarResult = await accountsServices.getUserByEmail(scholarEmail);
-    if (!scholarResult || scholarResult.status == "Fail") {
-        errResult.error = "Scholar not found";
-        return errResult;
+    let thesisReqBody = {
+        thesisId: thesisId,
+        remails: remails
     }
-    let scholar = scholarResult.result;
-    console.log("scholar", scholar);
-    //pushing thesis into database
-    console.log("Thesis req: ", thesis);
-    let pushResult = await s3Services.uploadFile(thesis);
-    console.log("thesis", pushResult);
-    await unlinkFile(thesis.path)
-    const thesisReqBody = {
-        mentorId: mentor._id,
-        thesisName: thesisName,
-        thesisLink: `/users/thesis/${pushResult.Key}`,
-        scholarId: scholar._id
-    };
-    //adding in mongoDB
-    await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/createThesis?secret=vedant", {
+    const updation = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/forwardThesisToReviewers?secret=vedant", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -129,20 +121,27 @@ async function uploadThesis(mentorId, scholarEmail, thesisName, thesis) {
     }).then(function (data) {
         // console.log('Request succeeded with JSON response', data);
         console.log(data);
-        result.result = data;
+        return data;
     }).catch(function (error) {
         console.log('Request failed', error);
-        return callback(error);
     });
+    if (updation.status == "Fail") return updation;
+    else result.status = "Success";
+    result.result = updation.result;
 
-    // Sending Mail
-    let content = mailDataServices.thesisSubmissionContent(mentor.name, thesisName);
-    mailServices.sendMail(scholar.email, content, "Thesis submitted");
+    let invitationContent = mailDataServices.invitationContent(directorName, thesisName, mentorName);
+    for (let email of remails) {
+        mailServices.sendMail(email, invitationContent, "Invited for thesis review");
+    }
+    let content = mailDataServices.thesisApprovalByDirector(directorName, thesisName);
+    mailServices.sendMail(scholarEmail, content, "Thesis Forwarded");
+    mailServices.sendMail(mentorEmail, content, "Thesis Forwarded");
     return result;
 }
 
 module.exports = {
     getThesisById,
-    getThesisListById,
-    uploadThesis
+    getThesisList,
+    getThesisToBeApprovedList,
+    approveThesis
 }

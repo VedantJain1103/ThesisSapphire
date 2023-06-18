@@ -105,10 +105,11 @@ async function getThesisListByMentorId(mentorId) {
 }
 
 //Get Thesis data by thesis Id
-async function getThesisById(thesisId) {
+async function getThesisById(thesisId, userId) {
     let result = {
         status: "Fail",
         result: null,
+        isOwner: false,
         error: null
     }
     if (!thesisId) {
@@ -133,8 +134,25 @@ async function getThesisById(thesisId) {
         return result;
     }
     result.status = "Success";
-    result.result = thesisResult.result[0];
-    console.log(result.result);
+    const user = {
+        userId: userId
+    }
+    let thesis = thesisResult.result.thesis[0];
+    let thesisAccessIds = thesisResult.result.thesisAccessIds;
+
+    const isOwner = thesisAccessIds.some(element => {
+        if (element.userId === userId) {
+            return true;
+        }
+
+        return false;
+    });
+    console.log("Is user owner of thesis:", isOwner)
+    if (isOwner) {
+        result.isOwner = true;
+    }
+    result.result = thesis;
+    console.log(result);
     return result;
 }
 
@@ -168,6 +186,7 @@ async function uploadThesis(mentorId, scholarEmail, description, thesisName, the
     const thesisReqBody = {
         mentorId: mentor._id,
         thesisName: thesisName,
+        description: description,
         thesisLink: `/users/thesis/${pushResult.Key}`,
         scholarId: scholar._id
     };
@@ -296,11 +315,10 @@ async function rejectThesis(rejectedBy, thesisId, thesisName, scholarEmail, ment
     }
     let thesisReqBody = {
         thesisId: thesisId,
-        status: "Rejected",
         rejectionReason: rejectionReason,
         rejectedBy: rejectedBy
     }
-    const updation = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/updateThesisStatus?secret=vedant", {
+    const updation = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/rejectThesis?secret=vedant", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -320,7 +338,7 @@ async function rejectThesis(rejectedBy, thesisId, thesisName, scholarEmail, ment
     else result.status = "Success";
     result.result = updation.result;
 
-    let content = mailDataServices.thesisRejectedByHOD(rejectedBy, thesisName);
+    let content = mailDataServices.thesisRejected(rejectedBy, thesisName);
     mailServices.sendMail(scholarEmail, content, "Thesis Rejected");
     mailServices.sendMail(mentorEmail, content, "Thesis Rejected");
     return result;

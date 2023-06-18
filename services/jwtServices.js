@@ -16,8 +16,6 @@ const fs = require('fs');
 const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
 
-const { encrypt, decrypt } = require('../services/encryptionServices');
-
 async function getUserByRefreshToken(refreshToken) {
     try {
         if (!refreshToken) {
@@ -58,6 +56,7 @@ async function getUserProfileById(userId) {
 }
 
 async function createAccessToken(user, userProfile) {
+    console.log(userProfile);
     let role = null;
     if (user.isProfileComplete == true) {
         role = userProfile.role;
@@ -110,7 +109,7 @@ async function refreshAccessTokenByRefreshToken(refreshToken) {
         else if (userProfileResult.status == "Success") {
             userProfile = userProfileResult.result;
         }
-        const newAccesToken = createAccessToken(user,userProfile);
+        const newAccesToken = createAccessToken(user, userProfile);
         if (!newAccesToken) throw new Error("Unable to create Access Token");
 
         return newAccesToken;

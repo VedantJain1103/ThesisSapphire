@@ -7,7 +7,7 @@
                     <h2>{{thesis.name}}</h2>
                 </div>
                 <div class="content">
-                    <form action="/hod/approveThesis/forwardToDean/{{thesis._id}}" method="post">
+                    <form action="/hod/approveThesis/{{thesis._id}}" method="post">
                         <div class="form-row row-eq-spacing-sm">
                             <div class="col">
                                 <label for="thesisName">Title</label>
@@ -62,16 +62,36 @@
                                 <input type="text" class="form-control" id="lastUpdatedOn" name="lastUpadtedOn"
                                     value="{{thesis.statusUpdatedOn}}" placeholder="lastUpdatedOn" readonly="readonly">
                             </div>
-                        </div>
-                        <input type="text" name="status" value="Forwarded to Dean" hidden="true" />
-                        <div class="content d-flex justify-content-between">
-                            <div>
-                                <a href="#rejectThesisModal" class="btn btn-lg btn-primary" role="button">Reject</a>
+                            <div class="col-sm">
+                                <label for="lastUpdatedOn">Current Status</label>
+                                {{#if thesis.rejectionReason}}
+                                <input type="text" class="form-control text-danger" id="lastUpdatedOn"
+                                    name="lastUpadtedOn" value="{{thesis.status}}" placeholder="lastUpdatedOn"
+                                    readonly="readonly">
+                                {{else}}
+                                <input type="text" class="form-control text-success" id="lastUpdatedOn"
+                                    name="lastUpadtedOn" value="{{thesis.status}}" placeholder="lastUpdatedOn"
+                                    readonly="readonly">
+                                {{/if}}
                             </div>
-                            <div class="text-right"> <!-- text-right = text-align: right -->
-                                <input class="btn btn-lg btn-primary" type="submit" value="Approve">
+                        </div>
+                        {{#if thesis.rejectionReason}}
+                        <div class="form-row row-eq-spacing-sm">
+                            <div class="col">
+                                <label for="rejectionReason">Rejection Reason</label>
+                                <textarea class="form-control" id="rejectionReason"
+                                    placeholder="{{thesis.rejectionReason}}" name="rejectionReason"
+                                    readonly="readonly"></textarea>
                             </div>
                         </div>
+                        {{/if}}
+                        {{#if isOwner}}
+                        <div class="form-row row-eq-spacing-sm">
+                            <div class="col-sm">
+                                <embed src="{{thesis.link}}" width=100% height=750px />
+                            </div>
+                        </div>
+                        {{/if}}
                     </form>
                 </div>
             </div>

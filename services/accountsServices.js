@@ -176,7 +176,7 @@ async function sendEmailVerification(email) {
     let content = mailDataServices.verificationMailContent(code);
     mailServices.sendMail(email, content, "Verification Code");
     console.log(email, code);
-    await fetch(
+    let result = await fetch(
         "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/createVerification?secret=vedant",
         {
             method: "POST",
@@ -198,6 +198,7 @@ async function sendEmailVerification(email) {
             console.log("Request failed", error);
             return { status: "Fail", error: error };
         });
+    return result;
 }
 
 async function checkVerification(email, code) {
@@ -480,6 +481,178 @@ async function updateUserProfileStatus(userId, status) {
     return updation;
 }
 
+async function completeUserProfileReviewer(userId, name, email, institute, pfId) {
+    const userResult = await getUserByEmail(email);
+    let result = {
+        status: "Fail",
+        error: null
+    }
+    if (userResult.status == "Fail") {
+        result.error = userResult.error;
+        return result;
+    }
+    const user = userResult.result;
+    if (userId != user._id || name != user.name || email != user.email) {
+        result.error = "Incorrect data";
+        return result;
+    }
+    let reqBody = {
+        userId: userId,
+        institute: institute,
+        pfId: pfId
+    }
+    const updation = await fetch(
+        "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/createReviewerProfile?secret=vedant",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify(reqBody),
+        }
+    ).then(function (response) {
+        return response.json();
+    })
+        .then(function (data) {
+            return data;
+        })
+        .catch(function (error) {
+            console.log("Request failed", error);
+            result.error = error;
+            return result;
+        });
+    if (updation.status == "Fail") {
+        result.error = updation.error;
+        return result;
+    }
+    else {
+        result.status = "Success";
+        let statusUpdation = await updateUserProfileStatus(userId, true);
+        if (statusUpdation.status == "Fail") {
+            result.status = "Fail";
+            result.error = statusUpdation.error;
+        }
+        return result;
+    }
+}
+
+async function completeUserProfileScholar(userId, name, email, institute, department, role, rollNo, dateOfJoining) {
+    const userResult = await getUserByEmail(email);
+    let result = {
+        status: "Fail",
+        error: null
+    }
+    if (userResult.status == "Fail") {
+        result.error = userResult.error;
+        return result;
+    }
+    const user = userResult.result;
+    if (userId != user._id || name !== user.name || email !== user.email) {
+        result.error = "Incorrect data";
+        return result;
+    }
+    let reqBody = {
+        userId: userId,
+        institute: institute,
+        rollNo: rollNo,
+        department: department,
+        dateOfJoining: dateOfJoining,
+    }
+    const updation = await fetch(
+        "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/createScholarProfile?secret=vedant",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify(reqBody),
+        }
+    ).then(function (response) {
+        return response.json();
+    })
+        .then(function (data) {
+            return data;
+        })
+        .catch(function (error) {
+            console.log("Request failed", error);
+            result.error = error;
+            return result;
+        });
+    if (updation.status == "Fail") {
+        result.error = updation.error;
+        return result;
+    }
+    else {
+        result.status = "Success";
+        let statusUpdation = await updateUserProfileStatus(userId, true);
+        if (statusUpdation.status == "Fail") {
+            result.status = "Fail";
+            result.error = statusUpdation.error;
+        }
+        return result;
+    }
+}
+
+async function completeUserProfileFaculty(userId, name, email, institute, department, pfId, role) {
+    const userResult = await getUserByEmail(email);
+    let result = {
+        status: "Fail",
+        error: null
+    }
+    if (userResult.status == "Fail") {
+        result.error = userResult.error;
+        return result;
+    }
+    const user = userResult.result;
+    if (userId != user._id || name !== user.name || email !== user.email) {
+        result.error = "Incorrect data";
+        return result;
+    }
+    let reqBody = {
+        userId: userId,
+        role: role,
+        institute: institute,
+        department: department,
+        pfId: pfId
+    }
+    const updation = await fetch(
+        "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/createMentorProfile?secret=vedant",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify(reqBody),
+        }
+    ).then(function (response) {
+        return response.json();
+    })
+        .then(function (data) {
+            return data;
+        })
+        .catch(function (error) {
+            console.log("Request failed", error);
+            result.error = error;
+            return result;
+        });
+    if (updation.status == "Fail") {
+        result.error = updation.error;
+        return result;
+    }
+    else {
+        result.status = "Success";
+        let statusUpdation = await updateUserProfileStatus(userId, true);
+        if (statusUpdation.status == "Fail") {
+            result.status = "Fail";
+            result.error = statusUpdation.error;
+        }
+        return result;
+    }
+}
+
 async function completeUserProfile(userId, name, email, institute, department, role, rollNo, dateOfJoining, pfId) {
     const userResult = await getUserByEmail(email);
     let result = {
@@ -637,6 +810,9 @@ module.exports = {
     sendEmailVerification,
     checkVerification,
     completeUserProfile,
+    completeUserProfileReviewer,
+    completeUserProfileScholar,
+    completeUserProfileFaculty,
     updateUserProfileStatus
     // profileCompletion,
 };

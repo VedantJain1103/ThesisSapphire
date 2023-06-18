@@ -1,12 +1,9 @@
 <div class="container-fluid">
     <div class="row  d-flex justify-content-between align-items-center">
         <div class="col">
-            <div class="content d-flex justify-content-between align-items-center">
+            <div class="content d-flex justify-content-left align-items-center">
                 <div>
                     {{name}}
-                </div>
-                <div>
-                    <a href="/users/publish/" class="btn btn-primary">Publish</a>
                 </div>
             </div>
         </div>
@@ -41,9 +38,15 @@
                             <td class="text-center">
                                 {{this.submittedOn}}
                             </td>
-                            <td class="text-center">
+                            {{#if this.rejectionReason}}
+                            <td class="text-center text-danger">
                                 {{this.status}}
                             </td>
+                            {{else}}
+                            <td class="text-center text-success">
+                                {{this.status}}
+                            </td>
+                            {{/if}}
                             <td class="text-center">
                                 {{this.statusUpdatedOn}}
                             </td>

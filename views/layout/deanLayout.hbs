@@ -13,7 +13,7 @@
   <link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon.min.css" rel="stylesheet" />
 </head>
 
-<body>
+<body data-set-preferred-mode-onload="true">
   <div class="page-wrapper with-navbar with-sidebar with-navbar-fixed-bottom" data-sidebar-type="overlayed-sm-and-down">
     <!-- Sticky alerts (toasts), empty container -->
     <div class="sticky-alerts"></div>
@@ -39,8 +39,7 @@
     <!-- Navbar fixed bottom -->
     {{>footer}}
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.js"></script>
+  {{>scripts}}
 </body>
 
 </html>

@@ -25,7 +25,7 @@ const verifyJWT = (req, res, next) => {
             // // if (routeUrl == "/profileCompletion") {
             // //     next();
             // // }
-            if (!req.userRole && routeUrl != "/profileCompletion") {
+            if (!req.userRole && ((routeUrl != "/profileCompletion") && (routeUrl != "/profileCompletion/faculty") && (routeUrl != "/profileCompletion/reviewer") && (routeUrl != "/profileCompletion/scholar"))) {
                 res.redirect('/users/profileCompletion');
                 return;
             }

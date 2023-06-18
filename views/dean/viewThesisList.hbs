@@ -1,4 +1,13 @@
 <div class="container-fluid">
+    <div class="row  d-flex justify-content-between align-items-center">
+        <div class="col">
+            <div class="content d-flex justify-content-left align-items-center">
+                <div>
+                    {{name}}
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row  d-flex justify-content-around align-items-center">
         <div class="col">
             <div class="content">
@@ -9,6 +18,8 @@
                             <th class="text-center">Mentor</th>
                             <th class="text-center">Scholar</th>
                             <th class="text-center">Submitted On</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Last Updated</th>
                             <th class="text-right">Actions</th>
                         </tr>
                     </thead>
@@ -27,8 +38,20 @@
                             <td class="text-center">
                                 {{this.submittedOn}}
                             </td>
+                            {{#if this.rejectionReason}}
+                            <td class="text-center text-danger">
+                                {{this.status}}
+                            </td>
+                            {{else}}
+                            <td class="text-center text-success">
+                                {{this.status}}
+                            </td>
+                            {{/if}}
+                            <td class="text-center">
+                                {{this.statusUpdatedOn}}
+                            </td>
                             <td class="text-right">
-                                <a href="/director/approveThesis/{{this.thesisId}}" class="btn">View</a>
+                                <a href="/dean/viewThesis/{{this.thesisId}}" class="btn">View</a>
                             </td>
                         </tr>
                         {{/each}}

@@ -1,0 +1,39 @@
+<script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.js"></script>
+
+{{!-- Dark Mode --}}
+<script type="text/javascript">
+    /* Things to do once the DOM is loaded */
+    document.addEventListener("DOMContentLoaded", function () {
+        // Getting the demo iFrames
+        var demoiFrames = document.getElementsByClassName("demo-iframe");
+
+        // Overridden method to also toggle the dark mode in the iFrames
+        halfmoon.toggleDarkMode = function () {
+            if (document.body.classList.contains("dark-mode")) {
+                document.body.classList.remove("dark-mode");
+                halfmoon.darkModeOn = false;
+                // Turn off dark mode within the iFrames
+                for (var i = 0; i < demoiFrames.length; i++) {
+                    var innerDocument = demoiFrames[i].contentDocument || demoiFrames[i].contentWindow.document;
+                    innerDocument.body.classList.remove("dark-mode");
+                }
+                halfmoon.createCookie("halfmoon_preferredMode", "light-mode", 365);
+            } else {
+                document.body.classList.add("dark-mode");
+                halfmoon.darkModeOn = true;
+                // Turn on dark mode within the iFrames
+                for (var i = 0; i < demoiFrames.length; i++) {
+                    var innerDocument = demoiFrames[i].contentDocument || demoiFrames[i].contentWindow.document;
+                    innerDocument.body.classList.add("dark-mode");
+                }
+                halfmoon.createCookie("halfmoon_preferredMode", "dark-mode", 365);
+            }
+        }
+    });
+
+    // Here, the Child refers to an iFrame window
+    function toggleDarkModeFromChild() {
+        halfmoon.toggleDarkMode();
+    }
+</script>
