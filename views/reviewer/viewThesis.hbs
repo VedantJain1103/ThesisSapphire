@@ -1,0 +1,73 @@
+{{!-- <embed src="{{thesis.link}}" width=100% height=750px /> --}}
+<div class="container-fluid">
+    <div class="row  d-flex justify-content-between align-items-center">
+        <div class="col">
+            <div class="card p-0">
+                <div class="content card-title">
+                    <h2>{{thesis.name}}</h2>
+                </div>
+                <div class="content">
+                    <form action="..." method="...">
+                        <div class="form-row row-eq-spacing-sm">
+                            <div class="col">
+                                <label for="thesisName">Title</label>
+                                <input type="text" class="form-control" id="thesisName" name="thesisName"
+                                    value="{{thesis.name}}" placeholder="Thesis Title" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="form-row row-eq-spacing-sm">
+                            <div class="col">
+                                <label for="abstract">Abstract</label>
+                                <textarea class="form-control" id="abstract" placeholder="Abstract" name="Abstract"
+                                    readonly="readonly">{{thesis.description}}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-row row-eq-spacing-sm">
+                            <div class="col-sm  font-size-16 text-center">
+                                <a href="{{thesis.link}}" class="hyperlink-underline" download>
+                                    Download Thesis
+                                    <i class="fa-solid fa-download fa-lg ml-5"></i>
+                                </a>
+                                {{!-- <embed src="{{thesis.link}}" width=100% height=750px /> --}}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="content">
+                    <details class="collapse-panel mw-full mt-20" open>
+                        <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100%, mt-20 = margin-top: 2rem (20px) -->
+                        <summary class="collapse-header">
+                            Past Comments
+                        </summary>
+                        {{#each comments}}
+                        <div class="collapse-content">
+                            <i class="fa-solid fa-angles-right"></i>
+                            {{this.description}}
+                        </div>
+                        {{/each}}
+                    </details>
+                </div>
+                <div class="content">
+                    <form action="/reviewer/comment/" method="post">
+                        <div class="form-row row-eq-spacing-sm">
+                            <div class="col">
+                                <label for="description">Add a comment</label>
+                                <textarea class="form-control" id="description" placeholder="Comment"
+                                    name="description"></textarea>
+                            </div>
+                        </div>
+                        <input type="text" name="thesisId" value="{{thesis._id}}" hidden="hidden">
+                        <div class="content d-flex justify-content-between">
+                            <div class="text-right"> <!-- text-right = text-align: right -->
+                                <input class="btn btn-lg btn-primary" type="submit" name="access" value="Private">
+                            </div>
+                            <div class="text-right"> <!-- text-right = text-align: right -->
+                                <input class="btn btn-lg btn-primary" type="submit" name="access" value="Public">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

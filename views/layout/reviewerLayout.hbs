@@ -13,6 +13,8 @@
         data-sidebar-type="overlayed-sm-and-down">
         <!-- Sticky alerts (toasts), empty container -->
         <div class="sticky-alerts"></div>
+        <!-- Modals -->
+        {{>rejectThesisModal}}
 
         <!-- Navbar -->
         {{>navbarSignedIn}}
@@ -21,7 +23,7 @@
         <div class="sidebar-overlay" onclick="halfmoon.toggleSidebar()"></div>
         <!-- Sidebar -->
 
-        {{>scholarSideBar}}
+        {{>reviewerSideBar}}
 
         <!-- Content wrapper -->
         <div class="content-wrapper">

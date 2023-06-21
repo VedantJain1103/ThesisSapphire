@@ -1,12 +1,9 @@
 <div class="container-fluid">
     <div class="row  d-flex justify-content-between align-items-center">
         <div class="col">
-            <div class="content d-flex justify-content-between align-items-center">
+            <div class="content d-flex justify-content-left align-items-center">
                 <div>
                     {{name}}
-                </div>
-                <div>
-                    <a href="/mentor/publish" class="btn btn-primary">Publish</a>
                 </div>
             </div>
         </div>
@@ -54,7 +51,7 @@
                                 {{this.statusUpdatedOn}}
                             </td>
                             <td class="text-right">
-                                <a href="/mentor/viewThesis/{{this.thesisId}}" class="btn">View</a>
+                                <a href="/director/viewThesis/{{this.thesisId}}" class="btn">View</a>
                             </td>
                         </tr>
                         {{/each}}

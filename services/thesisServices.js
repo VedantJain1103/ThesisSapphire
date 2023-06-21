@@ -104,12 +104,44 @@ async function getThesisListByMentorId(mentorId) {
     return result;
 }
 
+//Get thesisList of a scholar
+async function getThesisListByScholarId(scholarId) {
+    let result = {
+        status: "Fail",
+        result: null,
+        error: null
+    }
+    if (!scholarId) {
+        result.error = "Scholar Id not provided";
+        return result;
+    }
+    let thesisListResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getThesisListByScholarId?secret=vedant&userId=" + scholarId, {
+        method: "GET",
+    }
+    ).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        // console.log('Request succeeded with JSON response', data);
+        return data;
+    }).catch(function (error) {
+        console.log('Request failed', error);
+        result.error = error;
+    });
+    if (result.error) return result;
+    if (thesisListResult.status == "Fail") {
+        result.error = thesisListResult.error;
+        return result;
+    }
+    result.status = "Success";
+    result.result = thesisListResult.result;
+    return result;
+}
+
 //Get Thesis data by thesis Id
 async function getThesisById(thesisId, userId) {
     let result = {
         status: "Fail",
         result: null,
-        isOwner: false,
         error: null
     }
     if (!thesisId) {
@@ -134,12 +166,9 @@ async function getThesisById(thesisId, userId) {
         return result;
     }
     result.status = "Success";
-    const user = {
-        userId: userId
-    }
     let thesis = thesisResult.result.thesis[0];
     let thesisAccessIds = thesisResult.result.thesisAccessIds;
-
+    console.log(thesisAccessIds, userId);
     const isOwner = thesisAccessIds.some(element => {
         if (element.userId === userId) {
             return true;
@@ -148,10 +177,27 @@ async function getThesisById(thesisId, userId) {
         return false;
     });
     console.log("Is user owner of thesis:", isOwner)
-    if (isOwner) {
-        result.isOwner = true;
+    let isScholar = false;
+    if (userId == thesis.scholarId) isScholar = true;
+    console.log("Is scholar of this thesis", isScholar);
+    let comments = thesisResult.result.comments;
+    console.log("Comments", comments);
+    let viewAbleComments = [];
+    comments.forEach(comment => {
+        if (isScholar && comment.access == "Private") {
+            console.log("Private comment", comment);
+        }
+        else {
+            viewAbleComments.push(comment);
+        }
+    })
+
+    result.result = {
+        thesis: thesis,
+        invitations: thesisResult.result.invitations,
+        comments: viewAbleComments,
+        isOwner: isOwner,
     }
-    result.result = thesis;
     console.log(result);
     return result;
 }
@@ -218,90 +264,6 @@ async function uploadThesis(mentorId, scholarEmail, description, thesisName, the
     return result;
 }
 
-//Forward to Dean From HOD
-// async function forwardToDean(hodName, thesisId, thesisName, scholarEmail, mentorEmail) {
-//     let result = {
-//         status: "Fail",
-//         result: null,
-//         error: null
-//     }
-//     if (!thesisId) {
-//         result.error = "Thesis Id not provided";
-//         return result;
-//     }
-//     let thesisReqBody = {
-//         thesisId: thesisId,
-//         status: "Forwarded to Dean"
-//     }
-//     const updation = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/updateThesisStatus?secret=vedant", {
-//         method: "POST",
-//         headers: {
-//             'Content-Type': 'application/json'
-//             // 'Content-Type': 'application/x-www-form-urlencoded',
-//         },
-//         body: JSON.stringify(thesisReqBody)
-//     }
-//     ).then(function (response) {
-//         return response.json();
-//     }).then(function (data) {
-//         // console.log('Request succeeded with JSON response', data);
-//         console.log(data);
-//         return data;
-//     }).catch(function (error) {
-//         console.log('Request failed', error);
-//     });
-//     if (updation.status == "Fail") return updation;
-//     else result.status = "Success";
-//     result.result = updation.result;
-
-//     let content = mailDataServices.thesisApprovalByHOD(hodName, thesisName);
-//     mailServices.sendMail(scholarEmail, content, "Thesis Forwarded");
-//     mailServices.sendMail(mentorEmail, content, "Thesis Forwarded");
-//     return result;
-// }
-
-//Forward to Director
-// async function forwardToDirector(hodName, thesisId, thesisName, scholarEmail, mentorEmail) {
-//     let result = {
-//         status: "Fail",
-//         result: null,
-//         error: null
-//     }
-//     if (!thesisId) {
-//         result.error = "Thesis Id not provided";
-//         return result;
-//     }
-//     let thesisReqBody = {
-//         thesisId: thesisId,
-//         status: "Forwarded to Dean"
-//     }
-//     const updation = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/updateThesisStatus?secret=vedant", {
-//         method: "POST",
-//         headers: {
-//             'Content-Type': 'application/json'
-//             // 'Content-Type': 'application/x-www-form-urlencoded',
-//         },
-//         body: JSON.stringify(thesisReqBody)
-//     }
-//     ).then(function (response) {
-//         return response.json();
-//     }).then(function (data) {
-//         // console.log('Request succeeded with JSON response', data);
-//         console.log(data);
-//         return data;
-//     }).catch(function (error) {
-//         console.log('Request failed', error);
-//     });
-//     if (updation.status == "Fail") return updation;
-//     else result.status = "Success";
-//     result.result = updation.result;
-
-//     let content = mailDataServices.thesisApprovalByHOD(hodName, thesisName);
-//     mailServices.sendMail(scholarEmail, content, "Thesis Forwarded");
-//     mailServices.sendMail(mentorEmail, content, "Thesis Forwarded");
-//     return result;
-// }
-
 //Rejection fron HOD
 async function rejectThesis(rejectedBy, thesisId, thesisName, scholarEmail, mentorEmail, rejectionReason) {
     let result = {
@@ -344,13 +306,66 @@ async function rejectThesis(rejectedBy, thesisId, thesisName, scholarEmail, ment
     return result;
 }
 
+async function getThesisInvitationStatusById(thesisId, userId) {
+    let result = {
+        status: "Fail",
+        result: null,
+        isOwner: false,
+        error: null
+    }
+    if (!thesisId) {
+        result.error = "Mentor Id not provided";
+        return result;
+    }
+    let thesisResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getThesisById?secret=vedant&thesisId=" + thesisId, {
+        method: "GET",
+    }
+    ).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        // console.log('Request succeeded with JSON response', data);
+        return data;
+    }).catch(function (error) {
+        console.log('Request failed', error);
+        result.error = error;
+    });
+    if (result.error) return result;
+    if (thesisResult.status == "Fail") {
+        result.error = thesisResult.error;
+        return result;
+    }
+    result.status = "Success";
+    const user = {
+        userId: userId
+    }
+    let thesis = thesisResult.result.thesis[0];
+    let thesisAccessIds = thesisResult.result.thesisAccessIds;
+
+    const isOwner = thesisAccessIds.some(element => {
+        if (element.userId === userId) {
+            return true;
+        }
+
+        return false;
+    });
+    console.log("Is user owner of thesis:", isOwner)
+    if (isOwner) {
+        result.isOwner = true;
+    }
+    result.result = {
+        thesis: thesis,
+        invitatoins: thesisResult.result.invitations
+    }
+    console.log(result);
+    return result;
+}
+
 module.exports = {
     uploadThesis,
     getThesisById,
     getThesisListByDepartment,
     getThesisListByMentorId,
+    getThesisListByScholarId,
     getThesisToBeApprovedListByHOD,
-    // forwardToDirector, To be made
-    // forwardToDean,
     rejectThesis,
 }

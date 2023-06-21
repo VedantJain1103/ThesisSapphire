@@ -1,0 +1,49 @@
+<div class="container-fluid">
+    <div class="row  d-flex justify-content-around align-items-center">
+        <div class="col">
+            <div class="content">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Thesis Name</th>
+                            <th class="text-center">Invited By</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Date</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each invitations}}
+                        <tr>
+                            <td class="font-italic font-size-20">{{this.thesisName}}</td>
+                            <td class="text-center">
+                                <div>{{this.senderName}}</div>
+                                <div>{{this.senderEmail}}</div>
+                            </td>
+                            {{#if_eq this.status "Accepted"}}
+                            <td class="text-center text-success">
+                                <div><i class="fa-solid fa-check mr-5"></i>{{this.status}}</div>
+                            </td>
+                            {{else if_eq this.status "Rejected"}}
+                            <td class="text-center text-danger">
+                                <div>{{this.status}}</div>
+                            </td>
+                            {{else}}
+                            <td class="text-center text-success">
+                                <div>{{this.status}}</div>
+                            </td>
+                            {{/if_eq}}
+                            <td class="text-center">
+                                <div>{{this.invitedOn}}</div>
+                            </td>
+                            <td class="text-right">
+                                <a href="/reviewer/viewInvitation/{{this.invitationId}}" class="btn">View</a>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

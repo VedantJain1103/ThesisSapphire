@@ -1,0 +1,115 @@
+{{!-- <embed src="{{thesis.link}}" width=100% height=750px /> --}}
+<div class="container-fluid">
+    <div class="row  d-flex justify-content-between align-items-center">
+        <div class="col">
+            <div class="card p-0">
+                <div class="content card-title d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2>Invitation</h2>
+                    </div>
+                    <div class="content">
+                        {{#if_eq invitation.status "Accepted"}}
+                        <h4 class="text-center text-success">
+                            <i class="fa-solid fa-check mr-5"></i>{{invitation.status}}
+                        </h4>
+                        {{else if_eq invitation.status "Rejected"}}
+                        <h4 class="text-center text-danger">
+                            {{invitation.status}}
+                        </h4>
+                        {{else}}
+                        <h4 class="text-center text-success">
+                            {{invitation.status}}
+                        </h4>
+                        {{/if_eq}}
+                    </div>
+                </div>
+                <div class="content">
+                    <form action="..." method="...">
+                        <div class="form-row row-eq-spacing-sm">
+                            <div class="col">
+                                <label for="thesisName">Title</label>
+                                <input type="text" class="form-control" id="thesisName" name="thesisName"
+                                    value="{{invitation.thesisName}}" placeholder="Thesis Title" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="form-row row-eq-spacing-sm">
+                            <div class="col">
+                                <label for="description" class="required">Description</label>
+                                <textarea class="form-control" id="description" name="description"
+                                    readonly="readonly">{{invitation.thesisDescription}}</textarea>
+                            </div>
+                        </div>
+                        <div class="content-title">
+                            <h4>Invited By</h4>
+                        </div>
+                        <div class="form-row row-eq-spacing-sm">
+                            <div class="col-sm">
+                                <label for="senderName">Name</label>
+                                <input type="text" class="form-control" id="senderName" name="senderName"
+                                    value="{{invitation.senderName}}" placeholder="Sender Name" readonly="readonly">
+                            </div>
+                            <div class="col-sm">
+                                <label for="senderEmail">Email</label>
+                                <input type="text" class="form-control" id="senderEmail" name="senderEmail"
+                                    value="{{invitation.senderEmail}}" placeholder="Sender Email" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="content-title">
+                            <h4>Mentor Details</h4>
+                        </div>
+                        <div class="form-row row-eq-spacing-sm">
+                            <div class="col-sm">
+                                <label for="mentorName">Name</label>
+                                <input type="text" class="form-control" id="mentorName" name="mentorName"
+                                    value="{{invitation.mentorName}}" placeholder="Mentor Name" readonly="readonly">
+                            </div>
+                            <div class="col-sm">
+                                <label for="mentorEmail">Email</label>
+                                <input type="text" class="form-control" id="mentorEmail" name="mentorEmail"
+                                    value="{{invitation.mentorEmail}}" placeholder="Mentor Email" readonly="readonly">
+                            </div>
+                        </div>
+
+                        {{!-- No scholar details for now
+                        <div class="content-title">
+                            <h4>Scholar Details</h4>
+                        </div>
+                        <div class="form-row row-eq-spacing-sm">
+                            <div class="col-sm">
+                                <label for="scholarName">Name</label>
+                                <input type="text" class="form-control" id="scholarName" name="scholarName"
+                                    value="{{thesis.scholarName}}" placeholder="Scholar Name" readonly="readonly">
+                            </div>
+                            <div class="col-sm">
+                                <label for="scholarEmail">Email</label>
+                                <input type="text" class="form-control" id="scholarEmail" name="scholarEmail"
+                                    value="{{thesis.scholarEmail}}" placeholder="Scholar Email" readonly="readonly">
+                            </div>
+                            <div class="col-sm">
+                                <label for="scholarRollNo">Roll Number</label>
+                                <input type="text" class="form-control" id="scholarRollNo" name="scholarRollNo"
+                                    value="{{thesis.scholarRollNo}}" placeholder="Scholar Roll Number"
+                                    readonly="readonly">
+                            </div>
+                        </div> --}}
+                    </form>
+                    {{#if_eq invitation.status "Active"}}
+                    <div class="content d-flex justify-content-between">
+                        <form action="/reviewer/rejectInvitation/{{invitation._id}}" method="post">
+                            <div class="text-right"> <!-- text-right = text-align: right -->
+                                <input class="btn btn-lg btn-danger" type="submit" value="Reject">
+                            </div>
+                        </form>
+                        <form action="/reviewer/acceptInvitation/{{invitation._id}}" method="post">
+                            <div class="text-right"> <!-- text-right = text-align: right -->
+                                <input class="btn btn-lg btn-primary" type="submit" value="Accept">
+                            </div>
+                        </form>
+                    </div>
+                    {{else}}
+                    {{/if_eq}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

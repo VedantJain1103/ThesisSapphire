@@ -5,9 +5,6 @@
                 <div>
                     {{name}}
                 </div>
-                <div>
-                    <a href="/mentor/publish" class="btn btn-primary">Publish</a>
-                </div>
             </div>
         </div>
     </div>
@@ -19,7 +16,6 @@
                         <tr>
                             <th>Thesis Name</th>
                             <th class="text-center">Mentor</th>
-                            <th class="text-center">Scholar</th>
                             <th class="text-center">Submitted On</th>
                             <th class="text-center">Status</th>
                             <th class="text-center">Last Updated</th>
@@ -33,10 +29,6 @@
                             <td class="text-center">
                                 <div>{{this.mentorName}}</div>
                                 <div>{{this.mentorEmail}}</div>
-                            </td>
-                            <td class="text-center">
-                                <div>{{this.scholarName}}</div>
-                                <div>{{this.scholarEmail}}</div>
                             </td>
                             <td class="text-center">
                                 {{this.submittedOn}}
@@ -54,7 +46,7 @@
                                 {{this.statusUpdatedOn}}
                             </td>
                             <td class="text-right">
-                                <a href="/mentor/viewThesis/{{this.thesisId}}" class="btn">View</a>
+                                <a href="/scholar/viewThesis/{{this.thesisId}}" class="btn">View</a>
                             </td>
                         </tr>
                         {{/each}}

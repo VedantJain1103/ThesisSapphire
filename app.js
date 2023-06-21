@@ -37,6 +37,13 @@ app.set('view engine', 'hbs');
 hbs.registerPartials(__dirname + '/views/partials');
 hbs.registerPartials(__dirname + '/views/modals');
 hbs.registerPartials(__dirname + '/views/sideBars');
+hbs.registerHelper('if_eq', function (a, b, opts) {
+  if (a == b) {
+    return opts.fn(this);
+  } else {
+    return opts.inverse(this);
+  }
+})
 
 app.use(cors());
 app.use(logger('dev'));

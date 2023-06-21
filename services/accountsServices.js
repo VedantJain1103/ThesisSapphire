@@ -99,7 +99,6 @@ async function getUserProfileById(id) {
     return user;
 }
 
-
 async function createUser(fullName, email, phone, password) {
     try {
         let hashedPass;
@@ -797,14 +796,12 @@ async function completeUserProfile(userId, name, email, institute, department, r
         }
     }
 }
+
 module.exports = {
-    // isAuthentic,
-    // isApproved,
     getDepartmentByUserId,
     getUserByEmail,
     getUserById,
     getUserProfileById,
-    // getUserProfileByEmail,
     createUser,
     signIn,
     sendEmailVerification,

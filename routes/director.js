@@ -43,14 +43,17 @@ router.get('/viewThesis/:thesisId', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
     const { thesisId } = req.params;
     if (userRole == "Director") {
-        const thesisResult = await thesisServices.getThesisById(thesisId, userId);
+        let thesisResult = await thesisServices.getThesisById(thesisId, userId);
         if (thesisResult.status == "Fail") {
             error = thesisResult.error;
             res.render('error', { layout: 'layout/directorLayout', name: userName, error: error });
         } else {
-            let thesis = thesisResult.result;
+            thesisResult = thesisResult.result;
+            let thesis = thesisResult.thesis;
+            let invitations = thesisResult.invitations;
             let isOwner = thesisResult.isOwner;
-            res.render('viewThesis', { layout: 'layout/directorLayout', name: userName, thesis: thesis, isOwner: isOwner });
+            let comments = thesisResult.comments;
+            res.render('viewThesis', { layout: 'layout/directorLayout', name: userName, thesis: thesis, invitations: invitations, comments: comments, isOwner: isOwner });
         }
     }
     else {
@@ -80,14 +83,16 @@ router.get('/approveThesis/:thesisId', verifyJWT, async function (req, res, next
     const { userId, userName, userRole } = req;
     const { thesisId } = req.params;
     if (userRole == "Director") {
-        const thesisResult = await thesisServices.getThesisById(thesisId, userId);
+        let thesisResult = await thesisServices.getThesisById(thesisId, userId);
         if (thesisResult.status == "Fail") {
             error = thesisResult.error;
             res.render('error', { layout: 'layout/directorLayout', name: userName, error: error });
         } else {
-            let thesis = thesisResult.result;
+            thesisResult = thesisResult.result;
+            let thesis = thesisResult.thesis;
+            let invitations = thesisResult.invitations;
             let isOwner = thesisResult.isOwner;
-            res.render('director/approveThesis', { layout: 'layout/directorLayout', name: userName, thesis: thesis, isOwner: isOwner });
+            res.render('director/approveThesis', { layout: 'layout/directorLayout', name: userName, thesis: thesis, invitations: invitations, isOwner: isOwner });
         }
     }
     else {
@@ -122,8 +127,9 @@ router.post('/approveThesis/:thesisId', verifyJWT, async function (req, res, nex
                 res.render('error', { layout: 'layout/directorLayout', name: userName, error: error });
             } else {
                 let thesis = thesisResult.result;
+                let invitations = thesisResult.invitations;
                 let isOwner = thesisResult.isOwner;
-                res.render('director/approveThesis', { layout: 'layout/directorLayout', name: userName, thesis: thesis, isOwner: isOwner, invalidEmail: "Invalid Reviewer email provided!", remail: remail });
+                res.render('director/approveThesis', { layout: 'layout/directorLayout', name: userName, thesis: thesis, invitations: invitations, isOwner: isOwner, invalidEmail: "Invalid Reviewer email provided!", remail: remail });
             }
             console.log("Invalid Email");
         }

@@ -3,8 +3,19 @@
     <div class="row  d-flex justify-content-between align-items-center">
         <div class="col">
             <div class="card p-0">
-                <div class="content card-title">
-                    <h2>{{thesis.name}}</h2>
+                <div class="content card-title py-5 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2>{{thesis.name}}</h2>
+                    </div>
+                    {{#if_eq thesis.status "Rejected"}}
+                    <div class="text-danger">
+                        {{thesis.status}}
+                    </div>
+                    {{else}}
+                    <div class="text-success">
+                        {{thesis.status}}
+                    </div>
+                    {{/if_eq}}
                 </div>
                 <div class="content">
                     <form action="/hod/approveThesis/{{thesis._id}}" method="post">
@@ -64,7 +75,7 @@
                             </div>
                             <div class="col-sm">
                                 <label for="lastUpdatedOn">Current Status</label>
-                                {{#if thesis.rejectionReason}}
+                                {{#if_eq thesis.status "Rejected"}}
                                 <input type="text" class="form-control text-danger" id="lastUpdatedOn"
                                     name="lastUpadtedOn" value="{{thesis.status}}" placeholder="lastUpdatedOn"
                                     readonly="readonly">
@@ -72,10 +83,33 @@
                                 <input type="text" class="form-control text-success" id="lastUpdatedOn"
                                     name="lastUpadtedOn" value="{{thesis.status}}" placeholder="lastUpdatedOn"
                                     readonly="readonly">
-                                {{/if}}
+                                {{/if_eq}}
                             </div>
                         </div>
-                        {{#if thesis.rejectionReason}}
+                        {{#if_eq thesis.status "Sent For Review"}}
+                        <div class="conten-title">
+                            <h4>Invitation Details</h4>
+                        </div>
+                        <div class="form-row row-eq-spacing-sm">
+                            <div class="col-sm">
+                                <label for="Sent">Sent</label>
+                                <input type="text" class="form-control" id="Sent" name="Sent"
+                                    value="{{invitations.sent}}" placeholder="lastUpdatedOn" readonly="readonly">
+                            </div>
+                            <div class="col-sm text-success">
+                                <label for="Accepted">Accepted</label>
+                                <input type="text" class="form-control text-success" id="Accepted" name="Accepted"
+                                    value="{{invitations.accepted}}" placeholder="lastUpdatedOn" readonly="readonly">
+                            </div>
+                            <div class="col-sm text-danger">
+                                <label for="Rejected">Rejected</label>
+                                <input type="text" class="form-control text-danger" id="Rejected" name="Rejected"
+                                    value="{{invitations.rejected}}" placeholder="lastUpdatedOn" readonly="readonly">
+                            </div>
+                        </div>
+                        {{else}}
+                        {{/if_eq}}
+                        {{#if_eq thesis.status "Rejected"}}
                         <div class="form-row row-eq-spacing-sm">
                             <div class="col">
                                 <label for="rejectionReason">Rejection Reason</label>
@@ -84,13 +118,37 @@
                                     readonly="readonly"></textarea>
                             </div>
                         </div>
-                        {{/if}}
+                        {{/if_eq}}
                         {{#if isOwner}}
                         <div class="form-row row-eq-spacing-sm">
-                            <div class="col-sm">
-                                <embed src="{{thesis.link}}" width=100% height=750px />
+                            <div class="col-sm  font-size-16 text-right">
+                                <a href="{{thesis.link}}" class="hyperlink-underline" download>
+                                    Download Thesis
+                                    <i class="fa-solid fa-download fa-lg ml-5"></i>
+                                </a>
+                                {{!-- <embed src="{{thesis.link}}" width=100% height=750px /> --}}
                             </div>
                         </div>
+                        {{#if comments}}
+                        <div class="container">
+                            <details class="collapse-panel mw-full mt-20" open>
+                                <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100%, mt-20 = margin-top: 2rem (20px) -->
+                                <summary class="collapse-header">
+                                    Comments
+                                </summary>
+                                {{#each comments}}
+                                <div class="collapse-content">
+                                    {{#if_eq this.access "Public"}}
+                                    <i class="fa-solid fa-angles-right"></i>
+                                    {{else}}
+                                    <i class="fa-solid fa-lock"></i>
+                                    {{/if_eq}}
+                                    {{this.description}}
+                                </div>
+                                {{/each}}
+                            </details>
+                        </div>
+                        {{/if}}
                         {{/if}}
                     </form>
                 </div>

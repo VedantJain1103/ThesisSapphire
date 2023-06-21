@@ -9,8 +9,7 @@
     </div>
     <!-- Navbar brand -->
     <a href="#" class="navbar-brand">
-        {{!-- <img src="..." alt="..."> --}}
-        Thesis Approval
+        {{>logo}}
     </a>
     <ul class="navbar-nav ml-auto"> <!-- ml-auto = margin-left: auto -->
         <li class="nav-item active">
@@ -22,7 +21,9 @@
         </button>
         <li class="nav-item dropdown toggle-on-hover">
             <a class="nav-link" data-toggle="dropdown" id="..." aria-haspopup="true" aria-expanded="false">
-                {{name}}<i class="fa fa-angle-down ml-5" aria-hidden="true"></i>
+                <i class="fa-solid fa-user mr-5" aria-hidden="true"></i>
+                {{name}}
+                <i class="fa fa-angle-down ml-5" aria-hidden="true"></i>
                 <!-- ml-5 = margin-left: 0.5rem (5px) -->
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="...">

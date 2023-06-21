@@ -50,14 +50,17 @@ router.get('/viewThesis/:thesisId', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
     const { thesisId } = req.params;
     if (userRole == "HOD") {
-        const thesisResult = await thesisServices.getThesisById(thesisId, userId);
+        let thesisResult = await thesisServices.getThesisById(thesisId, userId);
         if (thesisResult.status == "Fail") {
             error = thesisResult.error;
             res.render('error', { layout: 'layout/hodLayout', name: userName, error: error });
         } else {
-            let thesis = thesisResult.result;
+            thesisResult = thesisResult.result;
+            let thesis = thesisResult.thesis;
+            let invitations = thesisResult.invitations;
             let isOwner = thesisResult.isOwner;
-            res.render('viewThesis', { layout: 'layout/hodLayout', name: userName, thesis: thesis, isOwner: isOwner });
+            let comments = thesisResult.comments;
+            res.render('viewThesis', { layout: 'layout/hodLayout', name: userName, thesis: thesis, invitations: invitations, comments: comments, isOwner: isOwner });
         }
     }
     else {
@@ -87,12 +90,15 @@ router.get('/approveThesis/:thesisId', verifyJWT, async function (req, res, next
     const { userId, userName, userRole } = req;
     const { thesisId } = req.params;
     if (userRole == "HOD") {
-        const thesisResult = await thesisServices.getThesisById(thesisId, userId);
+        let thesisResult = await thesisServices.getThesisById(thesisId, userId);
         if (thesisResult.status == "Fail") {
             error = thesisResult.error;
             res.render('error', { layout: 'layout/hodLayout', name: userName, error: error });
-        } else {
-            let thesis = thesisResult.result;
+        }
+        else {
+            thesisResult = thesisResult.result;
+            let thesis = thesisResult.thesis;
+            let invitations = thesisResult.invitations;
             let isOwner = thesisResult.isOwner;
             res.render('hod/approveThesis', { layout: 'layout/hodLayout', name: userName, thesis: thesis, isOwner: isOwner });
         }
