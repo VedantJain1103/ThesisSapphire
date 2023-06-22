@@ -44,6 +44,13 @@ hbs.registerHelper('if_eq', function (a, b, opts) {
     return opts.inverse(this);
   }
 })
+hbs.registerHelper('if_neq', function (a, b, opts) {
+  if (a != b) {
+    return opts.fn(this);
+  } else {
+    return opts.inverse(this);
+  }
+})
 
 app.use(cors());
 app.use(logger('dev'));

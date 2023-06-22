@@ -105,7 +105,7 @@ router.post('/signIn', async (req, res) => {
             if (result.status !== "Success") throw new Error("Unknown error occurred");
             // console.log(result);
             const { user, refreshToken, accessToken } = result;
-            console.log("signing in: ", user, refreshToken, accessToken);
+            console.log("signing in: ", user, "\nRefresh Token:", refreshToken, "\nAccess Token:", accessToken);
             if (user.isEmailVerified) {
                 res.cookie('jwt_refreshToken', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
                 res.cookie('jwt_accessToken', accessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });

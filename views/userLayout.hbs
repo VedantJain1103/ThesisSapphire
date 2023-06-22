@@ -5,12 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{title}}</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-  <link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon-variables.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon-variables.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon.min.css" rel="stylesheet" />
+  {{>css}}
 </head>
 
 <body>
@@ -32,7 +27,7 @@
     <div class="sidebar-overlay" onclick="halfmoon.toggleSidebar()"></div>
     <!-- Sidebar -->
 
-    {{>scholarSideBar}}
+    {{>userSideBar}}
 
     <!-- Content wrapper -->
     <div class="content-wrapper">
@@ -42,8 +37,7 @@
     <!-- Navbar fixed bottom -->
     {{>footer}}
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.js"></script>
+  {{>scripts}}
 </body>
 
 </html>

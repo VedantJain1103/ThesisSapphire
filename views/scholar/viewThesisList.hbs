@@ -1,16 +1,8 @@
 <div class="container-fluid">
-    <div class="row  d-flex justify-content-between align-items-center">
-        <div class="col">
-            <div class="content d-flex justify-content-between align-items-center">
-                <div>
-                    {{name}}
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="row  d-flex justify-content-around align-items-center">
         <div class="col">
             <div class="content">
+
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -52,6 +44,10 @@
                         {{/each}}
                     </tbody>
                 </table>
+                {{#if thesisList}}
+                {{else}}
+                <p class="text-center font-italic">No Thesis Submitted yet</p>
+                {{/if}}
             </div>
         </div>
     </div>

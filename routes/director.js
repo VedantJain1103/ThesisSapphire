@@ -3,7 +3,6 @@ var router = express.Router();
 
 require('dotenv').config()
 
-var deanServices = require('../services/deanServices');
 var directorServices = require('../services/directorServices');
 var thesisServices = require('../services/thesisServices');
 var accountsServices = require('../services/accountsServices');
@@ -141,6 +140,102 @@ router.post('/approveThesis/:thesisId', verifyJWT, async function (req, res, nex
             } else {
                 res.redirect('/director/viewApproveThesisList/');
             }
+        }
+    }
+    else {
+        res.redirect('/users/');
+    }
+});
+
+// Faculty and student approval
+
+router.get('/viewUnapprovedUsers/', verifyJWT, async function (req, res, next) {
+    const { userId, userName, userRole } = req;
+    if (userRole == "Director") {
+        let unapprovedUsers = await directorServices.getUnapprovedUsers();
+        if (unapprovedUsers.status == "Fail") {
+            let error = unapprovedUsers.error;
+            res.render('error', { layout: 'layout/directorLayout', name: userName, error: error });
+        }
+        else {
+            let { unapprovedFaculty, unapprovedScholars } = unapprovedUsers.result;
+            res.render('director/viewUnapprovedUsers', { layout: 'layout/directorLayout', unapprovedFaculty: unapprovedFaculty, unapprovedScholars: unapprovedScholars, name: userName })
+        }
+    }
+    else {
+        res.redirect('/users/');
+    }
+});
+
+router.get('/viewUser/:userId', verifyJWT, async function (req, res, next) {
+    const { userID, userName, userRole } = req;
+    const { userId } = req.params;
+    if (userRole == "Director") {
+        let users = await directorServices.getUser(userId);
+        if (users.status == "Fail") {
+            let error = users.error;
+            res.render('error', { layout: 'layout/directorLayout', name: userName, error: error });
+        }
+        else {
+            let user = users.result;
+            res.render('director/viewUser', { layout: 'layout/directorLayout', user: user, name: userName })
+        }
+    }
+    else {
+        res.redirect('/users/');
+    }
+})
+
+router.get('/viewReviewer/:userId', verifyJWT, async function (req, res, next) {
+    const { userID, userName, userRole } = req;
+    const { userId } = req.params;
+    if (userRole == "Director") {
+        let users = await directorServices.getReviewer(userId);
+        if (users.status == "Fail") {
+            let error = users.error;
+            res.render('error', { layout: 'layout/directorLayout', name: userName, error: error });
+        }
+        else {
+            let user = users.result;
+            res.render('director/viewReviewer', { layout: 'layout/directorLayout', user: user, name: userName })
+        }
+    }
+    else {
+        res.redirect('/users/');
+    }
+})
+
+
+router.post('/approveUser', verifyJWT, async function (req, res, next) {
+    const { userID, userName, userRole } = req;
+    const { userId, userEmail } = req.body;
+    if (userRole == "Director") {
+        let usersUpdation = await directorServices.approveUser(userId, userEmail);
+        if (usersUpdation.status == "Fail") {
+            let error = usersUpdation.error;
+            res.render('error', { layout: 'layout/directorLayout', name: userName, error: error });
+        }
+        else {
+            res.redirect('/director/viewUser/' + userId);
+        }
+    }
+    else {
+        res.redirect('/users/');
+    }
+})
+
+
+router.get('/viewApprovedUsers/', verifyJWT, async function (req, res, next) {
+    const { userId, userName, userRole } = req;
+    if (userRole == "Director") {
+        let approvedUsers = await directorServices.getApprovedUsers();
+        if (approvedUsers.status == "Fail") {
+            let error = approvedUsers.error;
+            res.render('error', { layout: 'layout/directorLayout', name: userName, error: error });
+        }
+        else {
+            let { approvedFaculty, approvedScholars, approvedReviewers } = approvedUsers.result;
+            res.render('director/viewApprovedUsers', { layout: 'layout/directorLayout', approvedFaculty: approvedFaculty, approvedScholars: approvedScholars, approvedReviewers: approvedReviewers, name: userName })
         }
     }
     else {

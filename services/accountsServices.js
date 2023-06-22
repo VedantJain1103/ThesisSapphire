@@ -32,6 +32,7 @@ async function getDepartmentByUserId(userId) {
         });
     return department;
 }
+
 async function getUserByEmail(email) {
     let user = await fetch(
         "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getUserByEmail?secret=vedant&userEmail=" +
@@ -536,7 +537,7 @@ async function completeUserProfileReviewer(userId, name, email, institute, pfId)
     }
 }
 
-async function completeUserProfileScholar(userId, name, email, institute, department, role, rollNo, dateOfJoining) {
+async function completeUserProfileScholar(userId, name, email, institute, department, rollNo, dateOfJoining) {
     const userResult = await getUserByEmail(email);
     let result = {
         status: "Fail",
@@ -553,11 +554,12 @@ async function completeUserProfileScholar(userId, name, email, institute, depart
     }
     let reqBody = {
         userId: userId,
-        institute: institute,
         rollNo: rollNo,
         department: department,
         dateOfJoining: dateOfJoining,
+        institute: institute
     }
+    console.log("Sending data to Server: ", reqBody);
     const updation = await fetch(
         "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/createScholarProfile?secret=vedant",
         {

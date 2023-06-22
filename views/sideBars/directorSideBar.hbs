@@ -1,12 +1,6 @@
 <div class="sidebar">
     <div class="sidebar-menu">
-        <!-- Sidebar brand -->
-        {{!-- <a href="#" class="sidebar-brand">
-            <img src="..." alt="...">
-            Brand
-        </a> --}}
-        <!-- Sidebar links and titles -->
-        c
+        {{>sideBarLogo}}
         <h5 class="sidebar-title">Getting started</h5>
         <div class="sidebar-divider"></div>
         <a href="/users/" class="sidebar-link">Home</a>
@@ -21,5 +15,10 @@
         <h5 class="sidebar-title">Reviewer</h5>
         <div class="sidebar-divider"></div>
         <a href="/reviewer/" class="sidebar-link">Reviewer Home Page</a>
+        <br />
+        <h5 class="sidebar-title">Admin Actions</h5>
+        <div class="sidebar-divider"></div>
+        <a href="/director/viewUnapprovedUsers/" class="sidebar-link">Unapproved Users</a>
+        <a href="/director/viewApprovedUsers/" class="sidebar-link">Approved Users</a>
     </div>
 </div>

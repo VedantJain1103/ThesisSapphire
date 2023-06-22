@@ -19,17 +19,32 @@ const verifyJWT = (req, res, next) => {
             req.userId = decoded.userId;
             req.userName = decoded.userName;
             req.userRole = decoded.userRole;
+            req.isApproved = decoded.isApproved;
             let routeUrl = req.route.path;
-            console.log(req.userRole)
+            console.log("verifying- ", req.userId, " ", req.userName, " ", req.userRole, " ", req.isApproved);
             // console.log(routeUrl != "/profileCompletion")
             // // if (routeUrl == "/profileCompletion") {
             // //     next();
             // // }
-            if (!req.userRole && ((routeUrl != "/profileCompletion") && (routeUrl != "/profileCompletion/faculty") && (routeUrl != "/profileCompletion/reviewer") && (routeUrl != "/profileCompletion/scholar"))) {
-                res.redirect('/users/profileCompletion');
-                return;
+            if (!req.userRole) {
+                if ((routeUrl != "/profileCompletion") && (routeUrl != "/profileCompletion/faculty") && (routeUrl != "/profileCompletion/reviewer") && (routeUrl != "/profileCompletion/scholar")) {
+                    res.redirect('/users/profileCompletion');
+                    return;
+                }
+                else {
+                    next();
+                }
             }
-            next();
+            else {
+                if (!req.isApproved) {
+                    if (routeUrl != "/notApproved") {
+                        res.redirect('/users/notApproved');
+                        return;
+                    }
+                    else next();
+                }
+                else next();
+            }
         }
     );
     // req.userId = "6438ef10f98841e106fd056f";

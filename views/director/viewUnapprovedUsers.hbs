@@ -1,0 +1,92 @@
+<div class="container-fluid">
+    <div class="row  d-flex justify-content-around align-items-center">
+        <div class="col">
+            <div class="content">
+                <details class="collapse-panel mw-full mt-20" open>
+                    <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100%, mt-20 = margin-top: 2rem (20px) -->
+                    <summary class="collapse-header">
+                        Faculty
+                    </summary>
+                    {{#if unapprovedFaculty}}
+                    <table class="table table-hover collapse-content">
+                        <thead>
+                            <tr>
+                                <th>User Name</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Role</th>
+                                <th class="text-center">Profile Completed On</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each unapprovedFaculty}}
+                            <tr>
+                                <td class="font-italic font-size-20">{{this.name}}</td>
+                                <td class="text-center">
+                                    <div>{{this.email}}</div>
+                                </td>
+                                <td class="text-center">
+                                    <div>{{this.role}}</div>
+                                </td>
+                                <td class="text-center">
+                                    {{this.profileCompletedOn}}
+                                </td>
+                                <td class="text-right">
+                                    <a href="/director/viewUser/{{this._id}}" class="btn">View</a>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                    {{else}}
+                    <div class="collapse-content text-center font-italic">
+                        No Faculty to be approved as of now.
+                    </div>
+                    {{/if}}
+                </details>
+                <details class="collapse-panel mw-full mt-20" open>
+                    <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100%, mt-20 = margin-top: 2rem (20px) -->
+                    <summary class="collapse-header">
+                        Scholar
+                    </summary>
+                    {{#if unapprovedScholars}}
+                    <table class="table table-hover collapse-content">
+                        <thead>
+                            <tr>
+                                <th>User Name</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Role</th>
+                                <th class="text-center">Profile Completed On</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each unapprovedScholars}}
+                            <tr>
+                                <td class="font-italic font-size-20">{{this.name}}</td>
+                                <td class="text-center">
+                                    <div>{{this.email}}</div>
+                                </td>
+                                <td class="text-center">
+                                    <div>{{this.role}}</div>
+                                </td>
+                                <td class="text-center">
+                                    {{this.profileCompletedOn}}
+                                </td>
+                                <td class="text-right">
+                                    <a href="/director/viewUser/{{this._id}}" class="btn">View</a>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                    {{else}}
+                    <div class="collapse-content text-center font-italic">
+                        No scholars to be approved as of now.
+                    </div>
+                    {{/if}}
+                </details>
+            </div>
+        </div>
+    </div>
+</div>

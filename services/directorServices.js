@@ -139,9 +139,209 @@ async function approveThesis(directorName, thesisId, thesisName, scholarEmail, m
     return result;
 }
 
+async function getUnapprovedUsers() {
+    let result = {
+        status: "Fail",
+        result: null,
+        error: null
+    }
+    let usersResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getUnapprovedUsers?secret=vedant", {
+        method: "GET",
+    }
+    ).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        // console.log('Request succeeded with JSON response', data);
+        return data;
+    }).catch(function (error) {
+        console.log('Request failed', error);
+        result.error = error;
+    });
+    if (result.error) return result;
+    if (usersResult.status == "Fail") {
+        result.error = usersResult.error;
+        return result;
+    }
+    let unapprovedUsers = usersResult.result;
+
+    let unapprovedFaculty = [];
+    let unapprovedScholars = [];
+    unapprovedUsers.forEach(function (user) {
+        if (user.role == "Scholar") {
+            unapprovedScholars.push(user);
+        }
+        else {
+            unapprovedFaculty.push(user);
+        }
+    })
+
+    result.status = "Success";
+    result.result = {
+        unapprovedFaculty: unapprovedFaculty,
+        unapprovedScholars: unapprovedScholars,
+    };
+    return result;
+}
+
+async function getUser(userId) {
+    let result = {
+        status: "Fail",
+        result: null,
+        error: null
+    }
+    if (!userId) {
+        result.error = "User Id not provided";
+        return result;
+    }
+    let usersResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getUserByUserId?secret=vedant&userId=" + userId, {
+        method: "GET",
+    }
+    ).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        // console.log('Request succeeded with JSON response', data);
+        return data;
+    }).catch(function (error) {
+        console.log('Request failed', error);
+        result.error = error;
+    });
+    if (result.error) return result;
+    if (usersResult.status == "Fail") {
+        result.error = usersResult.error;
+        return result;
+    }
+    result.status = "Success";
+    result.result = usersResult.result[0];
+    return result;
+}
+
+async function getReviewer(userId) {
+    let result = {
+        status: "Fail",
+        result: null,
+        error: null
+    }
+    if (!userId) {
+        result.error = "User Id not provided";
+        return result;
+    }
+    let usersResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getReviewerByUserId?secret=vedant&userId=" + userId, {
+        method: "GET",
+    }
+    ).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        // console.log('Request succeeded with JSON response', data);
+        return data;
+    }).catch(function (error) {
+        console.log('Request failed', error);
+        result.error = error;
+    });
+    if (result.error) return result;
+    if (usersResult.status == "Fail") {
+        result.error = usersResult.error;
+        return result;
+    }
+    result.status = "Success";
+    result.result = usersResult.result[0];
+    return result;
+}
+async function approveUser(userId, userEmail) {
+    let result = {
+        status: "Fail",
+        result: null,
+        error: null
+    }
+    if (!userId || !userEmail) {
+        result.error = "User Id or Email not provided";
+        return result;
+    }
+    let userReqBody = {
+        userId: userId
+    }
+    const updation = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/approveUserByUserId?secret=vedant", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: JSON.stringify(userReqBody)
+    }
+    ).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        // console.log('Request succeeded with JSON response', data);
+        console.log(data);
+        return data;
+    }).catch(function (error) {
+        console.log('Request failed', error);
+    });
+    if (updation.status == "Fail") return updation;
+    else result.status = "Success";
+    result.result = updation.result;
+
+    let content = mailDataServices.userApproved();
+    mailServices.sendMail(userEmail, content, "Account Verified");
+    return result;
+}
+
+async function getApprovedUsers() {
+    let result = {
+        status: "Fail",
+        result: null,
+        error: null
+    }
+    let usersResult = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getApprovedUsers?secret=vedant", {
+        method: "GET",
+    }
+    ).then(function (response) {
+        return response.json();
+    }).then(function (data) {
+        // console.log('Request succeeded with JSON response', data);
+        return data;
+    }).catch(function (error) {
+        console.log('Request failed', error);
+        result.error = error;
+    });
+    if (result.error) return result;
+    if (usersResult.status == "Fail") {
+        result.error = usersResult.error;
+        return result;
+    }
+    let approvedUsers = usersResult.result;
+
+    let approvedFaculty = [];
+    let approvedScholars = [];
+    let approvedReviewers = [];
+    approvedUsers.forEach(function (user) {
+        if (user.role == "Scholar") {
+            approvedScholars.push(user);
+        }
+        else if (user.role == "Reviewer") {
+            approvedReviewers.push(user);
+        }
+        else {
+            approvedFaculty.push(user);
+        }
+    })
+
+    result.status = "Success";
+    result.result = {
+        approvedFaculty: approvedFaculty,
+        approvedScholars: approvedScholars,
+        approvedReviewers: approvedReviewers
+    };
+    return result;
+}
+
 module.exports = {
     getThesisById,
     getThesisList,
     getThesisToBeApprovedList,
-    approveThesis
+    approveThesis,
+    getUnapprovedUsers,
+    getUser,
+    getReviewer,
+    approveUser,
+    getApprovedUsers
 }

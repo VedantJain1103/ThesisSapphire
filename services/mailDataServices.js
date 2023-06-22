@@ -7,6 +7,23 @@ function verificationMailContent(code) {
     return content;
 }
 
+function userApproved() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    const formattedToday = dd + '/' + mm + '/' + yyyy;
+    let content = `Your account has been verified successfully.<br>Thank you for showing your patience.<br>Sorry for the incovenience caused.<br>
+                You can now start exploring the functionalities of the website after signing in to your account.<br><br>
+                <i>Date:${formattedToday}</i>
+                `
+    return content;
+}
+
 function thesisSubmissionContent(mentor, thesis) {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -94,6 +111,7 @@ function invitationContent(Director, thesis, mentorName) {
 
 module.exports = {
     verificationMailContent,
+    userApproved,
     thesisSubmissionContent,
     thesisSubmissionByMentor,
     thesisApprovalByHOD,
