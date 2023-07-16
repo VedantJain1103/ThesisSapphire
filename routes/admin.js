@@ -3,152 +3,287 @@ var router = express.Router();
 
 require('dotenv').config()
 
-const adminServices = require('../services/adminServices');
-const accountsServices = require('../services/accountsServices');
-const userImageS3 = require('../services/userImageS3');
-const userCertificateS3 = require('../services/userCertificateS3');
+var adminServices = require('../services/adminServices');
+var accountsServices = require('../services/accountsServices');
 
-const fs = require('fs');
-const util = require('util');
-const unlinkFile = util.promisify(fs.unlink);
-var path = require('path');
-var multer = require('multer');
+const verifyJWT = require('../middleware/verifyJWT');
 
-const { encrypt, decrypt } = require('../services/encryptionServices');
 
-router.get('/unreviewedUsers', function (req, res, next) {
-    adminServices.getUnreviewedUsers(function (error, users) {
-        let encUsersEmail = [];
-        if (error) {
-            res.send(error);
-        } else {
-            users.forEach(user => {
-                const encEmail = encrypt(user.email);
-                encUsersEmail.push(encEmail);
-            });
-            // console.log(result, encUsersEmail);
-        }
-        // res.send(users);
-        res.render('admin/unreviewedUsers.ejs', { users:users, encUsersEmail });
-    })
+router.get('/', verifyJWT, async function (req, res, next) {
+    const { userId, userName, userRole } = req;
+    if (userRole != "Admin") {
+        res.redirect('/users/');
+    }
+    else {
+        res.render('index', { layout: 'layout/adminLayout', name: userName, role: userRole });
+    }
 });
 
-router.get('/unreviewedItemsPerUser', function (req, res, next) {
-    adminServices.getUnreviewedItemsPerUser(function (error, users) {
-        if (error) {
-            res.send(error);
-        } else {
-            let encUsersEmail = [];
-            users.forEach(user => {
-                const encEmail = encrypt(user.seller.email);
-                encUsersEmail.push(encEmail);
-            });
-            res.render('admin/unreviewedItemsPerUser.ejs',{ users:users, encUsersEmail })
+
+//-----------------USERS ACTION----------------------------
+// Not needed as per new changes
+// Faculty and student approval
+
+// router.get('/viewUnapprovedUsers/', verifyJWT, async function (req, res, next) {
+//     const { userId, userName, userRole } = req;
+//     if (userRole == "Admin") {
+//         let unapprovedUsers = await adminServices.getUnapprovedUsers();
+//         if (unapprovedUsers.status == "Fail") {
+//             let error = unapprovedUsers.error;
+//             res.render('error', { layout: 'layout/adminLayout', name: userName, error: error });
+//         }
+//         else {
+//             let { unapprovedFaculty, unapprovedScholars } = unapprovedUsers.result;
+//             res.render('admin/viewUnapprovedUsers', { layout: 'layout/adminLayout', unapprovedFaculty: unapprovedFaculty, unapprovedScholars: unapprovedScholars, name: userName })
+//         }
+//     }
+//     else {
+//         res.redirect('/users/');
+//     }
+// });
+
+//view user
+router.get('/viewUser/:userId', verifyJWT, async function (req, res, next) {
+    const { userID, userName, userRole } = req;
+    const { userId } = req.params;
+    if (userRole == "Admin") {
+        let users = await adminServices.getUser(userId);
+        if (users.status == "Fail") {
+            let error = users.error;
+            res.render('error', { layout: 'layout/adminLayout', name: userName, error: error });
         }
-    })
+        else {
+            let user = users.result;
+            res.render('admin/viewUser', { layout: 'layout/adminLayout', user: user, name: userName })
+        }
+    }
+    else {
+        res.redirect('/users/');
+    }
 })
 
-router.get('/unreviewedItemsOfUser/:cipherTextEmail', function (req, res, next){
-    const { cipherTextEmail } = req.params;
-    const email = decrypt(cipherTextEmail);
-    adminServices.getUnreviewedItemsOfUserByEmail(email, function (error, items) {
-        if (error) {
-            res.send(error);
-        } else {
-            let encItemsId = [];
-            items.forEach(item => {
-                const encId = encrypt(item._id);
-                encItemsId.push(encId);
-            });
-            res.render('admin/unreviewedItemsOfUser.ejs', { items, encItemsId, email, cipherTextEmail });
+//vier reviewer
+router.get('/viewReviewer/:userId', verifyJWT, async function (req, res, next) {
+    const { userID, userName, userRole } = req;
+    const { userId } = req.params;
+    if (userRole == "Admin") {
+        let users = await adminServices.getReviewer(userId);
+        if (users.status == "Fail") {
+            let error = users.error;
+            res.render('error', { layout: 'layout/adminLayout', name: userName, error: error });
         }
-    })
+        else {
+            let user = users.result;
+            res.render('admin/viewReviewer', { layout: 'layout/adminLayout', user: user, name: userName })
+        }
+    }
+    else {
+        res.redirect('/users/');
+    }
 })
 
-router.get('/user/view/:cipherTextEmail', function (req, res, next) {
-    const { cipherTextEmail } = req.params;
-    const userEmail = decrypt(cipherTextEmail);
-    accountsServices.getUserProfileByEmail(userEmail, function (error, user) {
-        if (error) {
-            res.send(error);
-        } else {
-            res.render('admin/viewUnreviewedUser', { user, cipherTextEmail });
+//No need as per new changes
+//Approve user
+// router.post('/approveUser', verifyJWT, async function (req, res, next) {
+//     const { userID, userName, userRole } = req;
+//     const { userId, userEmail } = req.body;
+//     if (userRole == "Admin") {
+//         let usersUpdation = await directorServices.approveUser(userId, userEmail);
+//         if (usersUpdation.status == "Fail") {
+//             let error = usersUpdation.error;
+//             res.render('error', { layout: 'layout/adminLayout', name: userName, error: error });
+//         }
+//         else {
+//             res.redirect('/admin/viewUser/' + userId);
+//         }
+//     }
+//     else {
+//         res.redirect('/users/');
+//     }
+// })
+
+router.get('/viewApprovedUsers/', verifyJWT, async function (req, res, next) {
+    const { userId, userName, userRole } = req;
+    if (userRole == "Admin") {
+        let approvedUsers = await adminServices.getApprovedUsers();
+        if (approvedUsers.status == "Fail") {
+            let error = approvedUsers.error;
+            res.render('error', { layout: 'layout/adminLayout', name: userName, error: error });
         }
-    })
+        else {
+            let { approvedFaculty, approvedScholars, approvedReviewers } = approvedUsers.result;
+            res.render('Admin/viewApprovedUsers', { layout: 'layout/adminLayout', approvedFaculty: approvedFaculty, approvedScholars: approvedScholars, approvedReviewers: approvedReviewers, name: userName })
+        }
+    }
+    else {
+        res.redirect('/users/');
+    }
+});
+
+
+//---------------------INSTITUTE ACTIONS-------------------
+router.get('/departments/view', verifyJWT, async function (req, res, next) {
+    const { userId, userRole, userName } = req;
+    const { msg, successStatus, failStatus } = req.query;
+    if (userRole != "Admin") {
+        res.redirect('/users/');
+    }
+    else {
+        const departments = await adminServices.getDepartments();
+        let extraData = {
+            layout: 'layout/adminLayout',
+            name: userName, role: userRole,
+            departments: departments,
+            alert: msg,
+            successAlert: successStatus,
+            failAlert: failStatus
+        };
+        res.render('admin/viewDepartments.hbs', extraData)
+    }
+})
+router.post('/departments/create', verifyJWT, async function (req, res, next) {
+    const { userId, userRole, userName } = req;
+    const { name } = req.body;
+    if (userRole != "Admin") {
+        res.redirect('/users/');
+    }
+    else {
+        const creation = await adminServices.createDepartment(userId, name);
+        if (creation.status == "Fail") {
+            res.redirect('/admin/departments/view?failStatus=' + creation.error);
+        }
+        else res.redirect('/admin/departments/view?successStatus=Department added successfuully');
+    }
+})
+router.post('/departments/delete/', verifyJWT, async function (req, res, next) {
+    const { userId, userRole, userName } = req;
+    const { departmentId } = req.body;
+    if (userRole != "Admin") {
+        res.redirect('/users/');
+    }
+    else {
+        const deletion = await adminServices.deleteDepartment(userId, departmentId);
+        if (deletion.status == "Fail") {
+            res.redirect('/admin/departments/view?failStatus=' + deletion.error);
+        }
+        else res.redirect('/admin/departments/view?successStatus=Department deleted successfuully');
+    }
 })
 
-router.get('/items/view/:cipherTextItemId', function (req, res, next) {
-    const { cipherTextItemId } = req.params;
-    const itemId = decrypt(cipherTextItemId);
-    console.log(itemId)
-    itemServices.getItemById(itemId, function (error, result) {
-        if (error) {
-            res.send(error);
-        } else {
-            const [item] = result;
-            const userCipherTextEmail = encrypt(item.seller.email);
-            itemServices.viewItemUnits(function (error2, units) {
-                console.log(units);
-                if (error2) res.send(error2);
-                else res.render('admin/viewUnreviewedItem', { item, cipherTextItemId, userCipherTextEmail, units });
-            })
+
+router.get('/roles/view', verifyJWT, async function (req, res, next) {
+    const { userId, userRole, userName } = req;
+    const { msg, failStatus, successStatus } = req.query;
+    if (userRole != "Admin") {
+        res.redirect('/users/');
+    }
+    else {
+        const roles = await adminServices.getRoles();
+        let extraData = {
+            layout: 'layout/adminLayout',
+            name: userName, role: userRole,
+            roles: roles,
+            alert: msg,
+            successAlert: successStatus,
+            failAlert: failStatus
+        };
+        res.render('admin/viewRoles.hbs', extraData)
+    }
+})
+router.post('/roles/create', verifyJWT, async function (req, res, next) {
+    const { userId, userRole, userName } = req;
+    const { name } = req.body;
+    if (userRole != "Admin") {
+        res.redirect('/users/');
+    }
+    else {
+        const creation = await adminServices.createRole(userId, name);
+        if (creation.status == "Fail") {
+            res.redirect('/admin/roles/view?failStatus=' + creation.error);
         }
-    })
+        else res.redirect('/admin/roles/view?successStatus=Department added successfuully');
+    }
+})
+router.post('/roles/delete/', verifyJWT, async function (req, res, next) {
+    const { userId, userRole, userName } = req;
+    const { roleId } = req.body;
+    if (userRole != "Admin") {
+        res.redirect('/users/');
+    }
+    else {
+        const deletion = await adminServices.deleteRole(userId, roleId);
+        if (deletion.status == "Fail") {
+            res.redirect('/admin/roles/view?failStatus=' + deletion.error);
+        }
+        else res.redirect('/admin/roles/view?successStatus=Department deleted successfuully');
+    }
 })
 
-router.post('/user/view/:cipherTextEmail/approve', function (req, res, next) {
-    const { cipherTextEmail } = req.params;
-    const email = decrypt(cipherTextEmail);
-    
-    adminServices.updateUserReviewStatus(email, "Approved", "Account Approved", function (error, result) {
-        if (error) {
-            res.send(error);
-        } else {
-            res.redirect('/admin/unreviewedUsers');
+router.get('/createProfiles', verifyJWT, async function (req, res, next) {
+    const { userId, userRole, userName } = req;
+    const { msg, successStatus, failStatus } = req.query;
+    if (userRole != "Admin") {
+        res.redirect('/users/');
+    }
+    else {
+        let user = await accountsServices.getUserById(userId);
+        let departments = await adminServices.getDepartments();
+        let roles = await adminServices.getRoles();
+        for (let i = 0; i < roles.length; i++) {
+            if (roles[i].name == "Reviewer") {
+                let spliced = roles.splice(i, 1);
+            }
         }
-    })
+        for (let i = 0; i < roles.length; i++) {
+            if (roles[i].name == "Scholar") {
+                let spliced = roles.splice(i, 1);
+            }
+        }
+        let extraData = {
+            layout: 'layout/adminLayout',
+            name: userName, role: userRole,
+            departments: departments,
+            roles: roles,
+            alert: msg,
+            successAlert: successStatus,
+            failAlert: failStatus
+        };
+        res.render('admin/createProfiles.hbs', extraData)
+    }
+});
+
+router.post('/createProfile/scholar', verifyJWT, async function (req, res, next) {
+    const { userId, userRole, userName } = req;
+    const { name, email, institute, department, rollNo, dateOfJoining } = req.body;
+    if (userRole != "Admin") {
+        res.redirect('/users/');
+    }
+    else {
+        const creation = await adminServices.createUserProfileScholar(name, email, institute, department, rollNo, dateOfJoining);
+        if (creation.status == "Fail") {
+            res.redirect('/admin/createProfiles?failStatus=' + creation.error);
+        }
+        else {
+            res.redirect('/admin/createProfiles?successStatus=User Profile Created');
+        }
+    }
 })
 
-router.post('/user/view/:cipherTextEmail/reject', function (req, res, next) {
-    const { cipherTextEmail } = req.params;
-    const email = decrypt(cipherTextEmail);
-    const { rejectionReason } = req.body;
-    adminServices.updateUserReviewStatus(email, "Rejected", rejectionReason , function (error, result) {
-        if (error) {
-            res.send(error);
-        } else {
-            res.redirect('/admin/unreviewedUsers');
+router.post('/createProfile/faculty', verifyJWT, async function (req, res, next) {
+    const { userId, userRole, userName } = req;
+    const { name, email, institute, department, pfId, role } = req.body;
+    if (userRole != "Admin") {
+        res.redirect('/users/');
+    }
+    else {
+        const creation = await adminServices.createUserProfileFaculty(name, email, institute, department, pfId, role);
+        if (creation.status == "Fail") {
+            res.redirect('/admin/createProfiles?failStatus=' + creation.error);
         }
-    })
-})
-
-router.post('/items/view/:cipherTextItemId/approve', function (req, res, next) {
-    const { cipherTextItemId } = req.params;
-    const { unitId, profitMargin } = req.body;
-    if (!unitId || !profitMargin) res.send("All Fields are necessary");
-
-    const itemId = decrypt(cipherTextItemId);
-    if(profitMargin<0||profitMargin>100) res.send("Profit margin is out of range")
-    adminServices.updateItemReviewStatus(itemId, "Approved", "Account Approved", unitId, profitMargin, function (error, result) {
-        if (error) {
-            res.send(error);
-        } else {
-            res.redirect('/admin/unreviewedItemsPerUser');
+        else {
+            res.redirect('/admin/createProfiles?successStatus=User Profile Created');
         }
-    })
-})
-
-router.post('/items/view/:cipherTextItemId/reject', function (req, res, next) {
-    const { cipherTextItemId } = req.params;
-    const itemId = decrypt(cipherTextItemId);
-    const { rejectionReason } = req.body;
-    adminServices.updateItemReviewStatus(itemId, "Rejected", rejectionReason , function (error, result) {
-        if (error) {
-            res.send(error);
-        } else {
-            res.redirect('/admin/unreviewedItemsPerUsers');
-        }
-    })
+    }
 })
 
 module.exports = router;

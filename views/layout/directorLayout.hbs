@@ -15,6 +15,7 @@
     <div class="sticky-alerts"></div>
     <!-- Modals -->
     {{>rejectThesisModal}}
+    {{>directorAddReviewerModal}}
 
     <!-- Navbar -->
     {{>navbarSignedIn}}
@@ -34,6 +35,63 @@
     {{>footer}}
   </div>
   {{>scripts}}
+  {{#if alert}}
+  <script type="text/javascript">
+    // Toasts primary alert
+    function toastPrimaryAlert() {
+      halfmoon.initStickyAlert({
+        content: `{{ alert }}`,
+        title: "Alert",
+        alertType: "alert-primary",
+        hasDismissButton: true,
+        timeShown: 10000
+      });
+    }
+
+    // Toasts secondary alert
+    function toastSecondaryAlert() {
+      halfmoon.initStickyAlert({
+        content: `{{alert}}`,
+        title: "Secondary alert",
+        alertType: "alert-secondary",
+        fillType: "filled-dm"
+      });
+    }
+
+    window.onload = toastSecondaryAlert();
+  </script>
+  {{/if}}
+
+  {{#if successAlert }}
+  <script type="text/javascript">
+    // Toasts success alert
+    function toastSuccessAlert() {
+      halfmoon.initStickyAlert({
+        content: `{{successAlert}}`,
+        title: "Success",
+        alertType: "alert-success",
+        fillType: "filled-lm"
+      });
+    }
+
+    window.onload = toastSuccessAlert();
+  </script>
+  {{/if}}
+
+  {{#if failAlert}}
+  <script type="text/javascript">
+    // Toasts danger alert
+    function toastDangerAlert() {
+      halfmoon.initStickyAlert({
+        content: `{{failAlert}}`,
+        title: "Error",
+        alertType: "alert-danger",
+        fillType: "filled"
+      });
+    }
+    window.onload = toastDangerAlert();
+  </script>
+  {{/if}}
 </body>
 
 </html>

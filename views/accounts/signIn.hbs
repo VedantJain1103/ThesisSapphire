@@ -1,24 +1,36 @@
-<div class="modal" id="modal-2" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <a href="#" class="btn close" role="button" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </a>
-      <h5 class="modal-title">Sign in to your account</h5>
-      <form action="/accounts/signIn" method="post">
-        <div class="form-group">
-          <label for="username" class="required">User Email</label>
-          <input type="text" id="username" class="form-control" placeholder="Username" required="required">
+<div class="container-fluid">
+  <div class="row  d-flex justify-content-between">
+    <div class="col">
+      <div id=" top">
+        <div class="card p-0">
+          <div class="content">
+            <h1> Hello,</h1>
+          </div>
+          <div class="content">
+            <p class="text-monospace text-justify">
+              Welcome to Thesis Sapphire! We're delighted to have you here as
+              you embark on your thesis journey.
+              <br>By signing in, you gain access to a comprehensive platform designed to streamline and elevate your
+              research experience.
+              Take control of your thesis progress with our intuitive tools, track milestones, collaborate
+              seamlessly with your committee, and stay organized with timely reminders.
+              <i>Thesis Sapphire</i> is more than just a tracking tool, it's a supportive community of like-minded
+              researchers.
+              <br>Join us and connect with fellow graduate students, share insights, and exchange
+              experiences.
+            </p>
+            <div class="content d-flex justify-content-center">
+              <a href="#signIn" class="btn btn-primary" role="button">Sign in</a>
+            </div>
+            <p class="text-monospace text-justify">
+              Thank you,<br>
+              Team Thesis Saphire<br>
+            </p>
+          </div>
+          <div class="content w-200 h-50">
+            {{>logo}}
+          </div>
         </div>
-        <div class="form-group">
-          <label for="password" class="required">Password</label>
-          <input type="password" id="password" class="form-control" placeholder="Password" required="required">
-        </div>
-        <input class="btn btn-primary btn-block" type="submit" value="Sign in">
-      </form>
-      <div class="text-right mt-10"> <!-- text-right = text-align: right, margin-top: 1rem (10px) -->
-        <a href="#modal-2" class="hyperlink">Forgot password?</a>
-        <!-- hyperlink = used on regular links to remove anti-aliasing in dark mode -->
       </div>
     </div>
   </div>

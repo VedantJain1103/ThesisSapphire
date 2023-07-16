@@ -537,101 +537,32 @@ async function completeUserProfileReviewer(userId, name, email, institute, pfId)
     }
 }
 
-async function completeUserProfileScholar(userId, name, email, institute, department, rollNo, dateOfJoining) {
-    const userResult = await getUserByEmail(email);
+async function connectProfile(userId) {
     let result = {
         status: "Fail",
+        result: null,
         error: null
-    }
-    if (userResult.status == "Fail") {
-        result.error = userResult.error;
+    };
+    if (!userId) {
+        result.error = "User Id not provided";
         return result;
     }
-    const user = userResult.result;
-    if (userId != user._id || name !== user.name || email !== user.email) {
-        result.error = "Incorrect data";
-        return result;
-    }
-    let reqBody = {
-        userId: userId,
-        rollNo: rollNo,
-        department: department,
-        dateOfJoining: dateOfJoining,
-        institute: institute
-    }
-    console.log("Sending data to Server: ", reqBody);
-    const updation = await fetch(
-        "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/createScholarProfile?secret=vedant",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: JSON.stringify(reqBody),
-        }
-    ).then(function (response) {
-        return response.json();
-    })
-        .then(function (data) {
-            return data;
-        })
-        .catch(function (error) {
-            console.log("Request failed", error);
-            result.error = error;
-            return result;
-        });
-    if (updation.status == "Fail") {
-        result.error = updation.error;
-        return result;
-    }
-    else {
-        result.status = "Success";
-        let statusUpdation = await updateUserProfileStatus(userId, true);
-        if (statusUpdation.status == "Fail") {
-            result.status = "Fail";
-            result.error = statusUpdation.error;
-        }
-        return result;
-    }
-}
 
-async function completeUserProfileFaculty(userId, name, email, institute, department, pfId, role) {
-    const userResult = await getUserByEmail(email);
-    let result = {
-        status: "Fail",
-        error: null
-    }
-    if (userResult.status == "Fail") {
-        result.error = userResult.error;
-        return result;
-    }
-    const user = userResult.result;
-    if (userId != user._id || name !== user.name || email !== user.email) {
-        result.error = "Incorrect data";
-        return result;
-    }
-    let reqBody = {
-        userId: userId,
-        role: role,
-        institute: institute,
-        department: department,
-        pfId: pfId
-    }
-    const updation = await fetch(
-        "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/createMentorProfile?secret=vedant",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: JSON.stringify(reqBody),
-        }
-    ).then(function (response) {
+    const connectProfileReqBody = {
+        userId: userId
+    };
+
+    let connection = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/connectProfileToRegisteredUser?secret=vedant", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(connectProfileReqBody)
+    }).then(function (response) {
         return response.json();
     })
         .then(function (data) {
+            console.log(data);
             return data;
         })
         .catch(function (error) {
@@ -639,19 +570,7 @@ async function completeUserProfileFaculty(userId, name, email, institute, depart
             result.error = error;
             return result;
         });
-    if (updation.status == "Fail") {
-        result.error = updation.error;
-        return result;
-    }
-    else {
-        result.status = "Success";
-        let statusUpdation = await updateUserProfileStatus(userId, true);
-        if (statusUpdation.status == "Fail") {
-            result.status = "Fail";
-            result.error = statusUpdation.error;
-        }
-        return result;
-    }
+    return connection;
 }
 
 async function completeUserProfile(userId, name, email, institute, department, role, rollNo, dateOfJoining, pfId) {
@@ -810,8 +729,7 @@ module.exports = {
     checkVerification,
     completeUserProfile,
     completeUserProfileReviewer,
-    completeUserProfileScholar,
-    completeUserProfileFaculty,
+    connectProfile,
     updateUserProfileStatus
     // profileCompletion,
 };

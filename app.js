@@ -22,6 +22,7 @@ const hbs = require('hbs');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var accountsRouter = require('./routes/accounts');
+var adminRouter = require('./routes/admin');
 var scholarRouter = require('./routes/scholar');
 var mentorRouter = require('./routes/mentor');
 var hodRouter = require('./routes/hod');
@@ -72,6 +73,7 @@ app.use(function (req, res, next) {
 app.use('/', indexRouter);
 app.use('/accounts', accountsRouter);
 app.use('/users', usersRouter);
+app.use('/admin', adminRouter);
 app.use('/mentor', mentorRouter);
 app.use('/hod', hodRouter);
 app.use('/dean', deanRouter);

@@ -1,0 +1,67 @@
+<div class="modal" id="addReviewerModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content w-600">
+            <a href="" class="btn close" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="modal-title">Reviewer</h5>
+            <form action="/mentor/thesis/addReviewer" method="post">
+                <div class="card">
+                    <div class="content-title">
+                        <h5>Add Reviewers</h5>
+                    </div>
+                    <div class="form-row row-eq-spacing-sm">
+                        <div class="col-sm">
+                            <label for="revName" class="required">Name</label>
+                            <input type="text" class="form-control" id="revName" name="revName" value=""
+                                placeholder="Name" required="required">
+                        </div>
+                    </div>
+                    <div class="form-row row-eq-spacing-sm">
+                        <div class="col-sm">
+                            <label for="revOrg" class="required">Institute</label>
+                            <input type="text" class="form-control" id="revOrg" name="revOrg" value=""
+                                placeholder="Institute" required="required">
+                        </div>
+                    </div>
+                    <div class="form-row row-eq-spacing-sm">
+                        <div class="col-sm">
+                            <label for="revDesig" class="required">Designation</label>
+                            <select class="form-control" id="revDesig" name="revDesig" required="required">
+                                <option value="" selected="selected" disabled="disabled">Select Designation
+                                </option>
+                                {{#each roles}}
+                                <option value="{{this.name}}">{{this.name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row row-eq-spacing-sm">
+                        <div class="col-sm">
+                            <label for="revEmail" class="required">Email</label>
+                            <input type="text" class="form-control" id="revEmail" name="revEmail" value=""
+                                placeholder="Email" required="required">
+                        </div>
+                    </div>
+                    <div class="form-row row-eq-spacing-sm">
+                        <div class="col-sm">
+                            <label for="revType" class="required">Nationality</label>
+                            <select class="form-control" id="revType" name="revType" required="required">
+                                <option value="" selected="selected" disabled="disabled">Select Nationality
+                                </option>
+                                <option value="Indian">Indian</option>
+                                <option value="Foreign">Foreign</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="text" class="form-control d-none" name="thesisId" value="{{thesisId}}"
+                        required="required" readonly="readonly">
+                    <div class="text-right"> <!-- text-right = text-align: right -->
+                        <button class="btn btn-primary" type="submit">Save<i class="fa-regular fa-folder-closed ml-5"
+                                aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

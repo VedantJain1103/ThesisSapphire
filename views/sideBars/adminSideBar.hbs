@@ -1,0 +1,17 @@
+<div class="sidebar">
+    <div class="sidebar-menu">
+        {{>sideBarLogo}}
+        <h5 class="sidebar-title">Getting started</h5>
+        <div class="sidebar-divider"></div>
+        <a href="/users/" class="sidebar-link">Home</a>
+        <br />
+        <h5 class="sidebar-title">Actions</h5>
+        <div class="sidebar-divider"></div>
+        {{!-- Not needed as per new changes --}}
+        {{!-- <a href="/admin/viewUnapprovedUsers/" class="sidebar-link">Unapproved Users</a> --}}
+        <a href="/admin/viewApprovedUsers/" class="sidebar-link">Approved Users</a>
+        <a href="/admin/createProfiles/" class="sidebar-link">Create Profiles</a>
+        <a href="/admin/departments/view" class="sidebar-link">Departments</a>
+        <a href="/admin/roles/view" class="sidebar-link">Roles</a>
+    </div>
+</div>

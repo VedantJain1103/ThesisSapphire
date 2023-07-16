@@ -4,6 +4,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
 const accountsServices = require("../services/accountsServices");
+const regexServices = require('../services/regexServices');
 const thesisServices = require("../services/thesisServices");
 const s3Services = require('../services/s3');
 const mailServices = require("../services/mailServices");
@@ -141,8 +142,10 @@ async function uploadThesis(mentorId, scholarEmail, thesisName, thesis) {
     return result;
 }
 
+
+
 module.exports = {
     getThesisById,
     getThesisListById,
-    uploadThesis
+    uploadThesis,
 }

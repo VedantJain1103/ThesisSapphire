@@ -14,6 +14,10 @@
         <!-- Sticky alerts (toasts), empty container -->
         <div class="sticky-alerts"></div>
         <!-- Modals -->
+        {{>scholarProfileModal}}
+        {{>facultyProfileModal}}
+        {{>reviewerProfileModal}}
+
         {{>rejectThesisModal}}
 
         <!-- Navbar -->
@@ -23,7 +27,7 @@
         <div class="sidebar-overlay" onclick="halfmoon.toggleSidebar()"></div>
         <!-- Sidebar -->
 
-        {{>reviewerSideBar}}
+        {{>adminSideBar}}
 
         <!-- Content wrapper -->
         <div class="content-wrapper">
@@ -77,12 +81,12 @@
     </script>
     {{/if}}
 
-    {{#if failAlert}}
+    {{#if dangerAlert}}
     <script type="text/javascript">
         // Toasts danger alert
         function toastDangerAlert() {
             halfmoon.initStickyAlert({
-                content: `{{failAlert}}`,
+                content: `{{dangerAlert}}`,
                 title: "Error",
                 alertType: "alert-danger",
                 fillType: "filled"

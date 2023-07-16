@@ -38,6 +38,8 @@ function uploadMultipleFile(file) {
 }
 exports.uploadMultipleFile = uploadMultipleFile
 
+
+
 //download image
 function getFileStream(fileKey) {
     const downloadParams = {

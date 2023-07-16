@@ -1,0 +1,126 @@
+{{!-- <embed src="{{thesis.link}}" width=100% height=750px /> --}}
+<div class="container-fluid">
+    <div class="row  d-flex justify-content-between align-items-center">
+        <div class="col">
+            <div class="card p-0">
+                <div class="content card-title d-flex justify-content-between align-items-center">
+                    <h2>Publish</h2>
+                    {{#if_eq thesisStatus "Rejected"}}
+                    <div class="text-danger">
+                        {{thesisStatus}}
+                    </div>
+                    {{else}}
+                    <div class="text-success">
+                        {{thesisStatus}}
+                    </div>
+                    {{/if_eq}}
+                </div>
+                <div class="content">
+                    <details class="collapse-panel mw-full mt-20" open>
+                        <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100%, mt-20 = margin-top: 2rem (20px) -->
+                        <summary class="collapse-header">
+                            Indian Reviewers
+                        </summary>
+                        {{#if indianRev}}
+                        <table class="table table-hover collapse-content">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th class="text-center">Email</th>
+                                    <th class="text-center">Institute</th>
+                                    <th class="text-center">Designation</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each indianRev}}
+                                <tr>
+                                    <td class="font-italic font-size-20">{{this.name}}</td>
+                                    <td class="text-center">
+                                        <div>{{this.email}}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div>{{this.institute}}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        {{this.designation}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{!-- <a href="#" class="btn mr-auto">View</a> --}}
+                                        <form action="/mentor/thesis/removeReviewer/{{this.thesisId}}/{{this._id}}"
+                                            method="post">
+                                            <button class="btn btn-danger btn-sm btn-square rounded-circle"
+                                                type="submit"><i class="fa-solid fa-minus"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                        {{else}}
+                        <div class="collapse-content text-center font-italic">
+                            No Indian Reviewers added as of now.
+                        </div>
+                        {{/if}}
+                    </details>
+                    <details class="collapse-panel mw-full mt-20" open>
+                        <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100%, mt-20 = margin-top: 2rem (20px) -->
+                        <summary class="collapse-header">
+                            Foreign Reviewers
+                        </summary>
+                        {{#if foreignRev}}
+                        <table class="table table-hover collapse-content">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th class="text-center">Email</th>
+                                    <th class="text-center">Institute</th>
+                                    <th class="text-center">Designation</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each foreignRev}}
+                                <tr>
+                                    <td class="font-italic font-size-20">{{this.name}}</td>
+                                    <td class="text-center">
+                                        <div>{{this.email}}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div>{{this.institute}}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        {{this.designation}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{!-- <a href="#" class="btn mr-auto">View</a> --}}
+                                        <form action="/mentor/thesis/removeReviewer/{{this.thesisId}}/{{this._id}}"
+                                            method="post">
+                                            <button class="btn btn-danger btn-sm btn-square rounded-circle"
+                                                type="submit"><i class="fa-solid fa-minus"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                        {{else}}
+                        <div class="collapse-content text-center font-italic">
+                            No Foreign Reviewers added as of now.
+                        </div>
+                        {{/if}}
+                    </details>
+                    {{#if_eq thesisStatus "Draft"}}
+                    <div class="content d-flex justify-content-between">
+                        <a href="#addReviewerModal" class="btn btn-link" role="button">Add
+                            Reviewer</a>
+                        <form action="/mentor/thesis/submit/{{thesisId}}" method="post">
+                            <button class="btn btn-primary btn-rounded" type="submit">Submit</button>
+                        </form>
+                    </div>
+                    {{/if_eq}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

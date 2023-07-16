@@ -18,7 +18,6 @@
                     <thead>
                         <tr>
                             <th>Thesis Name</th>
-                            <th class="text-center">Mentor</th>
                             <th class="text-center">Scholar</th>
                             <th class="text-center">Submitted On</th>
                             <th class="text-center">Status</th>
@@ -30,10 +29,6 @@
                         {{#each thesisList}}
                         <tr>
                             <td class="font-italic font-size-20">{{this.name}}</td>
-                            <td class="text-center">
-                                <div>{{this.mentorName}}</div>
-                                <div>{{this.mentorEmail}}</div>
-                            </td>
                             <td class="text-center">
                                 <div>{{this.scholarName}}</div>
                                 <div>{{this.scholarEmail}}</div>
@@ -55,6 +50,9 @@
                             </td>
                             <td class="text-right">
                                 <a href="/mentor/viewThesis/{{this.thesisId}}" class="btn">View</a>
+                                {{#if_eq this.status "Draft"}}
+                                <a href="/mentor/thesis/submit/{{this.thesisId}}" class="btn">Submit</a>
+                                {{/if_eq}}
                             </td>
                         </tr>
                         {{/each}}

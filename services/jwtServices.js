@@ -56,7 +56,7 @@ async function getUserProfileById(userId) {
 }
 
 async function createAccessToken(user, userProfile) {
-    console.log("User:", user, "UserProfile:", userProfile);
+    console.log("AccessToken\nUser:", user, "UserProfile:", userProfile);
     let role = null;
     if (user.isProfileComplete == true) {
         role = userProfile.role;
@@ -65,7 +65,7 @@ async function createAccessToken(user, userProfile) {
         "userId": user._id,
         "userName": user.name,
         "userRole": role,
-        "isApproved": user.isApproved
+        // "isApproved": user.isApproved
     };
     console.log("Cookie data - ", userBody);
     const accessToken = jwt.sign(
@@ -85,7 +85,7 @@ async function createRefreshToken(user, userProfile) {
         "userId": user._id,
         "userName": user.name,
         "userRole": role,
-        "isApproved": user.isApproved
+        // "isApproved": user.isApproved
     };
     const refreshToken = jwt.sign(
         userBody,

@@ -1,0 +1,64 @@
+<div class="container-fluid">
+    <div class="row  d-flex justify-content-around align-items-center">
+        <div class="col">
+            <div class="content">
+                {{#if departments}}
+                <table class="table table-hover collapse-content">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th class="text-center">Created By</th>
+                            <th class="text-center">Created On</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each departments}}
+                        <tr>
+                            <td class="font-italic font-size-20">{{this.name}}</td>
+                            <td class="text-center">
+                                <div>{{this.createdBy}}</div>
+                            </td>
+                            <td class="text-center">
+                                <div>{{this.createdOn}}</div>
+                            </td>
+                            <td class="text-center">
+                                <form action="/admin/departments/delete/" method="POST" class="inline-form">
+                                    <input type="text" class="form-control d-none" value="{{this._id}}"
+                                        name="departmentId" required="required">
+                                    <button class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                {{else}}
+                <div class="collapse-content text-center font-italic">
+                    No departments registered as of now.
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    <div class="row  d-flex justify-content-around align-items-center">
+        <div class="col">
+            <div class="card">
+                <h2 class="card-title">
+                    Add Department
+                </h2>
+                <div>
+                    <form action="/admin/departments/create" method="post" class="form-inline">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Department Name</span>
+                            </div>
+                            <input type="text" class="form-control" value="" id="name" name="name" required="required">
+                        </div>
+                        <button class="btn btn-primary">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

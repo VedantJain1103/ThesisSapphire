@@ -63,11 +63,114 @@
                                     value="{{thesis.statusUpdatedOn}}" placeholder="lastUpdatedOn" readonly="readonly">
                             </div>
                         </div>
-                        <input type="text" name="status" value="Forwarded to Dean" hidden="true" />
-                        <div class="content d-flex justify-content-between">
-                            <div>
-                                <a href="#rejectThesisModal" class="btn btn-lg btn-primary" role="button">Reject</a>
+                        <div class="card">
+                            <div class="content">
+                                <div class="form-row row-eq-spacing-sm">
+                                    <div class="col-sm font-size-20 text-left">Uploads</div>
+                                    <div class="col-sm  font-size-16 text-center">
+                                        <a href="{{thesis.link}}" class="hyperlink-underline" download>
+                                            Download Thesis
+                                            <i class="fa-solid fa-download fa-lg ml-5"></i>
+                                        </a>
+                                        {{!-- <embed src="{{thesis.link}}" width=100% height=750px /> --}}
+                                    </div>
+                                    <div class="col-sm  font-size-16 text-center">
+                                        <a href="{{thesis.link}}" class="hyperlink-underline" download>
+                                            Download Synopsis
+                                            <i class="fa-solid fa-download fa-lg ml-5"></i>
+                                        </a>
+                                        {{!-- <embed src="{{thesis.link}}" width=100% height=750px /> --}}
+                                    </div>
+                                    {{#if_neq role "Reviewer"}}
+                                    <div class="col-sm  font-size-16 text-center">
+                                        <a href="{{thesis.link}}" class="hyperlink-underline" download>
+                                            Download Plagiarism
+                                            <i class="fa-solid fa-download fa-lg ml-5"></i>
+                                        </a>
+                                        {{!-- <embed src="{{thesis.link}}" width=100% height=750px /> --}}
+                                    </div>
+                                    {{/if_neq}}
+                                </div>
                             </div>
+                        </div>
+                        <details class="collapse-panel mw-full mt-20" open>
+                            <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100%, mt-20 = margin-top: 2rem (20px) -->
+                            <summary class="collapse-header">
+                                Indian Reviewers
+                            </summary>
+                            {{#if indianRev}}
+                            <table class="table table-hover collapse-content">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th class="text-center">Email</th>
+                                        <th class="text-center">Institute</th>
+                                        <th class="text-center">Designation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each indianRev}}
+                                    <tr>
+                                        <td class="font-italic font-size-20">{{this.name}}</td>
+                                        <td class="text-center">
+                                            <div>{{this.email}}</div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div>{{this.institute}}</div>
+                                        </td>
+                                        <td class="text-center">
+                                            {{this.designation}}
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                            {{else}}
+                            <div class="collapse-content text-center font-italic">
+                                No Indian Reviewers added as of now.
+                            </div>
+                            {{/if}}
+                        </details>
+                        <details class="collapse-panel mw-full mt-20" open>
+                            <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100%, mt-20 = margin-top: 2rem (20px) -->
+                            <summary class="collapse-header">
+                                Foreign Reviewers
+                            </summary>
+                            {{#if foreignRev}}
+                            <table class="table table-hover collapse-content">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th class="text-center">Email</th>
+                                        <th class="text-center">Institute</th>
+                                        <th class="text-center">Designation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each foreignRev}}
+                                    <tr>
+                                        <td class="font-italic font-size-20">{{this.name}}</td>
+                                        <td class="text-center">
+                                            <div>{{this.email}}</div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div>{{this.institute}}</div>
+                                        </td>
+                                        <td class="text-center">
+                                            {{this.designation}}
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                            {{else}}
+                            <div class="collapse-content text-center font-italic">
+                                No Foreign Reviewers added as of now.
+                            </div>
+                            {{/if}}
+                        </details>
+                        <input type="text" name="status" value="Forwarded to Dean" hidden="true" />
+                        <div class="content d-flex justify-content-end">
                             <div class="text-right"> <!-- text-right = text-align: right -->
                                 <input class="btn btn-lg btn-primary" type="submit" value="Approve">
                             </div>

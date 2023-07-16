@@ -94,18 +94,19 @@ async function getThesisById(thesisId) {
     return result;
 }
 
-async function approveThesis(hodName, thesisId, thesisName, scholarEmail, mentorEmail) {
+async function approveThesis(deanName, thesisId, thesisName, scholarEmail, mentorEmail, userId) {
     let result = {
         status: "Fail",
         result: null,
         error: null
     }
-    if (!thesisId) {
-        result.error = "Thesis Id not provided";
+    if (!deanName || !thesisId || !thesisName || !scholarEmail || !mentorEmail) {
+        result.error = "Insufficient Data.";
         return result;
     }
     let thesisReqBody = {
-        thesisId: thesisId
+        thesisId: thesisId,
+        userId: userId,
     }
     const updation = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/forwardThesisToDirector?secret=vedant", {
         method: "POST",

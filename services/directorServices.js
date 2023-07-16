@@ -94,19 +94,21 @@ async function getThesisById(thesisId) {
     return result;
 }
 
-async function approveThesis(directorName, thesisId, thesisName, scholarEmail, mentorEmail, mentorName, remails) {
+async function approveThesis(userId, directorName, thesisId, thesisName, scholarEmail, mentorEmail, mentorName, indianRev, foreignRev) {
     let result = {
         status: "Fail",
         result: null,
         error: null
     }
-    if (!thesisId) {
+    if (!userId || !thesisId) {
         result.error = "Thesis Id not provided";
         return result;
     }
     let thesisReqBody = {
+        userId: userId,
         thesisId: thesisId,
-        remails: remails
+        indianRev: indianRev,
+        foreignRev: foreignRev
     }
     const updation = await fetch("https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/forwardThesisToReviewers?secret=vedant", {
         method: "POST",
@@ -130,12 +132,15 @@ async function approveThesis(directorName, thesisId, thesisName, scholarEmail, m
     result.result = updation.result;
 
     let invitationContent = mailDataServices.invitationContent(directorName, thesisName, mentorName);
-    for (let email of remails) {
-        mailServices.sendMail(email, invitationContent, "Invited for thesis review");
-    }
+
+    mailServices.sendMail(indianRev, invitationContent, "Invited for thesis review");
+    mailServices.sendMail(foreignRev, invitationContent, "Invited for thesis review");
+
     let content = mailDataServices.thesisApprovalByDirector(directorName, thesisName);
+
     mailServices.sendMail(scholarEmail, content, "Thesis Forwarded");
     mailServices.sendMail(mentorEmail, content, "Thesis Forwarded");
+
     return result;
 }
 

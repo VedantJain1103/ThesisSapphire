@@ -64,12 +64,143 @@
                             </div>
                         </div>
                         <div class="form-row row-eq-spacing-sm">
+                            <div class="col-sm font-size-20 text-left">Uploads</div>
+                            <div class="col-sm  font-size-16 text-center">
+                                <a href="{{thesis.link}}" class="hyperlink-underline" download>
+                                    Download Thesis
+                                    <i class="fa-solid fa-file-arrow-down ml-5"></i>
+                                </a>
+                                {{!-- <embed src="{{thesis.link}}" width=100% height=750px /> --}}
+                            </div>
+                            <div class="col-sm  font-size-16 text-center">
+                                <a href="{{thesis.link}}" class="hyperlink-underline" download>
+                                    Download Synopsis
+                                    <i class="fa-solid fa-file-arrow-down ml-5"></i>
+                                </a>
+                                {{!-- <embed src="{{thesis.link}}" width=100% height=750px /> --}}
+                            </div>
+                            <div class="col-sm  font-size-16 text-center">
+                                <a href="{{thesis.link}}" class="hyperlink-underline" download>
+                                    Download Plagiarism
+                                    <i class="fa-solid fa-file-arrow-down ml-5"></i>
+                                    {{!-- <i class="fa-solid fa-download fa-lg ml-5"></i> --}}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="form-row row-eq-spacing-sm">
                             <div class="col">
-                                <label for="remails" class="required">Reviewer's Email</label>
-                                <div class="invalid-feedback">
-                                    {{invalidEmail}}
-                                </div>
-                                <textarea class="form-control" id="remail" name="remail">{{remail}}</textarea>
+                                <details class="collapse-panel mw-full mt-20" open>
+                                    <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100%, mt-20 = margin-top: 2rem (20px) -->
+                                    <summary class="collapse-header">
+                                        Indian Reviewers
+                                    </summary>
+                                    {{#if indianRev}}
+                                    <div class="collapse-content">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th class="text-center">Email</th>
+                                                    <th class="text-center">Institute</th>
+                                                    <th class="text-center">Designation</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{#each indianRev}}
+                                                <tr>
+                                                    <td>
+                                                        {{#if_eq this.status "Suggested"}}
+                                                        <div class="custom-radio">
+                                                            <input type="radio" name="indianRev" id="{{this.email}}"
+                                                                value="{{this.email}}">
+                                                            <label for="{{this.email}}">{{this.name}}</label>
+                                                        </div>
+                                                        {{else}}
+                                                        <div class="custom-radio">
+                                                            <input type="radio" name="indianRev" id="{{this.email}}"
+                                                                disabled="disabled" value="{{this.email}}">
+                                                            <label for="{{this.email}}">{{this.name}}</label>
+                                                        </div>
+                                                        {{/if_eq}}
+                                                    </td>
+                                                    {{!-- <td class="font-italic font-size-20">{{this.name}}</td> --}}
+                                                    <td class="text-center">
+                                                        <div>{{this.email}}</div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div>{{this.institute}}</div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{this.designation}}
+                                                    </td>
+                                                </tr>
+                                                {{/each}}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {{else}}
+                                    <div class="collapse-content text-center font-italic">
+                                        No Indian Reviewers added as of now.
+                                    </div>
+                                    {{/if}}
+                                </details>
+                                <details class="collapse-panel mw-full mt-20" open>
+                                    <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100%, mt-20 = margin-top: 2rem (20px) -->
+                                    <summary class="collapse-header">
+                                        Foreign Reviewers
+                                    </summary>
+                                    {{#if foreignRev}}
+                                    <div class="collapse-content">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th class="text-center">Email</th>
+                                                    <th class="text-center">Institute</th>
+                                                    <th class="text-center">Designation</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{#each foreignRev}}
+                                                <tr>
+                                                    <td>
+                                                        {{#if_eq this.status "Suggested"}}
+                                                        <div class="custom-radio">
+                                                            <input type="radio" name="foreignRev" id="{{this.email}}"
+                                                                value="{{this.email}}">
+                                                            <label for="{{this.email}}">{{this.name}}</label>
+                                                        </div>
+                                                        {{else}}
+                                                        <div class="custom-radio">
+                                                            <input type="radio" name="foreignRev" id="{{this.email}}"
+                                                                disabled="disabled" value="{{this.email}}">
+                                                            <label for="{{this.email}}">{{this.name}}</label>
+                                                        </div>
+                                                        {{/if_eq}}
+                                                    </td>
+                                                    {{!-- <td class="font-italic font-size-20">{{this.name}}</td> --}}
+                                                    <td class="text-center">
+                                                        <div>{{this.email}}</div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div>{{this.institute}}</div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{this.designation}}
+                                                    </td>
+                                                </tr>
+                                                {{/each}}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {{else}}
+                                    <div class="collapse-content text-center font-italic">
+                                        No Foreign Reviewers added as of now.
+                                    </div>
+                                    {{/if}}
+                                </details>
+                                <a href="#directorAddReviewerModal" class="btn btn-link" role="button">Add
+                                    Reviewer</a>
                             </div>
                         </div>
                         <input type="text" name="status" value="Forwarded to Dean" hidden="true" />

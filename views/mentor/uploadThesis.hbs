@@ -7,46 +7,58 @@
           <h2>Publish</h2>
         </div>
         <div class="content">
-          <form action="/mentor/publish" method="post" enctype="multipart/form-data">
-            <div class="form-row row-eq-spacing-sm">
-              <div class="col">
-                <label for="thesisName" class="required">Title</label>
-                <input type="text" class="form-control" id="thesisName" name="thesisName" value=""
-                  placeholder="Thesis Title" required="required">
+          <form action="/mentor/thesis/upload" method="post" enctype="multipart/form-data">
+            <div class="card">
+              <div class="form-row row-eq-spacing-sm">
+                <div class="col">
+                  <label for="thesisName" class="required">Title</label>
+                  <input type="text" class="form-control" id="thesisName" name="thesisName" value=""
+                    placeholder="Thesis Title" required="required">
+                </div>
+              </div>
+              <div class="content-title">
+                <h5>Scholar Details</h5>
+              </div>
+              <div class="form-row row-eq-spacing-sm">
+                <div class="col-sm">
+                  <label for="scholarName" class="required">Name</label>
+                  <input type="text" class="form-control" id="scholarName" name="scholarName" value=""
+                    placeholder="Scholar Name" required="required">
+                </div>
+                <div class="col-sm">
+                  <label for="scholarEmail" class="required">Email</label>
+                  <input type="text" class="form-control" id="scholarEmail" name="scholarEmail" value=""
+                    placeholder="Scholar Email" required="required">
+                </div>
+                <div class="col-sm">
+                  <label for="scholarRollNo" class="required">Roll Number</label>
+                  <input type="text" class="form-control" id="scholarRollNo" name="scholarRollNo" value=""
+                    placeholder="Scholar Roll Number" required="required">
+                </div>
               </div>
             </div>
-            <div class="form-row row-eq-spacing-sm">
-              <div class="col">
-                <label for="description" class="required">Description</label>
-                <textarea class="form-control" id="description" placeholder="Description" name="description"
-                  required="required"></textarea>
+
+            <div class="card">
+              <div class="content-title">
+                <h5>Upload Files</h5>
               </div>
-            </div>
-            <div class="content-title">
-              <h4>Scholar Details</h4>
-            </div>
-            <div class="form-row row-eq-spacing-sm">
-              <div class="col-sm">
-                <label for="scholarName" class="required">Name</label>
-                <input type="text" class="form-control" id="scholarName" name="scholarName" value=""
-                  placeholder="Scholar Name" required="required">
-              </div>
-              <div class="col-sm">
-                <label for="scholarEmail" class="required">Email</label>
-                <input type="text" class="form-control" id="scholarEmail" name="scholarEmail" value=""
-                  placeholder="Scholar Email" required="required">
-              </div>
-              <div class="col-sm">
-                <label for="scholarRollNo" class="required">Roll Number</label>
-                <input type="text" class="form-control" id="scholarRollNo" name="scholarRollNo" value=""
-                  placeholder="Scholar Roll Number" required="required">
-              </div>
-            </div>
-            <div class="form-row row-eq-spacing-sm">
-              <div class="col-sm">
-                <div class="custom-file">
-                  <input type="file" id="file-input-1" name="thesis" accept=".pdf, .doc, .docx" required="required">
-                  <label for="file-input-1" class="required">Choose a file</label>
+              <div class="form-row row-eq-spacing-sm">
+                <div class="col-sm d-flex justify-content-between align-items-center">
+                  <div class="custom-file">
+                    <div>Manuscript</div>
+                    <input type="file" id="file-input-1" name="thesis" accept=".pdf" required="required">
+                    <label for="file-input-1" class="required">Choose Files</label>
+                  </div>
+                  <div class="custom-file">
+                    <div>Synopsis</div>
+                    <input type="file" id="file-input-2" name="synopsis" accept=".pdf" required="required">
+                    <label for="file-input-2" class="required">Choose Files</label>
+                  </div>
+                  <div class="custom-file">
+                    <div>Plagiarism</div>
+                    <input type="file" id="file-input-3" name="plagiarism" accept=".pdf" required="required">
+                    <label for="file-input-3" class="required">Choose Files</label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -55,7 +67,7 @@
                 <a href="/users/" class="btn btn-link">Cancel</a>
               </div>
               <div class="text-right"> <!-- text-right = text-align: right -->
-                <input class="btn btn-lg btn-primary" type="submit" value="Publish">
+                <input class="btn btn-lg btn-primary" type="submit" value="Next">
               </div>
             </div>
           </form>

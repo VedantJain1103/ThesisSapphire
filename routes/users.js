@@ -21,6 +21,7 @@ const { encrypt, decrypt } = require('../services/encryptionServices');
 const verifyJWT = require('../middleware/verifyJWT');
 const upload = require('../middleware/uploadFile');
 const { verify } = require('crypto');
+const { RequestSmsRecipientExport } = require('sib-api-v3-sdk');
 // app.use(verifyJWT);
 
 router.get('/thesis/:key', (req, res) => {
@@ -33,23 +34,29 @@ router.get('/thesis/:key', (req, res) => {
 
 router.get('/', verifyJWT, async function (req, res, next) {
   const { userId, userName, userRole } = req;
-  if (userRole == "Dean") {
+  if (userRole == "Admin") {
+    res.redirect('/admin');
+  }
+  else if (userRole == "Dean") {
     res.redirect('/dean/');
   }
-  if (userRole == "Director") {
+  else if (userRole == "Director") {
     res.redirect('/director/');
   }
-  if (userRole == "HOD") {
+  else if (userRole == "HOD") {
     res.redirect('/hod/');
   }
-  if (userRole == "Faculty") {
+  else if (userRole == "Faculty") {
     res.redirect('/mentor/');
   }
-  if (userRole == "Reviewer") {
+  else if (userRole == "Reviewer") {
     res.redirect('/reviewer/');
   }
-  if (userRole == "Scholar") {
+  else if (userRole == "Scholar") {
     res.redirect('/scholar/');
+  }
+  else {
+    res.render("error.hbs", { layout: 'userLayout', name: userName });
   }
 });
 
@@ -119,6 +126,26 @@ router.post('/profileCompletion/reviewer', verifyJWT, async function (req, res, 
     }
   }
 })
+
+router.post('/profileCompletion/connect', verifyJWT, async function (req, res, next) {
+  const { userId, userName, userRole } = req;
+  let profileCompletionStatus = await accountsServices.connectProfile(userId);
+  if (profileCompletionStatus.status == "Fail") {
+    res.render('error', { layout: 'userLayout', error: profileCompletionStatus.error });
+  }
+  else {
+    let refreshToken = req.cookies.jwt_refreshToken;
+    let newAccessToken = await jwtServices.refreshAccessTokenByRefreshToken(refreshToken);
+    if (newAccessToken) {
+      res.cookie('jwt_accessToken', newAccessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
+      res.redirect('/users/');
+    }
+    else {
+      res.render('accounts/signIn', { title: 'Express', email: '' });
+    }
+  }
+})
+
 
 router.post('/profileCompletion/faculty', verifyJWT, async function (req, res, next) {
   const { userId, userName, userRole } = req;

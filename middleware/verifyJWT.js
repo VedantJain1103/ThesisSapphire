@@ -19,15 +19,21 @@ const verifyJWT = (req, res, next) => {
             req.userId = decoded.userId;
             req.userName = decoded.userName;
             req.userRole = decoded.userRole;
-            req.isApproved = decoded.isApproved;
+
+            //For approved user functionality
+            // req.isApproved = decoded.isApproved;
+
             let routeUrl = req.route.path;
-            console.log("verifying- ", req.userId, " ", req.userName, " ", req.userRole, " ", req.isApproved);
+            console.log("verifying- ", req.userId, " ", req.userName, " ", req.userRole);
+
+            //For checking the route
             // console.log(routeUrl != "/profileCompletion")
             // // if (routeUrl == "/profileCompletion") {
             // //     next();
             // // }
+
             if (!req.userRole) {
-                if ((routeUrl != "/profileCompletion") && (routeUrl != "/profileCompletion/faculty") && (routeUrl != "/profileCompletion/reviewer") && (routeUrl != "/profileCompletion/scholar")) {
+                if ((routeUrl != "/profileCompletion") && (routeUrl != "/profileCompletion/connect") && (routeUrl != "/profileCompletion/reviewer") && (routeUrl != "/profileCompletion/scholar")) {
                     res.redirect('/users/profileCompletion');
                     return;
                 }
@@ -35,22 +41,20 @@ const verifyJWT = (req, res, next) => {
                     next();
                 }
             }
-            else {
-                if (!req.isApproved) {
-                    if (routeUrl != "/notApproved") {
-                        res.redirect('/users/notApproved');
-                        return;
-                    }
-                    else next();
-                }
-                else next();
-            }
+            // For approved users --
+            // else {
+            //     if (!req.isApproved) {
+            //         if (routeUrl != "/notApproved") {
+            //             res.redirect('/users/notApproved');
+            //             return;
+            //         }
+            //         else next();
+            //     }
+            //     else next();
+            // }
+            else next();
         }
     );
-    // req.userId = "6438ef10f98841e106fd056f";
-    // req.userName = "Vedant";
-    // req.userRole = "HOD";
-    // next();
 }
 
 module.exports = verifyJWT
