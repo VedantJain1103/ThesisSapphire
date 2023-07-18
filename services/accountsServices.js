@@ -9,6 +9,7 @@ let mailDataServices = require("../services/mailDataServices");
 const fs = require("fs");
 const util = require("util");
 const { CloudWatchLogs } = require("aws-sdk");
+const { Code } = require("mongodb");
 
 /*-------------------Functions----------------------*/
 async function getDepartmentByUserId(userId) {
@@ -202,177 +203,59 @@ async function sendEmailVerification(email) {
 }
 
 async function checkVerification(email, code) {
-    try {
-        //Checking user
-        let findUser = await getUserByEmail(email);
-        console.log("User found: ", findUser);
-        if (findUser.status == "Fail") {
-            return {
-                status: "Fail",
-                error: findUser.error
-            };
+    let result = {
+        status: "Fail",
+        result: null,
+        error: null
+    };
+
+    let verificationReqBody = {
+        userEmail: email,
+        code: code,
+    }
+    let checkVerificationResult = await fetch(
+        "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/checkVerification?secret=vedant",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(verificationReqBody),
         }
-        const user = findUser.result;
-        const userId = user._id;
-
-        //Fetching verification
-        let findVerification;
-        await fetch(
-            "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/getVerificationByUserId?secret=vedant&userId=" +
-            userId,
-            {
-                method: "GET",
-            }
-        )
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (data) {
-                // console.log('Request succeeded with JSON response', data);
-                console.log("verification founded: ", data);
-                findVerification = data;
-            })
-            .catch(function (error) {
-                console.log("Request failed", error);
-                throw new Error(error);
-            });
-        if (findVerification.status == "Fail") {
-            throw new Error(findVerification.error);
+    )
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            // console.log('Request succeeded with JSON response', data);
+            console.log("verification founded: ", data);
+            return data;
+        })
+        .catch(function (error) {
+            console.log("Request failed", error);
+            result.error = error;
+            return result;
+        });
+    if (checkVerificationResult.status == "Success") {
+        result.status = "Success";
+        result.result = "Successfully verified";
+        return result;
+    }
+    else {
+        if (checkVerificationResult.error == "User not found.") {
+            return checkVerificationResult;
         }
-        const verification = findVerification.result;
-        if (verification) {
-            const currDate = Date.now();
-            if (currDate - verification.createdAt > 600000) {
-                let sendverificationError = sendEmailVerification(email);
-                if (sendverificationError)
-                    throw new Error(sendverificationError);
-                else {
-                    let sendverificationError = sendEmailVerification(email);
-                    if (sendverificationError)
-                        throw new Error(sendverificationError);
-
-                    return {
-                        status: "Fail",
-                        error: "We have sent a new verification code"
-                    }
-                }
-            } else if (verification.code == code) {
-                //updating user's verification status
-                const userReqBody = {
-                    userEmail: email,
-                };
-                fetch(
-                    "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/updateUserVerificationByUserEmail?secret=vedant",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            // 'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: JSON.stringify(userReqBody),
-                    }
-                )
-                    .then(function (response) {
-                        return response.json();
-                    })
-                    .then(function (data) {
-                        console.log("Updation of user: ", data);
-                    })
-                    .catch(function (error) {
-                        console.log("Request failed", error);
-                        throw new Error(error);
-                    });
-
-                //updating verification's status to SUCCESS
-                const verificationReqBody = {
-                    verificationId: verification._id,
-                    status: "Successs",
-                };
-                const result = fetch(
-                    "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/updateVerificationsStatusById?secret=vedant",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            // 'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: JSON.stringify(verificationReqBody),
-                    }
-                )
-                    .then(function (response) {
-                        return response.json();
-                    })
-                    .then(function (data) {
-                        console.log("updation of  verification", data);
-                        return {
-                            status: "Success",
-                            result: "Verified"
-                        };
-                    })
-                    .catch(function (error) {
-                        console.log("Request failed", error);
-                        throw new Error(error);
-                    });
-                return result;
-            } else {
-                //updating verification's status to FAILED
-                const verificationReqBody = {
-                    verificationId: verification._id,
-                    status: "Failed",
-                };
-                fetch(
-                    "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/updateUserVerificationByUserEmail?secret=vedant",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            // 'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: JSON.stringify(verificationReqBody),
-                    }
-                )
-                    .then(function (response) {
-                        return response.json();
-                    })
-                    .then(function (data) {
-                        let sendverificationError = sendEmailVerification(email);
-                        if (sendverificationError)
-                            throw new Error(sendverificationError);
-
-                        return {
-                            status: "Fail",
-                            error: "We have sent a new verification code"
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log("Request failed", error);
-                        throw new Error(error);
-                    });
-                throw new Error("Incorrect Code");
-            }
-        } else {
-            let sendverificationError = sendEmailVerification(email);
-            if (sendverificationError)
-                throw new Error(sendverificationError);
-
-            return {
-                status: "Fail",
-                error: "We have sent a new verification code"
-            }
-            // sendEmailVerification(email, function (error) {
-            //     if (error) return callback(error);
-            //     else {
-            //         return callback("We have sent a verification Code");
-            //     }
-            // });
+        else if (checkVerificationResult.error == "Email already verified.") {
+            return checkVerificationResult;
         }
-    } catch (err) {
-        return {
-            status: "Fail",
-            error: err
+        else {
+            //add verification 
+            let newVerification = await sendEmailVerification(email);
+            result.error = "Incorrect Code. We have sent a new code.";
+            result.result = newVerification;
+            return result;
         }
     }
-
 }
 
 async function signIn(email, password, callback) {

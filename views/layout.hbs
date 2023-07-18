@@ -10,39 +10,14 @@
 </head>
 
 <body>
-  <!-- Sign in -->
-  <div class="modal" id="signIn" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <a href="/" class="btn close" role="button" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </a>
-        <h5 class="modal-title">Sign in to your account</h5>
-        <form action="/accounts/signIn" method="post">
-          <div class="form-group">
-            <label for="username" class="required">User Email</label>
-            <input type="text" id="email" name="email" class="form-control" placeholder="Username" required="required">
-          </div>
-          <div class="form-group">
-            <label for="password" class="required">Password</label>
-            <input type="password" id="password" name="password" class="form-control" placeholder="Password"
-              required="required">
-          </div>
-          <input class="btn btn-primary btn-block" type="submit" value="Sign in">
-        </form>
-        <div class="text-right mt-10"> <!-- text-right = text-align: right, margin-top: 1rem (10px) -->
-          <a href="#signIn" class="hyperlink">Forgot password?</a>
-          <!-- hyperlink = used on regular links to remove anti-aliasing in dark mode -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-
   <div class="page-wrapper with-navbar with-sidebar with-navbar-fixed-bottom" data-sidebar-type="overlayed-sm-and-down"
     data-sidebar-hidden="hidden">
     <!-- Sticky alerts (toasts), empty container -->
     <div class="sticky-alerts"></div>
+
+    <!-- Sign in -->
+    {{>signInModal}}
+
 
     {{>navbar}}
 
@@ -53,8 +28,64 @@
 
     {{> footer}}
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.js"></script>
+  {{>scripts}}
+  {{#if alert}}
+  <script type="text/javascript">
+    // Toasts primary alert
+    function toastPrimaryAlert() {
+      halfmoon.initStickyAlert({
+        content: `{{ alert }}`,
+        title: "Alert",
+        alertType: "alert-primary",
+        hasDismissButton: true,
+        timeShown: 10000
+      });
+    }
+
+    // Toasts secondary alert
+    function toastSecondaryAlert() {
+      halfmoon.initStickyAlert({
+        content: `{{alert}}`,
+        title: "Secondary alert",
+        alertType: "alert-secondary",
+        fillType: "filled-dm"
+      });
+    }
+
+    window.onload = toastSecondaryAlert();
+  </script>
+  {{/if}}
+
+  {{#if successAlert }}
+  <script type="text/javascript">
+    // Toasts success alert
+    function toastSuccessAlert() {
+      halfmoon.initStickyAlert({
+        content: `{{successAlert}}`,
+        title: "Success",
+        alertType: "alert-success",
+        fillType: "filled-lm"
+      });
+    }
+
+    window.onload = toastSuccessAlert();
+  </script>
+  {{/if}}
+
+  {{#if failAlert}}
+  <script type="text/javascript">
+    // Toasts danger alert
+    function toastDangerAlert() {
+      halfmoon.initStickyAlert({
+        content: `{{failAlert}}`,
+        title: "Error",
+        alertType: "alert-danger",
+        fillType: "filled"
+      });
+    }
+    window.onload = toastDangerAlert();
+  </script>
+  {{/if}}
 </body>
 
 </html>

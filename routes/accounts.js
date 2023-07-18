@@ -12,12 +12,33 @@ const { NetworkFirewall } = require('aws-sdk');
 
 //-----------------------REGISTER----------------------------------------
 router.get('/register', (req, res) => {
-    res.render('accounts/register');
+    let { msg, failStatus, successStatus } = req.query;
+    let extraData = {
+        fullName: fullName,
+        email: email,
+        phone: phone,
+        alert: msg,
+        failAlert: failStatus,
+        successAlert: successStatus,
+    }
+    res.render('accounts/register', extraData);
 });
 
 router.post('/register', async (req, res) => {
     const { fullName, email, phone, password, confirmPassword } = req.body;
-    if (password == null || (password != confirmPassword)) res.render('accounts/register', { error: "Passwords do not match" });
+    let { msg, failStatus, successStatus } = req.query;
+    if (password == null || (password != confirmPassword)) {
+        let error = "Passwords do not match";
+        let extraData = {
+            fullName: fullName,
+            email: email,
+            phone: phone,
+            alert: msg,
+            failAlert: error,
+            successAlert: successStatus,
+        }
+        res.render('accounts/register', extraData);
+    }
     else {
         let strongPasswordReq = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})');
         // atleast one lower case char
@@ -28,44 +49,84 @@ router.post('/register', async (req, res) => {
         if (strongPasswordReq.test(password)) {
             let result = await accountsServices.createUser(fullName, email, phone, password);
             if (result.status == "Fail") {
-                res.status(200).send("Error: " + result.error);
+                let error = result.error;
+                let extraData = {
+                    fullName: fullName,
+                    email: email,
+                    phone: phone,
+                    alert: msg,
+                    failAlert: error,
+                    successAlert: successStatus,
+                }
+                res.render('accounts/register', extraData);
             }
-            res.redirect('/accounts/sendVerification');
+            else {
+                res.redirect('/accounts/sendVerification?successStatus=Registration Successfull');
+            }
         } else {
-            res.render('accounts/register', { error: 'Enter a valid Password', fullName, email, phone });
+            let error = "Enter a valid password.";
+            let extraData = {
+                fullName: fullName,
+                email: email,
+                phone: phone,
+                alert: msg,
+                failAlert: error,
+                successAlert: successStatus,
+            }
+            res.render('accounts/register', extraData);
         }
     }
 });
 
 //-----------------------VERIFICATION---------------------------------------
 router.get('/sendVerification', (req, res) => {
-    res.render('accounts/sendVerificationCode');
+    let { msg, failStatus, successStatus } = req.query;
+    let extraData = {
+        alert: msg,
+        failAlert: failStatus,
+        successAlert: successStatus
+    }
+    res.render('accounts/sendVerificationCode', extraData);
 })
 
 router.post('/sendVerification', async (req, res) => {
     let { email } = req.body;
     let sendVerificationResult = await accountsServices.sendEmailVerification(email);
     if (sendVerificationResult.status == "Fail") res.render('accounts/sendVerificationCode', { error: sendVerificationResult.error });
-    else res.redirect('/accounts/verification')
+    else res.redirect('/accounts/verification/' + email + '?successStatus=Verification Code Sent')
 })
 
-router.get('/verification', (req, res) => {
-    res.render('accounts/verification');
+router.get('/verification', (req, res, next) => {
+    let { msg, failStatus, successStatus } = req.query;
+    let extraData = {
+        alert: msg,
+        failAlert: failStatus,
+        successAlert: successStatus
+    }
+    res.render('accounts/verification', extraData);
+})
+router.get('/verification/:email', (req, res) => {
+    let { email } = req.params;
+    let { msg, failStatus, successStatus } = req.query;
+    let extraData = {
+        layout: 'layout',
+        email: email,
+        alert: msg,
+        failAlert: failStatus,
+        successAlert: successStatus
+    }
+    res.render('accounts/verification', extraData);
 });
 
 router.post('/verification', async (req, res) => {
-    const { email, code } = req.body;
-    try {
-        let verificationResult = await accountsServices.checkVerification(email, code);
-        if (verificationResult.status == "Fail") {
-            res.render('accounts/verification', { error: verificationResult.error, email: email });
-        }
-        else {
-            res.redirect('/accounts/signIn');
-        }
-    } catch (error) {
-        console.log(error);
-        res.render('accounts/verification', { error, email });
+    const { emailV, code } = req.body;
+    let verificationResult = await accountsServices.checkVerification(emailV, code);
+    if (verificationResult.status == "Fail") {
+        let error = verificationResult.error;
+        res.redirect('/accounts/verification/' + emailV + '?failStatus=' + error);
+    }
+    else {
+        res.redirect('/accounts/signIn/?successStatus=Verification Successful');
     }
 });
 
@@ -73,9 +134,15 @@ router.post('/verification', async (req, res) => {
 //------------------------------SIGN IN------------------------------------------
 router.get('/signIn', async (req, res) => {
     const cookies = req.cookies;
+    let { msg, failStatus, successStatus } = req.query;
+    let extraData = {
+        alert: msg,
+        failAlert: failStatus,
+        successAlert: successStatus,
+    }
     if (!cookies?.jwt_accessToken) {
         if (!cookies?.jwt_refreshToken) {
-            res.render('accounts/signIn', { title: 'Express', email: '' });
+            res.render('accounts/signIn', extraData);
         }
         else {
             let refreshToken = cookies.jwt_refreshToken;
@@ -85,47 +152,46 @@ router.get('/signIn', async (req, res) => {
                 res.redirect('/users/');
             }
             else {
-                res.render('accounts/signIn', { title: 'Express', email: '' });
+                res.render('accounts/signIn', extraData);
             }
         }
     } else {
-        res.redirect('/users/');
+        res.redirect('/users/?successStatus=Welcome');
     }
     // res.render('accounts/signIn', { title: 'Express', email: '' });
 });
 
 router.post('/signIn', async (req, res) => {
     const { email, password } = req.body;
-    try {
-        await accountsServices.signIn(email, password, function (result) {
-            if (result.status == "Fail") {
-                res.status(200).send("Error: " + result.error);
-                return;
-            }
-            if (result.status !== "Success") throw new Error("Unknown error occurred");
-            // console.log(result);
-            const { user, refreshToken, accessToken } = result;
-            console.log("signing in: ", user, "\nRefresh Token:", refreshToken, "\nAccess Token:", accessToken);
-            if (user.isEmailVerified) {
-                res.cookie('jwt_refreshToken', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-                res.cookie('jwt_accessToken', accessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
-                // res.header('Authorization', 'Authorization ' + accessToken);
-                // req.header('authorization','Authorization ' + accessToken)
-                // console.log(res);
-                // console.log(res.headersSent);
-                // req.userId = foundUser._id;
-                res.redirect(`/users/`);
+    await accountsServices.signIn(email, password, function (result) {
+        if (result.status == "Fail") {
+            let error = result.error;
+            res.redirect('/accounts/signIn?failStatus=' + error);
+        }
+        // console.log(result);
+        const { user, refreshToken, accessToken } = result;
+        console.log("signing in: ", user, "\nRefresh Token:", refreshToken, "\nAccess Token:", accessToken);
+        if (user.isEmailVerified) {
+            res.cookie('jwt_refreshToken', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+            res.cookie('jwt_accessToken', accessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
+            // res.header('Authorization', 'Authorization ' + accessToken);
+            // req.header('authorization','Authorization ' + accessToken)
+            // console.log(res);
+            // console.log(res.headersSent);
+            // req.userId = foundUser._id;
+            res.redirect(`/users/?successStatus=Welcome`);
+        }
+        else {
+            let result = accountsServices.sendEmailVerification(email);
+            if (result.status == "Success") {
+                res.redirect('/accounts/verification?successStatus=Verification Code sent to the email');
             }
             else {
-                let result = accountsServices.sendEmailVerification(email);
-                if (result.status == "Success") res.redirect('/accounts/verification');
-                else res.redirect('/accounts/signIn');
+                let error = result.error;
+                res.redirect('/accounts/signIn?failStatus=' + error);
             }
-        });
-
-    } catch (err) {
-        res.render('error:' + err);
-    }
+        }
+    });
 });
 
 // --------------------------SIGN-OUT--------------------------------------------

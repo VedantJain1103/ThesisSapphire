@@ -6,12 +6,27 @@ const jwt = require("jsonwebtoken");
 const accountsServices = require("../services/accountsServices");
 const regexServices = require('../services/regexServices');
 const s3Services = require('../services/s3');
+const s3UploadServices = require('../services/s3UploadServices');
 const mailServices = require("../services/mailServices");
 const mailDataServices = require("../services/mailDataServices");
 
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
+
+function createThesisFileName(fileOriginalName, userId) {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    const formattedToday = dd + '' + mm + '' + yyyy;
+    const fileName = formattedToday + '-' + userId + '-' + fileOriginalName;
+    return fileName;
+}
 
 //Get List of Thesis of a particular department
 async function getThesisListByDepartment(department) {
@@ -271,18 +286,29 @@ async function uploadThesis(mentorId, scholarEmail, thesisName, files) {
     console.log("synopsis:", synopsis);
     console.log("plag:", plagiarism);
 
-    let pushThesisResult = await s3Services.uploadFile(thesis);
-    await unlinkFile(thesis.path);
-    let pushSynopsisResult = await s3Services.uploadFile(synopsis);
-    await unlinkFile(synopsis.path);
-    let pushPlagiarismResult = await s3Services.uploadFile(plagiarism);
-    await unlinkFile(plagiarism.path);
+    let thesisFileName = createThesisFileName(thesis.originalname, mentorId);
+    let synopsisFileName = createThesisFileName(synopsis.originalname, mentorId);
+    let plagFileName = createThesisFileName(plagiarism.originalname, mentorId);
+
+    let pushThesis = await s3UploadServices.uploadFile(thesis, thesisFileName);
+    let pushSynopsis = await s3UploadServices.uploadFile(synopsis, synopsisFileName);
+    let pushPlagiarism = await s3UploadServices.uploadFile(plagiarism, plagFileName);
+    console.log(pushThesis);
+    console.log(pushSynopsis);
+    console.log(pushPlagiarism);
+
+    // let pushThesisResult = await s3Services.uploadFile(thesis);
+    // await unlinkFile(thesis.path);
+    // let pushSynopsisResult = await s3Services.uploadFile(synopsis);
+    // await unlinkFile(synopsis.path);
+    // let pushPlagiarismResult = await s3Services.uploadFile(plagiarism);
+    // await unlinkFile(plagiarism.path);
     let thesisReqBody = {
         mentorId: mentor._id,
         thesisName: thesisName,
-        thesisLink: `/users/thesis/${pushThesisResult.Key}`,
-        synopsisLink: `/users/thesis/${pushSynopsisResult.Key}`,
-        plagiarismLink: `/users/thesis/${pushPlagiarismResult.Key}`,
+        thesisLink: `/users/thesis/` + thesisFileName,
+        synopsisLink: `/users/thesis/` + synopsisFileName,
+        plagiarismLink: `/users/thesis/` + plagFileName,
         scholarId: scholar._id
     };
 
@@ -569,6 +595,7 @@ async function getThesisInvitationStatusById(thesisId, userId) {
 }
 
 module.exports = {
+    createThesisFileName,
     uploadThesis,
     addSuggestedReviewer,
     getSuggestedReviewers,

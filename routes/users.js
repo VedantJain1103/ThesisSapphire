@@ -7,9 +7,8 @@ var jwtServices = require('../services/jwtServices');
 var adminServices = require('../services/adminServices');
 var accountsServices = require('../services/accountsServices');
 var thesisServices = require('../services/thesisServices');
-var mentorServices = require('../services/mentorServices');
-var hodServices = require('../services/hodServices');
 var s3Services = require('../services/s3');
+var s3UploadServices = require('../services/s3UploadServices');
 
 const fs = require('fs');
 const util = require('util');
@@ -25,11 +24,15 @@ const { RequestSmsRecipientExport } = require('sib-api-v3-sdk');
 // app.use(verifyJWT);
 
 router.get('/thesis/:key', (req, res) => {
-  const { key } = req.params;
-  // console.log(key)
-  const readStream = s3Services.getFileStream(key)
-
-  readStream.pipe(res)
+  const { userId, userName, userRole } = req;
+  if (userRole == "Admin" || userRole == "Dean" || userRole == "Director" || userRole == "HOD" || userRole == "Faculty" || userRole == "Reviewer" || userRole == "Scholar") {
+    const { key } = req.params;
+    let file = s3Services.getFileStream(key);
+    file.pipe(res);
+  }
+  else {
+    res.render("error.hbs", { layout: 'userLayout', name: userName });
+  }
 })
 
 router.get('/', verifyJWT, async function (req, res, next) {

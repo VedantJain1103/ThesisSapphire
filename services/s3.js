@@ -13,30 +13,30 @@ const s3 = new S3({
     secretAccessKey
 })
 
-//upload image
-function uploadFile(file) {
-    const fileStream = fs.createReadStream(file.path)
+//upload image - in s3UploadServices
+// function uploadFile(file) {
+//     const fileStream = fs.createReadStream(file.path)
 
-    const uploadParams = {
-        Bucket: bucketName,
-        Body: fileStream,
-        Key: file.filename
-    }
-    return s3.upload(uploadParams).promise()
-}
-exports.uploadFile = uploadFile
+//     const uploadParams = {
+//         Bucket: bucketName,
+//         Body: fileStream,
+//         Key: file.filename
+//     }
+//     return s3.upload(uploadParams).promise()
+// }
+// exports.uploadFile = uploadFile
 
-function uploadMultipleFile(file) {
-    const fileStream = fs.createReadStream(file.path)
+// function uploadMultipleFile(file) {
+//     const fileStream = fs.createReadStream(file.path)
 
-    const uploadParams = {
-        Bucket: bucketName,
-        Body: fileStream,
-        Key: file.filename
-    }
-    return s3.upload(uploadParams).promise()
-}
-exports.uploadMultipleFile = uploadMultipleFile
+//     const uploadParams = {
+//         Bucket: bucketName,
+//         Body: fileStream,
+//         Key: file.filename
+//     }
+//     return s3.upload(uploadParams).promise()
+// }
+// exports.uploadMultipleFile = uploadMultipleFile
 
 
 
