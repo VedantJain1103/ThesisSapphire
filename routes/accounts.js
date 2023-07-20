@@ -14,9 +14,9 @@ const { NetworkFirewall } = require('aws-sdk');
 router.get('/register', (req, res) => {
     let { msg, failStatus, successStatus } = req.query;
     let extraData = {
-        fullName: fullName,
-        email: email,
-        phone: phone,
+        // fullName: fullName,
+        // email: email,
+        // phone: phone,
         alert: msg,
         failAlert: failStatus,
         successAlert: successStatus,
@@ -163,35 +163,35 @@ router.get('/signIn', async (req, res) => {
 
 router.post('/signIn', async (req, res) => {
     const { email, password } = req.body;
-    await accountsServices.signIn(email, password, function (result) {
-        if (result.status == "Fail") {
-            let error = result.error;
-            res.redirect('/accounts/signIn?failStatus=' + error);
-        }
-        // console.log(result);
-        const { user, refreshToken, accessToken } = result;
-        console.log("signing in: ", user, "\nRefresh Token:", refreshToken, "\nAccess Token:", accessToken);
-        if (user.isEmailVerified) {
-            res.cookie('jwt_refreshToken', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-            res.cookie('jwt_accessToken', accessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
-            // res.header('Authorization', 'Authorization ' + accessToken);
-            // req.header('authorization','Authorization ' + accessToken)
-            // console.log(res);
-            // console.log(res.headersSent);
-            // req.userId = foundUser._id;
-            res.redirect(`/users/?successStatus=Welcome`);
-        }
-        else {
+    let result = await accountsServices.signIn(email, password);
+    if (result.status == "Fail") {
+        let error = result.error;
+        if (error == "Email not verified") {
             let result = accountsServices.sendEmailVerification(email);
             if (result.status == "Success") {
                 res.redirect('/accounts/verification?successStatus=Verification Code sent to the email');
             }
             else {
-                let error = result.error;
                 res.redirect('/accounts/signIn?failStatus=' + error);
             }
         }
-    });
+        else {
+            res.redirect('/accounts/signIn?failStatus=' + error);
+        }
+    }
+    else {
+        const { user, refreshToken, accessToken } = result;
+        console.log("signing in: ", user, "\nRefresh Token:", refreshToken, "\nAccess Token:", accessToken);
+        res.cookie('jwt_refreshToken', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+        res.cookie('jwt_accessToken', accessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 });
+        // res.header('Authorization', 'Authorization ' + accessToken);
+        // req.header('authorization','Authorization ' + accessToken)
+        // console.log(res);
+        // console.log(res.headersSent);
+        // req.userId = foundUser._id;
+        res.redirect(`/users/?successStatus=Welcome`);
+
+    }
 });
 
 // --------------------------SIGN-OUT--------------------------------------------

@@ -259,84 +259,81 @@ async function checkVerification(email, code) {
 }
 
 async function signIn(email, password, callback) {
-    const errResult = {
+    const result = {
         status: "Fail",
+        result: null,
         error: null
     }
     const findUser = await getUserByEmail(email);
     console.log("User found - ", findUser);
     if (findUser.status == "Fail") {
-        errResult.error = findUser.error;
-        return callback(errResult);
+        result.error = findUser.error;
+        return result;
     }
 
     // console.log("User Found: ", findUser);
     const user = findUser.result;
     if (!user.isEmailVerified) {
-        return callback({ user, _, _ });
+        result.error = "Email not verified";
+        return result;
     }
 
     // const accessToken = await jwtServices.createAccessToken(user);
     //matching password
-    let passMatch;
-    bcrypt.compare(password, user.password, async function (error, isMatch) {
-        if (error) {
-            errResult.error = error;
-            return callback(errResult);
-        } else if (!isMatch) {
-            errResult.error = "Wrong Password";
-            return callback(errResult);
-        } else {
-            passMatch = true;
-            //creating tokens
-            // console.log(user);
-            const userProfile = await getUserProfileById(user._id);
-            console.log("UserProfile-", userProfile.result);
-            const accessToken = await jwtServices.createAccessToken(user, userProfile.result);
-            const refreshToken = await jwtServices.createRefreshToken(user, userProfile.result);
+    let passMatch = await bcrypt.compare(password, user.password);
+    if (!passMatch) {
+        result.error = "Wrong Password";
+        return result;
+    } else {
+        //creating tokens
+        // console.log(user);
+        const userProfile = await getUserProfileById(user._id);
+        console.log("UserProfile-", userProfile.result);
+        const accessToken = await jwtServices.createAccessToken(user, userProfile.result);
+        const refreshToken = await jwtServices.createRefreshToken(user, userProfile.result);
 
-            // const { status, accessToken, refreshToken } = await jwtServices.createTokens(user);
+        // const { status, accessToken, refreshToken } = await jwtServices.createTokens(user);
 
-            //Adding refresh Token in database
-            const refreshTokenBody = {
-                userId: user._id,
-                refreshToken: refreshToken,
-            };
-            const updation = await fetch(
-                "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/createUserRefreshToken?secret=vedant",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        // 'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: JSON.stringify(refreshTokenBody),
-                }
-            ).then(function (response) {
-                return response.json();
+        //Adding refresh Token in database
+        const refreshTokenBody = {
+            userId: user._id,
+            refreshToken: refreshToken,
+        };
+        const updation = await fetch(
+            "https://ap-south-1.aws.data.mongodb-api.com/app/pr3003-migmt/endpoint/createUserRefreshToken?secret=vedant",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: JSON.stringify(refreshTokenBody),
+            }
+        ).then(function (response) {
+            return response.json();
+        })
+            .then(function (data) {
+                return data;
             })
-                .then(function (data) {
-                    return data;
-                })
-                .catch(function (error) {
-                    console.log("Request failed", error);
-                    errResult.error = error;
-                    return callback(errResult);
-                });
-            if (!updation) {
-                errResult.error = "Unable to add tokens";
-                return callback(errResult);
-            }
-            const result = {
-                status: "Success",
-                user: user,
-                refreshToken: refreshToken,
-                accessToken: accessToken
-            }
-            // console.log("Result: ",result)
-            return callback(result);
+            .catch(function (error) {
+                console.log("Request failed", error);
+                result.error = error;
+                return result;
+            });
+        if (!updation) {
+            result.error = "Unable to add tokens";
+            return result;
         }
-    });
+        if (updation.status == "Fail") return updation;
+        const successResult = {
+            status: "Success",
+            user: user,
+            refreshToken: refreshToken,
+            accessToken: accessToken
+        }
+        // console.log("Result: ",result)
+        return successResult;
+    }
 }
 
 async function updateUserProfileStatus(userId, status) {

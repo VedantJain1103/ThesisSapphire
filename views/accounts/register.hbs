@@ -1,11 +1,11 @@
 <div class="container-fluid">
   <div class="row  d-flex justify-content-center">
-    <div class="col-8">
-      <div id="top">
-        <div class="content">
-          <h1 class="content-title font-size-24"> Register</h1>
-        </div>
-        <div class="card  p-0">
+    <div class="card col p-0 d-flex justify-content-center align-items-center">
+      <div class="col">
+        <div id="top">
+          <div class="content">
+            <h1 class="content-title font-size-24">Register</h1>
+          </div>
           <div class="content">
             <div class="invalid-feedback">
               {{error}}
@@ -41,9 +41,12 @@
                   <label for="password" class="required">Password</label>
                   <input type="password" class="form-control" id="password" name="password" placeholder="Password"
                     required="required">
+                  <div class="invalid-feedback">
+                    Must have atleast length 8 containing lower case, upper case, numerical, special character atleast
+                    once.
+                  </div>
                 </div>
               </div>
-
               <div class="form-row row-eq-spacing-sm">
                 <div class="col">
                   <label for="confirmPassword" class="required">Confirm Password</label>
