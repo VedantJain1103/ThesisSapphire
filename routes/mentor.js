@@ -54,7 +54,6 @@ router.post('/thesis/upload', verifyJWT, upload.any(), async function (req, res,
     try {
         // console.log(req);
         const { userId, userName, userRole } = req;
-        console.log(req.files);
         if (userRole != "Faculty") {
             res.redirect('/users/');
         }
@@ -67,7 +66,6 @@ router.post('/thesis/upload', verifyJWT, upload.any(), async function (req, res,
             }
             else {
                 let thesisId = result.result.addThesis.insertedId;
-                console.log(result);
                 res.redirect(`/mentor/thesis/submit/${thesisId}?successStatus=Thesis Uploaded Successfully`);
             }
         }
