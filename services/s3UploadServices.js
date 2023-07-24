@@ -45,15 +45,17 @@ exports.uploadMultipleFile = uploadMultipleFile
 
 
 //download image - in s3Services
-// async function getFileStream(fileKey) {
-//     const downloadParams = {
-//         Key: fileKey,
-//         Bucket: bucketName
-//     }
+async function getFileStream(fileKey) {
 
-//     const command = new GetObjectCommand(downloadParams);
-//     let result = await s3.send(command);
-//     return result;
-//     return s3.getObject(downloadParams).createReadStream()
-// }
-// exports.getFileStream = getFileStream
+    const downloadParams = {
+        Key: fileKey,
+        Bucket: bucketName
+    }
+
+    const command = new GetObjectCommand(downloadParams);
+    let result = await s3.send(command);
+    let str = s3.createReadStream();
+    return str;
+    return s3.getObject(downloadParams).createReadStream()
+}
+exports.getFileStream = getFileStream

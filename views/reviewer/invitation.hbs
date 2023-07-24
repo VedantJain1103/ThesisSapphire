@@ -32,13 +32,13 @@
                                     value="{{invitation.thesisName}}" placeholder="Thesis Title" readonly="readonly">
                             </div>
                         </div>
-                        <div class="form-row row-eq-spacing-sm">
+                        {{!-- <div class="form-row row-eq-spacing-sm">
                             <div class="col">
                                 <label for="description" class="required">Description</label>
                                 <textarea class="form-control" id="description" name="description"
                                     readonly="readonly">{{invitation.thesisDescription}}</textarea>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="content-title">
                             <h4>Invited By</h4>
                         </div>
@@ -95,14 +95,14 @@
                     </form>
                     {{#if_eq invitation.status "Active"}}
                     <div class="content d-flex justify-content-between">
-                        <form action="/reviewer/rejectInvitation/{{invitation._id}}" method="post">
+                        <form action="/reviewer/declineInvitation/{{invitation._id}}" method="post">
                             <div class="text-right"> <!-- text-right = text-align: right -->
-                                <input class="btn btn-lg btn-danger" type="submit" value="Reject">
+                                <input class="btn btn-lg btn-danger" type="submit" value="Decline">
                             </div>
                         </form>
                         <form action="/reviewer/acceptInvitation/{{invitation._id}}" method="post">
                             <div class="text-right"> <!-- text-right = text-align: right -->
-                                <input class="btn btn-lg btn-primary" type="submit" value="Accept">
+                                <input class="btn btn-lg btn-success" type="submit" value="Accept">
                             </div>
                         </form>
                     </div>

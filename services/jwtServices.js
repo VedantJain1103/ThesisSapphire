@@ -45,9 +45,8 @@ async function getUserProfileById(userId) {
     }).then(function (response) {
         return response.json();
     }).then(function (data) {
-        // console.log("UserProfile: ", data);
-        if (data) return data;
-        else return null;
+        console.log("UserProfile: ", data);
+        return data;
     }).catch(function (error) {
         console.log('Request Failed', error);
         return null;

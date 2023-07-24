@@ -23,7 +23,7 @@ const { verify } = require('crypto');
 const { RequestSmsRecipientExport } = require('sib-api-v3-sdk');
 // app.use(verifyJWT);
 
-router.get('/thesis/:key', (req, res) => {
+router.get('/thesis/:key', verifyJWT, (req, res) => {
   const { userId, userName, userRole } = req;
   if (userRole == "Admin" || userRole == "Dean" || userRole == "Director" || userRole == "HOD" || userRole == "Faculty" || userRole == "Reviewer" || userRole == "Scholar") {
     const { key } = req.params;
@@ -104,7 +104,7 @@ router.get('/profileCompletion', verifyJWT, async function (req, res, next) {
 
 router.post('/profileCompletion/reviewer', verifyJWT, async function (req, res, next) {
   const { userId, userName, userRole } = req;
-  const { name, email, institute, pfId } = req.body;
+  const { name, email, institute, pfId, department } = req.body;
   console.log(req.body);
   if (!name || !email || !institute || !pfId) {
     error = "Error: Insuficient data.";

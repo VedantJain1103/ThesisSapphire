@@ -11,26 +11,46 @@ const verifyJWT = require('../middleware/verifyJWT');
 
 router.get('/', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
-    if (userRole != "Reviewer" && userRole != "HOD" && userRole != "Faculty") {
+    const { msg, successStatus, failStatus } = req.query;
+    if (userRole != "Reviewer") {
         res.redirect('/users/')
     }
-    res.render('index', { layout: 'layout/reviewerLayout', name: userName });
+    else {
+        let extraData = {
+            layout: 'layout/reviewerLayout',
+            name: userName, role: userRole,
+            alert: msg,
+            successAlert: successStatus,
+            failAlert: failStatus,
+        }
+        res.render('index', extraData);
+    }
 });
 
 //view invitations
 router.get('/invitations/', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
-    if (userRole == "Scholar") {
+    const { msg, successStatus, failStatus } = req.query;
+    if (userRole != "Reviewer") {
         res.redirect('/users/');
     }
     else {
         let invitationsResult = await reviewerServices.getCurrentInvitationsList(userId);
         if (invitationsResult.status == "Fail") {
-            res.render('error.hbs', { layout: 'layout/reviewerLayout', error: invitationsResult.error });
+            let error = invitationsResult.error;
+            res.redirect('/reviewer?failStatus=' + error);
         }
         else {
             let invitations = invitationsResult.result;
-            res.render('reviewer/currentInvitations.hbs', { layout: 'layout/reviewerLayout', invitations: invitations, name: userName });
+            let extraData = {
+                layout: 'layout/reviewerLayout',
+                name: userName, role: userRole,
+                invitations: invitations,
+                alert: msg,
+                successAlert: successStatus,
+                failAlert: failStatus,
+            }
+            res.render('reviewer/currentInvitations.hbs', extraData);
         }
 
     }
@@ -39,55 +59,65 @@ router.get('/invitations/', verifyJWT, async function (req, res, next) {
 // to accept/reject invitations
 router.get('/viewInvitation/:invitationId', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
-    if (userRole == "Scholar") {
+    const { msg, successStatus, failStatus } = req.query;
+    if (userRole != "Reviewer") {
         res.redirect('/users/');
     }
     else {
         let { invitationId } = req.params;
         let invitationResult = await reviewerServices.getInvitationDetailById(invitationId, userId);
         if (invitationResult.status == "Fail") {
-            res.render('error.hbs', { layout: 'layout/reviewerLayout', error: invitationResult.error });
+            let error = invitationResult.error;
+            res.redirect('/reviewer?failStatus=' + error);
         }
         else {
             let invitation = invitationResult.result;
-            res.render('reviewer/invitation.hbs', { layout: 'layout/reviewerLayout', invitation: invitation, name: userName });
+            let extraData = {
+                layout: 'layout/reviewerLayout',
+                name: userName, role: userRole,
+                invitation: invitation,
+                alert: msg,
+                successAlert: successStatus,
+                failAlert: failStatus,
+            }
+            res.render('reviewer/invitation.hbs', extraData);
         }
 
     }
 })
 
-router.post('/rejectInvitation/:invitationId', verifyJWT, async function (req, res, next) {
+router.post('/declineInvitation/:invitationId', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
-    if (userRole == "Scholar") {
+    if (userRole != "Reviewer") {
         res.redirect('/users/');
     }
     else {
         let { invitationId } = req.params;
         let invitationResult = await reviewerServices.rejectInvitationById(invitationId, userId);
         if (invitationResult.status == "Fail") {
-            res.render('error.hbs', { layout: 'layout/reviewerLayout', error: invitationResult.error });
+            let error = invitationResult.error;
+            res.redirect('/reviewer/invitations?failStatus=' + error);
         }
         else {
-            let invitation = invitationResult.result;
-            res.redirect('/reviewer/invitations');
+            res.redirect('/reviewer/invitations?successStatus=Invitation Declined');
         }
 
     }
 })
 router.post('/acceptInvitation/:invitationId', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
-    if (userRole == "Scholar") {
+    if (userRole != "Reviewer") {
         res.redirect('/users/');
     }
     else {
         let { invitationId } = req.params;
         let invitationResult = await reviewerServices.acceptInvitationById(invitationId, userId);
         if (invitationResult.status == "Fail") {
-            res.render('error.hbs', { layout: 'layout/reviewerLayout', error: invitationResult.error });
+            let error = invitationResult.error;
+            res.redirect('/reviewer/invitations?failStatus=' + error);
         }
         else {
-            let invitation = invitationResult.result;
-            res.redirect('/reviewer/invitations');
+            res.redirect('/reviewer/invitations?successStatus=Invitation Accepted');
         }
 
     }
@@ -96,17 +126,27 @@ router.post('/acceptInvitation/:invitationId', verifyJWT, async function (req, r
 // /reviewer/invitations/history
 router.get('/invitations/history', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
-    if (userRole == "Scholar") {
+    const { msg, successStatus, failStatus } = req.query;
+    if (userRole != "Reviewer") {
         res.redirect('/users/');
     }
     else {
         let invitationsResult = await reviewerServices.getInvitationsList(userId);
         if (invitationsResult.status == "Fail") {
-            res.render('error.hbs', { layout: 'layout/reviewerLayout', error: invitationsResult.error });
+            let error = invitationsResult.error;
+            res.redirect('/reviewer?failStatus=' + error);
         }
         else {
             let invitations = invitationsResult.result;
-            res.render('reviewer/pastInvitations.hbs', { layout: 'layout/reviewerLayout', invitations: invitations, name: userName });
+            let extraData = {
+                layout: 'layout/reviewerLayout',
+                name: userName, role: userRole,
+                invitations: invitations,
+                alert: msg,
+                successAlert: successStatus,
+                failAlert: failStatus,
+            }
+            res.render('reviewer/pastInvitations.hbs', extraData);
         }
 
     }
@@ -116,17 +156,27 @@ router.get('/invitations/history', verifyJWT, async function (req, res, next) {
 // /reviewer/invitations/accepted
 router.get('/invitations/accepted', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
-    if (userRole == "Scholar") {
+    const { msg, successStatus, failStatus } = req.query;
+    if (userRole != "Reviewer") {
         res.redirect('/users/');
     }
     else {
         let invitationsResult = await reviewerServices.getAcceptedInvitationsListForUserId(userId);
         if (invitationsResult.status == "Fail") {
-            res.render('error.hbs', { layout: 'layout/reviewerLayout', error: invitationsResult.error });
+            let error = invitationsResult.error;
+            res.redirect('/reviewer?failStatus=' + error);
         }
         else {
             let invitations = invitationsResult.result;
-            res.render('reviewer/acceptedInvitations.hbs', { layout: 'layout/reviewerLayout', invitations: invitations, name: userName });
+            let extraData = {
+                layout: 'layout/reviewerLayout',
+                name: userName, role: userRole,
+                invitations: invitations,
+                alert: msg,
+                successAlert: successStatus,
+                failAlert: failStatus,
+            }
+            res.render('reviewer/acceptedInvitations.hbs', extraData);
         }
 
     }
@@ -135,20 +185,56 @@ router.get('/invitations/accepted', verifyJWT, async function (req, res, next) {
 router.get('/viewThesis/:thesisId', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
     const { thesisId } = req.params;
-    if (userRole != "Scholar") {
+    const { msg, successStatus, failStatus } = req.query;
+    if (userRole != "Reviewer") {
+        res.redirect('/users/');
+    }
+    else {
         let thesisResult = await reviewerServices.getThesisForReviewer(thesisId, userId);
         if (thesisResult.status == "Fail") {
             error = thesisResult.error;
-            res.render('error', { layout: 'layout/reviewerLayout', name: userName, error: error });
+            res.redirect('/reviewer?failStatus=' + error);
         } else {
             thesisResult = thesisResult.result;
             let thesis = thesisResult.thesis;
-            let comments = thesisResult.comments;
-            res.render('reviewer/viewThesis', { layout: 'layout/reviewerLayout', name: userName, thesis: thesis, comments: comments });
+            let extraData = {
+                layout: 'layout/reviewerLayout',
+                name: userName, role: userRole,
+                thesis: thesis,
+                alert: msg,
+                successAlert: successStatus,
+                failAlert: failStatus,
+            }
+            res.render('reviewer/viewThesis', extraData);
         }
     }
-    else {
+})
+
+router.get('/submitReview/:thesisId', verifyJWT, async function (req, res, next) {
+    const { userId, userName, userRole } = req;
+    const { thesisId } = req.params;
+    const { msg, successStatus, failStatus } = req.query;
+    if (userRole != "Reviewer") {
         res.redirect('/users/');
+    }
+    else {
+        let thesisResult = await reviewerServices.getThesisForReviewer(thesisId, userId);
+        if (thesisResult.status == "Fail") {
+            error = thesisResult.error;
+            res.redirect('/reviewer?failStatus=' + error);
+        } else {
+            thesisResult = thesisResult.result;
+            let thesis = thesisResult.thesis;
+            let extraData = {
+                layout: 'layout/reviewerLayout',
+                name: userName, role: userRole,
+                thesis: thesis,
+                alert: msg,
+                successAlert: successStatus,
+                failAlert: failStatus,
+            }
+            res.render('reviewer/viewThesis', extraData);
+        }
     }
 })
 
@@ -156,7 +242,10 @@ router.get('/viewThesis/:thesisId', verifyJWT, async function (req, res, next) {
 router.post('/comment/', verifyJWT, async function (req, res, next) {
     const { userId, userName, userRole } = req;
     const { thesisId, description, access } = req.body;
-    if (userRole != "Scholar") {
+    if (userRole != "Reviewer") {
+        res.redirect('/users/');
+    }
+    else {
         let commentAccess = "Public";
         let reviewerId = userId;
         if (access == "Private") commentAccess = "Private";
@@ -167,9 +256,6 @@ router.post('/comment/', verifyJWT, async function (req, res, next) {
         else {
             res.redirect(`/reviewer/viewThesis/${thesisId}`);
         }
-    }
-    else {
-        res.redirect('/users/');
     }
 })
 

@@ -3,8 +3,10 @@
     <div class="row  d-flex justify-content-between align-items-center">
         <div class="col">
             <div class="card p-0">
-                <div class="content card-title">
-                    <h2>{{thesis.name}}</h2>
+                <div class="content ">
+                    <div class="card-title">
+                        <h3>Submit Review</h3>
+                    </div>
                 </div>
                 <div class="content">
                     <form action="..." method="...">
@@ -15,55 +17,233 @@
                                     value="{{thesis.name}}" placeholder="Thesis Title" readonly="readonly">
                             </div>
                         </div>
+                    </form>
+                </div>
+                <div class="card p-0">
+                    <div class="content">
                         <div class="form-row row-eq-spacing-sm">
-                            <div class="col">
-                                <label for="abstract">Abstract</label>
-                                <textarea class="form-control" id="abstract" placeholder="Abstract" name="Abstract"
-                                    readonly="readonly">{{thesis.description}}</textarea>
+                            <div class="col-sm card-title">
+                                Thesis Files
                             </div>
-                        </div>
-                        <div class="form-row row-eq-spacing-sm">
                             <div class="col-sm  font-size-16 text-center">
-                                <a href="{{thesis.link}}" class="hyperlink-underline" download>
+                                <a href="{{thesis.thesisLink}}" class="hyperlink-underline" download>
                                     Download Thesis
                                     <i class="fa-solid fa-download fa-lg ml-5"></i>
                                 </a>
                                 {{!-- <embed src="{{thesis.link}}" width=100% height=750px /> --}}
                             </div>
+                            <div class="col-sm font-size-16 text-center">
+                                <a href="{{thesis.synopsisLink}}" class="hyperlink-underline" download>
+                                    Download Synopsis
+                                    <i class="fa-solid fa-download fa-lg ml-5"></i>
+                                </a>
+                            </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
-                <div class="content">
-                    <details class="collapse-panel mw-full mt-20" open>
-                        <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100%, mt-20 = margin-top: 2rem (20px) -->
-                        <summary class="collapse-header">
-                            Past Comments
-                        </summary>
-                        {{#each comments}}
-                        <div class="collapse-content">
-                            <i class="fa-solid fa-angles-right"></i>
-                            {{this.description}}
+                <div class="card p-0">
+                    <form action="..." method="...">
+                        <!-- First row -->
+                        <div class="card-title content">
+                            <h5 class="font-weight-bold">A. General features of thesis</h5>
                         </div>
-                        {{/each}}
-                    </details>
-                </div>
-                <div class="content">
-                    <form action="/reviewer/comment/" method="post">
-                        <div class="form-row row-eq-spacing-sm">
-                            <div class="col">
-                                <label for="description">Add a comment</label>
-                                <textarea class="form-control" id="description" placeholder="Comment"
-                                    name="description"></textarea>
+                        <div class="content">
+                            <div class="form-row row-eq-spacing-sm">
+                                <div class="col-sm">
+                                    Originality and Presentation?
+                                </div>
+                                <div class="col-sm">
+                                    <div class="form-row row-eq-spacing-sm">
+                                        <div class="custom-radio d-inline-block mr-10 col-sm">
+                                            <!-- d-inline-block = display: inline-block, mr-10 = margin-right: 1rem (10px) -->
+                                            <input type="radio" name="originality" id="q1Yes" value="yes">
+                                            <label for="q1Yes">Yes</label>
+                                        </div>
+                                        <div class="custom-radio d-inline-block col-sm">
+                                            <input type="radio" name="originality" id="q1No" value="no">
+                                            <label for="q1No">No</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row row-eq-spacing-sm">
+                                <div class="col-sm">
+                                    Whether quality of work comparable to other universities of repute?
+                                </div>
+                                <div class="col-sm">
+                                    <div class="form-row row-eq-spacing-sm">
+                                        <div class="custom-radio d-inline-block mr-10 col-sm">
+                                            <!-- d-inline-block = display: inline-block, mr-10 = margin-right: 1rem (10px) -->
+                                            <input type="radio" name="quality" id="q2Yes" value="yes">
+                                            <label for="q2Yes">Yes</label>
+                                        </div>
+                                        <div class="custom-radio d-inline-block col-sm">
+                                            <input type="radio" name="quality" id="q2No" value="no">
+                                            <label for="q2No">No</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row row-eq-spacing-sm">
+                                <div class="col-sm">
+                                    Whether the thesis has embodied any new idea with original thought?
+                                </div>
+                                <div class="col-sm">
+                                    <div class="form-row row-eq-spacing-sm">
+                                        <div class="custom-radio d-inline-block mr-10 col-sm">
+                                            <!-- d-inline-block = display: inline-block, mr-10 = margin-right: 1rem (10px) -->
+                                            <input type="radio" name="creativity" id="q3Yes" value="yes">
+                                            <label for="q3Yes">Yes</label>
+                                        </div>
+                                        <div class="custom-radio d-inline-block col-sm">
+                                            <input type="radio" name="creativity" id="q3No" value="no">
+                                            <label for="q3No">No</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <input type="text" name="thesisId" value="{{thesis._id}}" hidden="hidden">
-                        <div class="content d-flex justify-content-between">
-                            <div class="text-right"> <!-- text-right = text-align: right -->
-                                <input class="btn btn-lg btn-primary" type="submit" name="access" value="Private">
+
+
+                        <div class="card-title content">
+                            <h5 class="font-weight-bold">B. Comments</h5>
+                        </div>
+                        <div class="content">
+                            <div class="form-row row-eq-spacing-sm">
+                                <div class="col-sm">
+                                    Correction for punctuation, grammar, spelling, typographical errors or
+                                    language?
+                                </div>
+                                <div class="col-sm">
+                                    <div class="form-row row-eq-spacing-sm">
+                                        <div class="custom-radio d-inline-block mr-10 col-sm">
+                                            <!-- d-inline-block = display: inline-block, mr-10 = margin-right: 1rem (10px) -->
+                                            <input type="radio" name="grammar" id="q4None" value="yes">
+                                            <label for="q4None">None</label>
+                                        </div>
+                                        <div class="custom-radio d-inline-block col-sm">
+                                            <input type="radio" name="grammar" id="q4Minor" value="no">
+                                            <label for="q4Minor">Minor</label>
+                                        </div>
+                                        <div class="custom-radio d-inline-block col-sm">
+                                            <input type="radio" name="grammar" id="q4Major" value="no">
+                                            <label for="q4Major">Major</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="text-right"> <!-- text-right = text-align: right -->
-                                <input class="btn btn-lg btn-primary" type="submit" name="access" value="Public">
+                            <div class="form-row row-eq-spacing-sm">
+                                <div class="col">
+                                    <label for="technicalContent">Technical Content</label>
+                                    <textarea class="form-control" id="technicalContent" placeholder="Technical Content"
+                                        name="technicalContent"></textarea>
+                                </div>
                             </div>
+                            <div class="form-row row-eq-spacing-sm">
+                                {{!-- Highlights and strong/weak points in thesis --}}
+                                <div class="col-sm">
+                                    <label for="strongPoints">Strong points</label>
+                                    <textarea class="form-control" id="strongPoints" placeholder="Strong Points"
+                                        name="strongPoints"></textarea>
+                                </div>
+                                <div class="col-sm">
+                                    <label for="weakPoints">Weak points</label>
+                                    <textarea class="form-control" id="weakPoints" placeholder="Weak Points"
+                                        name="weakPoints"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="card-title content">
+                            <h5 class="font-weight-bold">C. Suggestions</h5>
+                        </div>
+                        <div class="content">
+                            <div class="form-row row-eq-spacing-sm">
+                                <div class="col">
+                                    <label for="suggestions"></label>
+                                    <textarea class="form-control" id="suggestions" placeholder="Suggestions"
+                                        name="suggestions"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="card-title content">
+                            <h5 class="font-weight-bold">D. Questions to be asked in defense, if any</h5>
+                        </div>
+                        <div class="content">
+                            <div class="form-row row-eq-spacing-sm">
+                                <div class="col">
+                                    <label for="questions"></label>
+                                    <textarea class="form-control" id="questions"
+                                        placeholder="Questions to be asked in defense" name="questions"
+                                        readonly="readonly"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-title content">
+                            <h5 class="font-weight-bold">E. Specific Recommendation</h5>
+                        </div>
+                        <div class="content">
+                            <div class="form-row row-eq-spacing-sm">
+                                <div class="col">
+                                    <div class="custom-radio">
+                                        <input type="radio" name="recommendation" id="rec1" value="rec1">
+                                        <label for="rec1" class="text-break">The thesis is acceptable in the present
+                                            form for the award
+                                            of the Ph.D. Degree.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row row-eq-spacing-sm">
+                                <div class="col">
+                                    <div class="custom-radio">
+                                        <input type="radio" name="recommendation" id="rec2" value="rec2">
+                                        <label for="rec2" class="text-break">The thesis is acceptable and the
+                                            corrections,
+                                            modifications
+                                            and improvement suggested by me be incorporated in the thesis.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row row-eq-spacing-sm">
+                                <div class="col">
+                                    <div class="custom-radio">
+                                        <input type="radio" name="recommendation" id="rec3" value="rec3">
+                                        <label for="rec3" class="text-break">The thesis need technical
+                                            improvement / modifications which
+                                            must
+                                            be carried out to my satisfaction. Student's written response to the the
+                                            aboev suggestions be sent to me and I will give my reply to the same
+                                            within
+                                            two weeks of its receipt. This is necessary before I recommend the
+                                            thesis
+                                            for acceptance.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row row-eq-spacing-sm">
+                                <div class="col">
+                                    <div class="custom-radio">
+                                        <input type="radio" name="recommendation" id="rec4" value="rec4">
+                                        <label for="rec4" class="text-break">The thesis does not conatin any novel work
+                                            ans is out
+                                            rightly
+                                            rejected for the award of the degree.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Submit button container -->
+                        <div class="form-group content">
+                            <input class="btn btn-success btn-lg btn-rounded border-0" type="submit" value="Submit">
                         </div>
                     </form>
                 </div>

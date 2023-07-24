@@ -119,7 +119,9 @@ router.get('/verification/:email', (req, res) => {
 });
 
 router.post('/verification', async (req, res) => {
-    const { emailV, code } = req.body;
+    let { emailV, code } = req.body;
+    code = Number(code);
+    console.log(code);
     let verificationResult = await accountsServices.checkVerification(emailV, code);
     if (verificationResult.status == "Fail") {
         let error = verificationResult.error;

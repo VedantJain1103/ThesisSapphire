@@ -46,7 +46,12 @@ function getFileStream(fileKey) {
         Key: fileKey,
         Bucket: bucketName
     }
-
-    return s3.getObject(downloadParams).createReadStream()
+    // s3.getObject(downloadParams, function (err, data) {
+    //     if (err) console.log(err, err.stack); // an error occurred
+    //     else console.log(data);           // successful response
+    // });
+    let result = s3.getObject(downloadParams).createReadStream()
+    console.log(result);
+    return result;
 }
 exports.getFileStream = getFileStream
