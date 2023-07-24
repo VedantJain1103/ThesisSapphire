@@ -1,15 +1,9 @@
 const bcrypt = require("bcrypt");
-const Sib = require("sib-api-v3-sdk");
 require("dotenv").config();
 
 let jwtServices = require('../services/jwtServices');
 let mailServices = require("../services/mailServices");
 let mailDataServices = require("../services/mailDataServices");
-
-const fs = require("fs");
-const util = require("util");
-const { CloudWatchLogs } = require("aws-sdk");
-const { Code } = require("mongodb");
 
 /*-------------------Functions----------------------*/
 async function getDepartmentByUserId(userId) {

@@ -1,16 +1,6 @@
-const Sib = require("sib-api-v3-sdk");
 require("dotenv").config();
 
-const jwt = require("jsonwebtoken");
-
 const accountsServices = require("../services/accountsServices");
-const s3Services = require('../services/s3');
-const mailServices = require("../services/mailServices");
-const mailDataServices = require("../services/mailDataServices");
-
-const fs = require("fs");
-const util = require("util");
-const unlinkFile = util.promisify(fs.unlink);
 
 async function getInvitationsList(userId) {
     let result = {

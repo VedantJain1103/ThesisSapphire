@@ -1,7 +1,4 @@
-const Sib = require("sib-api-v3-sdk");
 require("dotenv").config();
-
-const jwt = require("jsonwebtoken");
 
 const accountsServices = require("../services/accountsServices");
 const regexServices = require('../services/regexServices');
@@ -10,9 +7,6 @@ const s3UploadServices = require('../services/s3UploadServices');
 const mailServices = require("../services/mailServices");
 const mailDataServices = require("../services/mailDataServices");
 
-const fs = require("fs");
-const util = require("util");
-const unlinkFile = util.promisify(fs.unlink);
 
 function createThesisFileName(fileOriginalName, userId) {
     const today = new Date();

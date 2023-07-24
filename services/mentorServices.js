@@ -1,11 +1,6 @@
-const Sib = require("sib-api-v3-sdk");
 require("dotenv").config();
 
-const jwt = require("jsonwebtoken");
-
 const accountsServices = require("../services/accountsServices");
-const regexServices = require('../services/regexServices');
-const thesisServices = require("../services/thesisServices");
 const s3Services = require('../services/s3');
 const mailServices = require("../services/mailServices");
 const mailDataServices = require("../services/mailDataServices");
