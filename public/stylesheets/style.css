@@ -1,3 +1,9 @@
+/*-----Font-----------------*/
+@font-face {
+  font-family: uniformRegular;
+  src: url("/fonts/GreatVibes-Regular.ttf");
+}
+
 /* ------------background--------------------- */
 .background-section {
   background-image: url("/images/universe1.jpg");
@@ -57,6 +63,60 @@
 
 .img-slide-4 {
   background-image: url("/images/books2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100%;
+  max-height: 100%;
+}
+
+.img-slide-5 {
+  background-image: url("/images/onepiece1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100%;
+  max-height: 100%;
+}
+
+.img-slide-6 {
+  background-image: url("/images/pebbles1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100%;
+  max-height: 100%;
+}
+
+.img-slide-7 {
+  background-image: url("/images/interstellar1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100%;
+  max-height: 100%;
+}
+
+.img-slide-8 {
+  background-image: url("/images/interstellar2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100%;
+  max-height: 100%;
+}
+
+.img-slide-9 {
+  background-image: url("/images/minecraft1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100%;
+  max-height: 100%;
+}
+
+.register-page {
+  background-image: url("/images/blackboard1.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

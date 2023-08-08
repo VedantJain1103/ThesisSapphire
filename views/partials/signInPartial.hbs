@@ -1,0 +1,177 @@
+<div class="content">
+    {{!-- <div class="background-blur "></div> --}}
+    <div class="container-fluid d-flex justify-content-center align-items-center">
+        <div class="card p-0 col-11 border-0 shadow-lg">
+            <div class="row d-flex justify-content-center align-items-stretch" style="min-height: 75vh;">
+                <div class="col">
+                    <div class="content">
+                        <div class="col-3">{{>logo}}</div>
+                        <div class="col-12">
+                            <div class="content">
+                                <h2 class="text-center font-weight-bold">Welcome Back</h2>
+                                <p class="text-justify font-italic">
+                                    Join us and connect with fellow graduate students, share insights, and
+                                    exchange
+                                    experiences.
+                                    <br />
+                                </p>
+                                <form action="/accounts/signIn" method="post">
+                                    <div class="form-group">
+                                        <label for="username" class="required">User Email</label>
+                                        <input type="email" id="email" name="email" class="form-control"
+                                            placeholder="Email" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password" class="required">Password</label>
+                                        <input type="password" id="password" name="password" class="form-control"
+                                            placeholder="Password" required="required">
+                                    </div>
+                                    <div class="form-group text-right">
+                                        <!-- text-right = text-align: right, margin-top: 1rem (10px) -->
+                                        <a href="#signIn" class="hyperlink">Forgot password?</a>
+                                        <!-- hyperlink = used on regular links to remove anti-aliasing in dark mode -->
+                                    </div>
+                                    <div class="form-group">
+                                        <input
+                                            class="btn btn-primary btn-lg btn-block btn-rounded border-0 bg-dark-lm bg-primary-dm"
+                                            type="submit" value="Log In">
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mySlides col-7 hidden-md-and-down img-slide-1">
+                    {{!-- <div class="numbertext">1 / 4</div> --}}
+                    <div class="card p-0 col-10 p-0 bg-transparent border-0 position-absolute bottom-0">
+                        <div class="text-white text-monospace text-weight-semi-bold ">
+                            <h3><i class="fa-solid fa-quote-left fa-xs mr-10"></i></h3>
+                            <h2>Study hard, for the well is deep, and our brains are shallow</h2>
+                            <h4 class="font-italic">- Richard Baxter</h4>
+                        </div>
+                        {{!-- <div class="text-white d-flex justify-content-around ">
+                            <button class="btn  bg-transparent  text-white prev" onclick="plusSlides()"
+                                style="cursor:default">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <button class="btn  bg-transparent text-white next" onclick="plusSlides()"
+                                style="cursor:default">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div> --}}
+                    </div>
+                </div>
+
+                <div class="mySlides col-7 hidden-md-and-down img-slide-2">
+                    {{!-- <div class="numbertext">2 / 4</div> --}}
+                    <div class="card col-10 p-0 bg-transparent border-0 position-absolute bottom-0">
+                        <div class="text-white text-monospace text-weight-semi-bold ">
+                            <h3><i class="fa-solid fa-quote-left fa-xs mr-10"></i></h3>
+                            <h2>Education is the key to unlocking the world, a passport to freedom.</h2>
+                            <h4>- Oprah Winfrey</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mySlides col-7 hidden-md-and-down img-slide-3">
+                    {{!-- <div class="numbertext">3 / 4</div> --}}
+                    <div class="content col-10 p-0 bg-transparent border-0 position-absolute bottom-0">
+                        <div class="text-white text-monospace text-weight-semi-bold ">
+                            <h3><i class="fa-solid fa-quote-left fa-xs mr-10"></i></h3>
+                            <h2>Strive for progress, not perfection.</h2>
+                            <h4>- Unknown</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mySlides col-7 hidden-md-and-down img-slide-4">
+                    {{!-- <div class="numbertext">4 / 4</div> --}}
+                    <div class="card col-10 p-0 bg-transparent border-0 position-absolute bottom-0">
+                        <div class="text-white text-monospace text-weight-semi-bold ">
+                            <h3><i class="fa-solid fa-quote-left fa-xs mr-10"></i></h3>
+                            <h2>Learning never exhausts the mind.</h2>
+                            <h4>- Leonardo da Vinci</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mySlides col-7 hidden-md-and-down img-slide-5">
+                    <div class="card col-10 p-0 bg-transparent border-0 position-absolute bottom-0">
+                        <div class="text-white text-monospace text-weight-semi-bold ">
+                            <h3><i class="fa-solid fa-quote-left fa-xs mr-10"></i></h3>
+                            <h2>Believe you can, and you're halfway there</h2>
+                            <h4>- Monkey D. Luffy</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mySlides col-7 hidden-md-and-down img-slide-6">
+                    <div class="card col-10 p-0 bg-transparent border-0 position-absolute bottom-0">
+                        <div class="text-white text-monospace text-weight-semi-bold ">
+                            <h3><i class="fa-solid fa-quote-left fa-xs mr-10"></i></h3>
+                            <h2>A person who never made a mistake never tried anything new.</h2>
+                            <h4>- Albert Einstein</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mySlides col-7 hidden-md-and-down img-slide-7">
+                    <div class="card col-10 p-0 bg-transparent border-0 position-absolute bottom-0">
+                        <div class="text-white text-monospace text-weight-semi-bold ">
+                            <h3><i class="fa-solid fa-quote-left fa-xs mr-10"></i></h3>
+                            <h2>An investment in knowledge pays the best interest.</h2>
+                            <h4>- Benjamin Franklin</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mySlides col-7 hidden-md-and-down img-slide-8">
+                    <div class="card col-10 p-0 bg-transparent border-0 position-absolute bottom-0">
+                        <div class="text-white text-monospace text-weight-semi-bold ">
+                            <h3><i class="fa-solid fa-quote-left fa-xs mr-10"></i></h3>
+                            <h2>If you can't explain it simply, you don't understand it well enough.</h2>
+                            <h4>- Albert Einstein</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mySlides col-7 hidden-md-and-down img-slide-9">
+                    <div class="card col-10 p-0 bg-transparent border-0 position-absolute bottom-0">
+                        <div class="text-white text-monospace text-weight-semi-bold ">
+                            <h3><i class="fa-solid fa-quote-left fa-xs mr-10"></i></h3>
+                            <h2>The best way to predict the future is to create it.</h2>
+                            <h4>- Peter Drucker</h4>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        let slideIndex = 1;
+        showSlides();
+
+        function plusSlides() {
+            slideIndex++;
+            showSlides();
+        }
+        function decrSlides() {
+            slideIndex--;
+            showSlides();
+        }
+
+        function showSlides() {
+            let i;
+            let slides = document.getElementsByClassName("mySlides");
+            if (slideIndex > slides.length) { slideIndex = 1 }
+            if (slideIndex < 1) { slideIndex = slides.length }
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slides[slideIndex - 1].style.display = "block";
+            slideIndex++;
+            setTimeout(showSlides, 4000);
+        }</script>
+</div>

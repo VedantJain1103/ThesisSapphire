@@ -1,65 +1,149 @@
-<div class="container-fluid">
-  <div class="row  d-flex justify-content-center">
-    <div class="card col p-0 d-flex justify-content-center align-items-center">
-      <div class="col">
-        <div id="top">
-          <div class="content">
-            <h1 class="content-title font-size-24">Register</h1>
+{{!-- <div class="container-fluid d-flex justify-content-center w-lg-three-quarter">
+  <div class="card col p-0 d-flex justify-content-center align-items-center ">
+    <div class="register-page col hidden-md-and-down">
+      <div class="card p-0 col p-0 bg-transparent border-0 position-absolute bottom-0">
+        <div class="text-white text-monospace text-weight-semi-bold ">
+          <h3><i class="fa-solid fa-quote-left fa-xs mr-10"></i></h3>
+          <h2>Study hard, for the well is deep, and our brains are shallow</h2>
+          <h4 class="font-italic">- Richard Baxter</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div id="top">
+        <div class="content">
+          <h1 class="content-title font-size-24">Register</h1>
+        </div>
+        <div class="content">
+          <div class="invalid-feedback">
+            {{error}}
           </div>
-          <div class="content">
-            <div class="invalid-feedback">
-              {{error}}
+          <form action="/accounts/register" method="post">
+            <!-- First row -->
+            <div class="form-row row-eq-spacing-sm">
+              <div class="col">
+                <label for="fullName" class="required">Full Name</label>
+                <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Full name"
+                  required="required">
+              </div>
             </div>
-            <form action="/accounts/register" method="post">
-              <!-- First row -->
-              <div class="form-row row-eq-spacing-sm">
-                <div class="col">
-                  <label for="fullName" class="required">Full Name</label>
-                  <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Full name"
-                    required="required">
+
+            <div class="form-row row-eq-spacing-sm">
+              <div class="col">
+                <label for="phone" class="required">Phone Number</label>
+                <input type="text" class="form-control" id="phone" name="phone" pattern="[0-9]{10}"
+                  placeholder="Phone Number" required="required">
+              </div>
+            </div>
+
+            <div class="form-row row-eq-spacing-sm">
+              <div class="col">
+                <label for="email" class="required">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email"
+                  required="required">
+              </div>
+            </div>
+
+            <div class="form-row row-eq-spacing-sm">
+              <div class="col">
+                <label for="password" class="required">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                  required="required">
+                <div class="invalid-feedback">
+                  Must have atleast length 8 containing lower case, upper case, numerical, special character atleast
+                  once.
                 </div>
               </div>
-
-              <div class="form-row row-eq-spacing-sm">
-                <div class="col">
-                  <label for="phone" class="required">Phone Number</label>
-                  <input type="text" class="form-control" id="phone" name="phone" pattern="[0-9]{10}"
-                    placeholder="Phone Number" required="required">
-                </div>
+            </div>
+            <div class="form-row row-eq-spacing-sm">
+              <div class="col">
+                <label for="confirmPassword" class="required">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                  placeholder="Confirm Password" required="required">
               </div>
+            </div>
 
-              <div class="form-row row-eq-spacing-sm">
-                <div class="col">
-                  <label for="email" class="required">Email</label>
-                  <input type="email" class="form-control" id="email" name="email" placeholder="Email"
-                    required="required">
-                </div>
-              </div>
+            <!-- Submit button container -->
+            <div class="text-right"> <!-- text-right = text-align: right -->
+              <input class="btn btn-primary" type="submit" value="Submit">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> --}}
 
-              <div class="form-row row-eq-spacing-sm">
-                <div class="col">
-                  <label for="password" class="required">Password</label>
-                  <input type="password" class="form-control" id="password" name="password" placeholder="Password"
-                    required="required">
-                  <div class="invalid-feedback">
-                    Must have atleast length 8 containing lower case, upper case, numerical, special character atleast
-                    once.
+
+<div class="container-fluid d-flex justify-content-center align-items-center">
+  <div class="card p-0 col-11 border-0 shadow-lg">
+    <div class="row d-flex justify-content-center align-items-stretch" style="min-height: 75vh;">
+      <div class="col">
+        <div class="content">
+          <div class="col-3">{{>logo}}</div>
+          <div class="col-12">
+            <div class="content">
+              <form action="/accounts/register" method="post">
+                <!-- First row -->
+                <div class="form-row row-eq-spacing-sm">
+                  <div class="col">
+                    <label for="fullName" class="required">Full Name</label>
+                    <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Full name"
+                      required="required">
                   </div>
                 </div>
-              </div>
-              <div class="form-row row-eq-spacing-sm">
-                <div class="col">
-                  <label for="confirmPassword" class="required">Confirm Password</label>
-                  <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
-                    placeholder="Confirm Password" required="required">
-                </div>
-              </div>
 
-              <!-- Submit button container -->
-              <div class="text-right"> <!-- text-right = text-align: right -->
-                <input class="btn btn-primary" type="submit" value="Submit">
-              </div>
-            </form>
+                <div class="form-row row-eq-spacing-sm">
+                  <div class="col">
+                    <label for="phone" class="required">Phone Number</label>
+                    <input type="text" class="form-control" id="phone" name="phone" pattern="[0-9]{10}"
+                      placeholder="Phone Number" required="required">
+                  </div>
+                </div>
+
+                <div class="form-row row-eq-spacing-sm">
+                  <div class="col">
+                    <label for="email" class="required">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email"
+                      required="required">
+                  </div>
+                </div>
+
+                <div class="form-row row-eq-spacing-sm">
+                  <div class="col">
+                    <label for="password" class="required">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                      required="required">
+                    <div class="invalid-feedback">
+                      Must have atleast length 8 containing lower case, upper case, numerical, special character atleast
+                      once.
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row row-eq-spacing-sm">
+                  <div class="col">
+                    <label for="confirmPassword" class="required">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                      placeholder="Confirm Password" required="required">
+                  </div>
+                </div>
+
+                <!-- Submit button container -->
+                <div class="text-right"> <!-- text-right = text-align: right -->
+                  <input class="btn btn-primary" type="submit" value="Submit">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="register-page col-6 hidden-md-and-down">
+        {{!-- <div class="numbertext">1 / 4</div> --}}
+        <div class="card p-0 col-10 p-0 bg-dark border-0 position-absolute bottom-0" style="opacity: 80%;">
+          <div class="text-white text-monospace text-weight-semi-bold" style="opacity: 1;">
+            <h3><i class="fa-solid fa-quote-left fa-xs mr-10"></i></h3>
+            <h2>Study hard, for the well is deep, and our brains are shallow</h2>
+            <h4 class="font-italic">- Richard Baxter</h4>
           </div>
         </div>
       </div>
